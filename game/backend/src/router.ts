@@ -5,14 +5,14 @@ export const appRouter = router({
   hello: protectedProcedure.query(() => ({ message: 'Hello world' })),
   auth: router({
     settings: publicProcedure.query(({ ctx }) => ctx.settings.get()),
-    me: publicProcedure.query(({ ctx }) => {
-      if (ctx.user?.isTestLogin && !ctx.settings.get().emailLoginEnabled) return null
+    me: publicProcedure.query(async ({ ctx }) => {
+      if (ctx.user?.isTestLogin && !(await ctx.settings.get()).emailLoginEnabled) return null
       return ctx.user
     }),
     testEmailLogin: publicProcedure
       .input(z.object({ email: z.string().trim().toLowerCase().pipe(z.email().max(254)) }))
       .mutation(async ({ ctx, input }) => {
-        requireTestLoginEnabled(ctx.settings)
+        await requireTestLoginEnabled(ctx.settings)
         await ctx.signInWithTestEmail(input.email)
         return { success: true as const }
       }),

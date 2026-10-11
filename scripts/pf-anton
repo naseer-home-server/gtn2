@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Forwarding local ports 1233 and 5433 to anton..."
+exec ssh \
+  -L "1233:localhost:1233" \
+  -L "5433:localhost:5433" \
+  anton \
+  -N

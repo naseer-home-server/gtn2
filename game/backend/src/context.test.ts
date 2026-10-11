@@ -6,10 +6,10 @@ import Passwordless from 'supertokens-node/recipe/passwordless'
 import Session from 'supertokens-node/recipe/session'
 import UserRoles from 'supertokens-node/recipe/userroles'
 import { makeContext } from './context.js'
-import type { SettingsStore } from './settings.js'
+import type { SettingsRepository } from './trpc.js'
 
 function settings(enabled: boolean) {
-  return { get: () => ({ emailLoginEnabled: enabled }) } as SettingsStore
+  return { get: async () => ({ emailLoginEnabled: enabled }) } as SettingsRepository
 }
 function request(testLogin: boolean) {
   return { req: { session: {
@@ -46,7 +46,7 @@ test('disabling test login during identity creation prevents session issuance', 
     return { status: 'OK', recipeUserId: SuperTokens.convertToRecipeUserId('test-user') }
   })
   const session = mock.method(Session, 'createNewSession', async () => ({}))
-  const store = { get: () => ({ emailLoginEnabled: enabled }) } as SettingsStore
+  const store = { get: async () => ({ emailLoginEnabled: enabled }) } as SettingsRepository
   const ctx = await makeContext(store)({ req: {}, res: {} } as CreateExpressContextOptions)
   await assert.rejects(ctx.signInWithTestEmail('test@example.com'), { code: 'FORBIDDEN' })
   assert.equal(session.mock.callCount(), 0)

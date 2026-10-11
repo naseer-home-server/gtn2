@@ -6,9 +6,9 @@ import { middleware, errorHandler } from 'supertokens-node/framework/express'
 import { verifySession } from 'supertokens-node/recipe/session/framework/express'
 import { makeContext } from './context.js'
 import { appRouter } from './router.js'
-import type { SettingsStore } from './settings.js'
+import type { SettingsRepository } from './trpc.js'
 
-export function createApp(settings: SettingsStore) {
+export function createApp(settings: SettingsRepository) {
   const app = express()
   app.get('/health', (_request, response) => response.json({ status: 'ok' }))
   app.use(middleware())

@@ -5,24 +5,32 @@
   "type": "module",
   "files": [
     "dist",
-    "public"
+    "public",
+    "drizzle"
   ],
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "node --import tsx --test src/*.test.ts"
+    "test": "node --import tsx --test src/*.test.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "express": "^4.22.2",
     "@trpc/server": "^11.18.0",
     "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.4",
+    "express": "^4.22.2",
+    "pg": "^8.23.1",
     "supertokens-node": "^24.0.2",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/express": "^4.17.25",
     "@types/node": "^24.13.2",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "^0.31.11",
     "tsx": "^4.23.1",
     "typescript": "~6.0.2"
   },

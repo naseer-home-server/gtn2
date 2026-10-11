@@ -4,10 +4,9 @@ import Passwordless from 'supertokens-node/recipe/passwordless'
 import Session from 'supertokens-node/recipe/session'
 import type { SessionRequest } from 'supertokens-node/framework/express'
 import UserRoles from 'supertokens-node/recipe/userroles'
-import type { SettingsStore } from './settings.js'
-import { requireTestLoginEnabled, type AuthUser, type TrpcContext } from './trpc.js'
+import { requireTestLoginEnabled, type AuthUser, type SettingsRepository, type TrpcContext } from './trpc.js'
 
-export function makeContext(settings: SettingsStore) {
+export function makeContext(settings: SettingsRepository) {
   return async ({ req, res }: CreateExpressContextOptions): Promise<TrpcContext> => {
     const session = (req as SessionRequest).session
     let user: AuthUser | null = null
@@ -23,11 +22,11 @@ export function makeContext(settings: SettingsStore) {
     return {
       user, settings,
       signInWithTestEmail: async (email) => {
-        requireTestLoginEnabled(settings)
+        await requireTestLoginEnabled(settings)
         // Account linking is not enabled: test and Google identities stay separate.
         const result = await Passwordless.signInUp({ tenantId: 'public', email })
         if (result.status !== 'OK') throw new Error('Unable to create test login.')
-        requireTestLoginEnabled(settings)
+        await requireTestLoginEnabled(settings)
         await Session.createNewSession(req, res, 'public', result.recipeUserId, { testLogin: true })
       },
     }

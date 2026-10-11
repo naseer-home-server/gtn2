@@ -11,6 +11,7 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       SUPERTOKENS_DASHBOARD_ADMINS: ${SUPERTOKENS_DASHBOARD_ADMINS:-}
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL to your PostgreSQL connection string}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/health"]

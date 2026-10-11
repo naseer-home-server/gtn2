@@ -1,14 +1,21 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { appRouter } from './router.js'
-import { SettingsStore } from './settings.js'
-import type { AuthUser } from './trpc.js'
+import type { AuthUser, Settings, SettingsRepository } from './trpc.js'
 
 const admin: AuthUser = { id: 'admin', email: 'admin@example.com', isAdmin: true, isTestLogin: false }
 const player: AuthUser = { ...admin, id: 'player', isAdmin: false }
 const testPlayer: AuthUser = { ...player, id: 'test-player', isTestLogin: true }
+class MemorySettings implements SettingsRepository {
+  private value: Settings = { emailLoginEnabled: false }
+  async get() { return { ...this.value } }
+  async setEmailLoginEnabled(emailLoginEnabled: boolean) {
+    this.value = { emailLoginEnabled }
+    return this.get()
+  }
+}
 async function fixture() {
-  const settings = new SettingsStore()
+  const settings = new MemorySettings()
   const logins: string[] = []
   const caller = (user: AuthUser | null) => appRouter.createCaller({
     user, settings, signInWithTestEmail: async (email) => { logins.push(email) },
@@ -30,15 +37,14 @@ test('normal authenticated users cannot change or read admin settings', async ()
   assert.deepEqual(await caller(player).hello(), { message: 'Hello world' })
   await assert.rejects(caller(player).admin.settings(), { code: 'FORBIDDEN' })
   await assert.rejects(caller(player).admin.setEmailLoginEnabled({ enabled: true }), { code: 'FORBIDDEN' })
-  assert.equal(settings.get().emailLoginEnabled, false)
+  assert.equal((await settings.get()).emailLoginEnabled, false)
 })
-test('admin changes apply in memory and reset for a new server instance', async () => {
+test('admin settings are asynchronously read and updated', async () => {
   const { caller, settings } = await fixture()
   await caller(admin).admin.setEmailLoginEnabled({ enabled: true })
-  assert.equal(settings.get().emailLoginEnabled, true)
-  assert.equal(new SettingsStore().get().emailLoginEnabled, false)
+  assert.equal((await settings.get()).emailLoginEnabled, true)
   await caller(admin).admin.setEmailLoginEnabled({ enabled: false })
-  assert.equal(settings.get().emailLoginEnabled, false)
+  assert.equal((await settings.get()).emailLoginEnabled, false)
 })
 test('disabled email login rejects direct API calls without creating an identity/session', async () => {
   const { caller, logins } = await fixture()
@@ -74,8 +80,8 @@ test('invalid emails and non-boolean settings fail validation', async () => {
   await assert.rejects(caller(admin).admin.setEmailLoginEnabled({ enabled: 'true' as unknown as boolean }), { code: 'BAD_REQUEST' })
   assert.deepEqual(logins, [])
 })
-test('concurrent updates leave the last value in memory', async () => {
+test('concurrent updates leave the last persisted value', async () => {
   const { settings } = await fixture()
   await Promise.all([settings.setEmailLoginEnabled(true), settings.setEmailLoginEnabled(false), settings.setEmailLoginEnabled(true)])
-  assert.equal(settings.get().emailLoginEnabled, true)
+  assert.equal((await settings.get()).emailLoginEnabled, true)
 })

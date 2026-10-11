@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { createApp } from './app.js'
-import { SettingsStore } from './settings.js'
+import type { SettingsRepository } from './trpc.js'
 import { initSuperTokens } from './supertokens.js'
 
 // Guest requests must not need a live Core connection or Google credentials.
@@ -14,7 +14,10 @@ process.env.SUPERTOKENS_DASHBOARD_ADMINS = ''
 initSuperTokens()
 
 test('HTTP routes enforce authentication and do not expose ungated passwordless APIs', async (t) => {
-  const settings = new SettingsStore()
+  const settings: SettingsRepository = {
+    get: async () => ({ emailLoginEnabled: false }),
+    setEmailLoginEnabled: async (emailLoginEnabled) => ({ emailLoginEnabled }),
+  }
   const server = createApp(settings).listen(0, '127.0.0.1')
   t.after(() => new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve())))
   await new Promise<void>((resolve) => server.on('listening', resolve))

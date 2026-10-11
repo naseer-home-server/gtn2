@@ -10,13 +10,14 @@ See [docs/games.md](docs/games.md) for draft game concepts and unresolved rules.
 
 ## Run the game app
 
-Use Node.js 22.12+ (or a supported newer LTS release), then:
+Use the pinned Node version and pnpm, then:
 
 ```sh
+nvm use
 pnpm install
 pnpm --filter game dev
 ```
 
-Run `pnpm --filter game build` to type-check and build, `pnpm --filter game lint` to lint, and `pnpm --filter game preview` to preview a production build.
+The frontend runs on Vite and proxies `/api` to the Express backend on port 3000. The backend returns `Hello world` from `/api/hello` and serves the production frontend from the same port.
 
-The app currently contains the Vite starter screen; login and gameplay are not implemented yet.
+Run `pnpm --filter game build` to build both parts. The root `docker-compose.yml` is the monorepo service manifest. Run `pnpm docker:dev` to build and start services in the foreground, or `pnpm docker:prod` to build and start them in the background. The game service is available on port 3000 and uses `/health` for container health checks.

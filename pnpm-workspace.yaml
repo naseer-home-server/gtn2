@@ -1,2 +1,4 @@
 packages:
   - game
+  - game/frontend
+  - game/backend

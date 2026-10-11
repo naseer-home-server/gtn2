@@ -1,5 +1,14 @@
 {
   "name": "game-theory-night-2",
   "private": true,
-  "packageManager": "pnpm@10.34.5"
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=22.12.0 <23"
+  },
+  "scripts": {
+    "dev": "pnpm --filter game dev",
+    "build": "pnpm --filter game build",
+    "docker:dev": "docker compose up --build",
+    "docker:prod": "docker compose up -d --build"
+  }
 }

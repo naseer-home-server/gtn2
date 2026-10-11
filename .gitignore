@@ -1,2 +1,4 @@
 node_modules/
+dist/
+game/backend/public/
 .DS_Store

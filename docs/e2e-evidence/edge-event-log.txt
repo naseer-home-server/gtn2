@@ -1,0 +1,511 @@
+Event log
+session.created · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:38:37 PM
+{"emails":["e2e-20261011-a1@example.test","e2e-20261011-a2@example.test","e2e-20261011-b1@example.test"]}
+player.arrived · e2e-20261011-a1@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:38:53 PM
+{"playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","arrivalOrder":1}
+player.arrived · e2e-20261011-a2@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:38:54 PM
+{"playerId":"31e22b27-9610-4c58-ba77-bd73e98ac3f5","arrivalOrder":2}
+player.arrived · e2e-20261011-b1@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:38:54 PM
+{"playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","arrivalOrder":3}
+session.activated · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:43:11 PM
+{}
+playthrough.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:43:12 PM
+{"teams":[{"id":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","name":"Edge Alpha","stars":0,"balance":"101","tieOrder":1,"playerIds":["83d5d2a7-2388-4a06-ac52-e39338461bda","31e22b27-9610-4c58-ba77-bd73e98ac3f5"]},{"id":"d25dd272-b39b-4a41-be0a-965de05594e2","name":"Edge Beta","stars":0,"balance":"101","tieOrder":3,"playerIds":["e0ce7a3d-c707-49a4-8023-6988fab2272b"]}],"config":{"bomb":{"factor":[2,5,10],"maxChits":20,"minChits":1,"advantageChits":60},"cave":{"stars":0,"growth":[2,3,4],"tickSeconds":10,"collapseRisk":[0,0,0,0,0],"startingMoney":[5,10,25]},"bonus":{"bag":[1,1,1],"stars":0,"threshold":[2,2,2],"multiplier":[3,5,10]},"circle":{"multiplier":[3,5,10]},"highLow":{"pool":[1,1,1],"stars":0,"multiplier":[2,5,10]},"initialBalance":1.01,"revealPotMultiplier":1},"revision":1,"eventIndex":0}
+bonus.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:43:12 PM
+{"round":1,"token":"d806f5a9-8df1-4080-ba85-844df1802bb5","revision":1,"eventIndex":1}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:43:42 PM
+{"token":"d806f5a9-8df1-4080-ba85-844df1802bb5","action":{"type":"bonus.take","amount":"1"},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":2,"requestId":"a0bf2b36-9b55-4d35-8ad3-94a6cc754d58","signature":"8ce95934cd3a576121892a1902555feec55e70f032622e605f7853ba7faa07a7","eventIndex":0}
+bonus.choice · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:43:42 PM
+{"amount":"100","teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":2,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:42 PM
+{"token":"d806f5a9-8df1-4080-ba85-844df1802bb5","action":{"type":"bonus.take","amount":"1"},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":3,"requestId":"e2b8c1ea-d9be-4b13-9fe0-f6ec70c9e361","signature":"8ce95934cd3a576121892a1902555feec55e70f032622e605f7853ba7faa07a7","eventIndex":0}
+bonus.choice · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:42 PM
+{"amount":"100","teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":3,"eventIndex":1}
+bonus.resolved · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:42 PM
+{"choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"100","d25dd272-b39b-4a41-be0a-965de05594e2":"100"},"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"300","d25dd272-b39b-4a41-be0a-965de05594e2":"300"},"revision":3,"eventIndex":2,"totalTaken":"200","zeroTakers":1,"thresholdBonus":3}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:42 PM
+{"game":"bonus","round":1,"choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"100","d25dd272-b39b-4a41-be0a-965de05594e2":"100"},"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"300","d25dd272-b39b-4a41-be0a-965de05594e2":"300"},"revision":3,"eventIndex":3,"totalTaken":"200","zeroTakers":1,"thresholdBonus":3}
+bonus.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:43:46 PM
+{"round":2,"token":"4c4295e6-5861-4ced-a1ff-fb388a997d44","revision":4,"eventIndex":0}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:43:50 PM
+{"token":"4c4295e6-5861-4ced-a1ff-fb388a997d44","action":{"type":"bonus.take","amount":"0"},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":5,"requestId":"f7598507-1eef-4580-ae87-6c86d9ab63e2","signature":"bdb281d5546360cda722594cbd8d222644d165b0d9fcedfe10a95bc9ea517862","eventIndex":0}
+bonus.choice · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:43:50 PM
+{"amount":"0","teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":5,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:50 PM
+{"token":"4c4295e6-5861-4ced-a1ff-fb388a997d44","action":{"type":"bonus.take","amount":"1"},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":6,"requestId":"bbf58d59-3695-4eea-a596-e46e00f20c92","signature":"7d1cb0202b7c43ed2dc8e5db59b5ee1dc160fb4bc53712d5ce99833fb792a4d9","eventIndex":0}
+bonus.choice · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:50 PM
+{"amount":"100","teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":6,"eventIndex":1}
+bonus.resolved · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:50 PM
+{"choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"100"},"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"500"},"revision":6,"eventIndex":2,"totalTaken":"100","zeroTakers":1,"thresholdBonus":5}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:50 PM
+{"game":"bonus","round":2,"choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"100"},"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"500"},"revision":6,"eventIndex":3,"totalTaken":"100","zeroTakers":1,"thresholdBonus":5}
+bonus.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:43:53 PM
+{"round":3,"token":"ade5099a-8191-4af9-a576-7ecb01d7e0fc","revision":7,"eventIndex":0}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:43:57 PM
+{"token":"ade5099a-8191-4af9-a576-7ecb01d7e0fc","action":{"type":"bonus.take","amount":"0.01"},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":8,"requestId":"77e251b8-70c1-4a8a-bfbe-1e634a12a7f8","signature":"483367744bc9430921daad1940070d2aa54e2cc31ddd23b597268c37ad89f7a0","eventIndex":0}
+bonus.choice · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:43:57 PM
+{"amount":"1","teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":8,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:58 PM
+{"token":"ade5099a-8191-4af9-a576-7ecb01d7e0fc","action":{"type":"bonus.take","amount":"0"},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":9,"requestId":"14b96150-2bd6-4d3f-85e2-04f6a3a36319","signature":"9bec742940a209c629a12f6c70af3a3fbef8d97e52d62bcc63c9bbdaeca53350","eventIndex":0}
+bonus.choice · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:58 PM
+{"amount":"0","teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":9,"eventIndex":1}
+bonus.resolved · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:58 PM
+{"choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"1","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"10","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"revision":9,"eventIndex":2,"totalTaken":"1","zeroTakers":1,"thresholdBonus":10}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:43:58 PM
+{"game":"bonus","round":3,"choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"1","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"10","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"revision":9,"eventIndex":3,"totalTaken":"1","zeroTakers":1,"thresholdBonus":10}
+high-low.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:44:02 PM
+{"round":1,"token":"8c1d79b8-65d1-4516-b1cb-3c2ccebe02c6","revision":10,"eventIndex":0}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:44:07 PM
+{"token":"8c1d79b8-65d1-4516-b1cb-3c2ccebe02c6","action":{"type":"high-low.choose","amount":"0"},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":11,"requestId":"298c2381-2124-4362-aa56-8b6d14e0d8a3","signature":"691fd4b32cfd253f0d5cfc09c8bc95ef696f93a5b453bf10d3f9d3aa01b903f2","eventIndex":0}
+high-low.choice · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:44:07 PM
+{"amount":"0","teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":11,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:07 PM
+{"token":"8c1d79b8-65d1-4516-b1cb-3c2ccebe02c6","action":{"type":"high-low.choose","amount":"0"},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":12,"requestId":"dd06c170-6c48-4efe-9624-c84da950d8f9","signature":"691fd4b32cfd253f0d5cfc09c8bc95ef696f93a5b453bf10d3f9d3aa01b903f2","eventIndex":0}
+high-low.choice · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:07 PM
+{"amount":"0","teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":12,"eventIndex":1}
+high-low.resolved · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:07 PM
+{"lowest":"0","winner":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"highest":"0","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"revision":12,"eventIndex":2}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:07 PM
+{"game":"high-low","round":1,"lowest":"0","winner":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"highest":"0","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"revision":12,"eventIndex":3}
+high-low.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:44:08 PM
+{"round":2,"token":"e491e34c-1f50-4875-b008-764808adebdc","revision":13,"eventIndex":0}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:44:09 PM
+{"token":"e491e34c-1f50-4875-b008-764808adebdc","action":{"type":"high-low.choose","amount":"0"},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":14,"requestId":"626df581-6bd7-4bfc-81e7-15e38b68572f","signature":"daaded06ccc66c62ae9b7e57707a7f54c7d3e46c089686388d77324a0c49cf0e","eventIndex":0}
+high-low.choice · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:44:09 PM
+{"amount":"0","teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":14,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:10 PM
+{"token":"e491e34c-1f50-4875-b008-764808adebdc","action":{"type":"high-low.choose","amount":"0"},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":15,"requestId":"7a6f2918-e5c6-471d-80d5-4964ef6e4e2f","signature":"daaded06ccc66c62ae9b7e57707a7f54c7d3e46c089686388d77324a0c49cf0e","eventIndex":0}
+high-low.choice · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:10 PM
+{"amount":"0","teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":15,"eventIndex":1}
+high-low.resolved · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:10 PM
+{"lowest":"0","winner":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"highest":"0","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"revision":15,"eventIndex":2}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:10 PM
+{"game":"high-low","round":2,"lowest":"0","winner":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"highest":"0","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"revision":15,"eventIndex":3}
+high-low.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:44:10 PM
+{"round":3,"token":"38aa4fb3-a3d4-4a57-a84a-d3946098b65b","revision":16,"eventIndex":0}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:44:12 PM
+{"token":"38aa4fb3-a3d4-4a57-a84a-d3946098b65b","action":{"type":"high-low.choose","amount":"0"},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":17,"requestId":"8103dd40-d3ab-4179-b01e-4d50e01985ab","signature":"774ca91dabde8a19d694b3859d97f5babab746502a95307383e3422e598333f8","eventIndex":0}
+high-low.choice · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:44:12 PM
+{"amount":"0","teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":17,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:13 PM
+{"token":"38aa4fb3-a3d4-4a57-a84a-d3946098b65b","action":{"type":"high-low.choose","amount":"0"},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":18,"requestId":"dc2699c5-12a2-4cf0-9c7a-59baf69b0c9d","signature":"774ca91dabde8a19d694b3859d97f5babab746502a95307383e3422e598333f8","eventIndex":0}
+high-low.choice · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:13 PM
+{"amount":"0","teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":18,"eventIndex":1}
+high-low.resolved · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:13 PM
+{"lowest":"0","winner":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"highest":"0","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"revision":18,"eventIndex":2}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:44:13 PM
+{"game":"high-low","round":3,"lowest":"0","winner":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","choices":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"highest":"0","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"revision":18,"eventIndex":3}
+cave.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:44:14 PM
+{"round":1,"token":"52dd9499-1363-46aa-8838-74f84101ac57","revision":19,"starting":"500","eventIndex":0,"nextTickAt":1791719064440}
+cave.survived · actor system:timer
+10/11/2026, 7:44:24 PM
+{"risk":0,"roll":0.356181196635589,"tick":1,"token":"4426097f-7570-4aa4-83c1-f3469d024397","revision":20,"unbanked":"1000","eventIndex":0,"nextTickAt":1791719074548}
+cave.default_stay · Edge Alpha · actor system:timer
+10/11/2026, 7:44:34 PM
+{"tick":1,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":21,"eventIndex":0}
+cave.default_stay · Edge Beta · actor system:timer
+10/11/2026, 7:44:34 PM
+{"tick":1,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":21,"eventIndex":1}
+cave.survived · actor system:timer
+10/11/2026, 7:44:34 PM
+{"risk":0,"roll":0.3961988799273968,"tick":2,"token":"711cc02d-b6fe-4dac-af41-ec2c738de22f","revision":21,"unbanked":"2000","eventIndex":2,"nextTickAt":1791719084561}
+cave.default_stay · Edge Alpha · actor system:timer
+10/11/2026, 7:44:44 PM
+{"tick":2,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":22,"eventIndex":0}
+cave.default_stay · Edge Beta · actor system:timer
+10/11/2026, 7:44:44 PM
+{"tick":2,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":22,"eventIndex":1}
+cave.survived · actor system:timer
+10/11/2026, 7:44:44 PM
+{"risk":0,"roll":0.6647175997495651,"tick":3,"token":"18abbbb7-df8d-498b-8963-136ea81a37e7","revision":22,"unbanked":"4000","eventIndex":2,"nextTickAt":1791719094566}
+cave.default_stay · Edge Alpha · actor system:timer
+10/11/2026, 7:44:54 PM
+{"tick":3,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":23,"eventIndex":0}
+cave.default_stay · Edge Beta · actor system:timer
+10/11/2026, 7:44:54 PM
+{"tick":3,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":23,"eventIndex":1}
+cave.survived · actor system:timer
+10/11/2026, 7:44:54 PM
+{"risk":0,"roll":0.7640494315419346,"tick":4,"token":"1d559542-4e8d-43d6-b838-c0d166eb23ef","revision":23,"unbanked":"8000","eventIndex":2,"nextTickAt":1791719104570}
+cave.default_stay · Edge Alpha · actor system:timer
+10/11/2026, 7:45:04 PM
+{"tick":4,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":24,"eventIndex":0}
+cave.default_stay · Edge Beta · actor system:timer
+10/11/2026, 7:45:04 PM
+{"tick":4,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":24,"eventIndex":1}
+cave.survived · actor system:timer
+10/11/2026, 7:45:04 PM
+{"risk":0,"roll":0.2824398430529982,"tick":5,"token":"8077b9b9-a196-4dc8-81df-3f9ec3bf2a5f","revision":24,"unbanked":"16000","eventIndex":2,"nextTickAt":1791719114614}
+cave.default_stay · Edge Alpha · actor system:timer
+10/11/2026, 7:45:15 PM
+{"tick":5,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":25,"eventIndex":0}
+cave.default_stay · Edge Beta · actor system:timer
+10/11/2026, 7:45:15 PM
+{"tick":5,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":25,"eventIndex":1}
+cave.survived · actor system:timer
+10/11/2026, 7:45:15 PM
+{"risk":0,"roll":0.5336666523944587,"tick":6,"token":"11062881-550d-40cc-ab92-a82b4b45a198","revision":25,"unbanked":"32000","eventIndex":2,"nextTickAt":1791719125185}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:45:16 PM
+{"token":"11062881-550d-40cc-ab92-a82b4b45a198","action":{"type":"cave.decide","decision":"leave"},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":26,"requestId":"497b97a5-826c-4b8a-8033-fc690d921fd6","signature":"9d0aaae8823ec2caa87609a5255c883468ae216043e3ba3ac9508b187b539df1","eventIndex":0}
+cave.decision · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:45:16 PM
+{"tick":6,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","decision":"leave","revision":26,"eventIndex":1}
+cave.earnings · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:45:16 PM
+{"tick":6,"amount":"32000","banked":"32000","teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","balance":"32411","revision":26,"eventIndex":2}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:45:17 PM
+{"token":"11062881-550d-40cc-ab92-a82b4b45a198","action":{"type":"cave.decide","decision":"leave"},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":27,"requestId":"686fb908-9fbe-4812-ae69-e9d7d4b298cd","signature":"9d0aaae8823ec2caa87609a5255c883468ae216043e3ba3ac9508b187b539df1","eventIndex":0}
+cave.decision · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:45:17 PM
+{"tick":6,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","decision":"leave","revision":27,"eventIndex":1}
+cave.earnings · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:45:17 PM
+{"tick":6,"amount":"32000","banked":"32000","teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","balance":"32901","revision":27,"eventIndex":2}
+cave.ended · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:45:17 PM
+{"tick":6,"banked":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"32000","d25dd272-b39b-4a41-be0a-965de05594e2":"32000"},"reason":"everyone-left","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"32000","d25dd272-b39b-4a41-be0a-965de05594e2":"32000"},"revision":27,"collapsed":false,"eventIndex":3}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:45:17 PM
+{"game":"cave","tick":6,"round":1,"banked":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"32000","d25dd272-b39b-4a41-be0a-965de05594e2":"32000"},"reason":"everyone-left","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"32000","d25dd272-b39b-4a41-be0a-965de05594e2":"32000"},"revision":27,"collapsed":false,"eventIndex":4}
+cave.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:45:22 PM
+{"round":2,"token":"763f7953-5d12-4608-89ad-15dd1f4d7adf","revision":28,"starting":"1000","eventIndex":0,"nextTickAt":1791719132566}
+cave.survived · actor system:timer
+10/11/2026, 7:45:32 PM
+{"risk":0,"roll":0.6655861285980791,"tick":1,"token":"bb0718b0-1543-4d0a-8ab1-630d74742efe","revision":29,"unbanked":"3000","eventIndex":0,"nextTickAt":1791719142642}
+cave.default_stay · Edge Alpha · actor system:timer
+10/11/2026, 7:45:42 PM
+{"tick":1,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":30,"eventIndex":0}
+cave.default_stay · Edge Beta · actor system:timer
+10/11/2026, 7:45:42 PM
+{"tick":1,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":30,"eventIndex":1}
+cave.survived · actor system:timer
+10/11/2026, 7:45:42 PM
+{"risk":0,"roll":0.8069542709272355,"tick":2,"token":"6c817468-779a-4c8e-82b2-97256cdb0a5a","revision":30,"unbanked":"9000","eventIndex":2,"nextTickAt":1791719152642}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:45:51 PM
+{"token":"6c817468-779a-4c8e-82b2-97256cdb0a5a","action":{"type":"cave.decide","decision":"stay"},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":31,"requestId":"e77b7c42-f0b1-4efa-979a-999d0bc21a12","signature":"74aa25652cfa6593fbff8103cab1f4759e52e9840c976493a478459b8eafe35f","eventIndex":0}
+cave.decision · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:45:51 PM
+{"tick":2,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","decision":"stay","revision":31,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:45:51 PM
+{"token":"6c817468-779a-4c8e-82b2-97256cdb0a5a","action":{"type":"cave.decide","decision":"leave"},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":32,"requestId":"44fa2c9a-1f9c-444e-9d7e-e0f69734823a","signature":"03e6e84fde031a5e8d6e27b31994fb62570fbddde553db62ef5f8bff297f07d7","eventIndex":0}
+cave.decision · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:45:51 PM
+{"tick":2,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","decision":"leave","revision":32,"eventIndex":1}
+cave.earnings · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:45:51 PM
+{"tick":2,"amount":"9000","banked":"9000","teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","balance":"41901","revision":32,"eventIndex":2}
+cave.survived · actor system:timer
+10/11/2026, 7:45:52 PM
+{"risk":0,"roll":0.70780462725088,"tick":3,"token":"897fe2fe-6cd2-4419-b88d-3fa90c7de7c1","revision":33,"unbanked":"27000","eventIndex":0,"nextTickAt":1791719162650}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:02 PM
+{"token":"897fe2fe-6cd2-4419-b88d-3fa90c7de7c1","action":{"type":"cave.decide","decision":"leave"},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":34,"requestId":"0c65c68e-5c23-4385-ae9a-86aba2b8b6b5","signature":"0339b2ce4934b1a91fff6fa946437ae4d1eaf696eb9573b1ed87e680ac1f96c1","eventIndex":0}
+cave.decision · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:02 PM
+{"tick":3,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","decision":"leave","revision":34,"eventIndex":1}
+cave.earnings · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:02 PM
+{"tick":3,"amount":"27000","banked":"27000","teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","balance":"59411","revision":34,"eventIndex":2}
+cave.ended · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:02 PM
+{"tick":3,"banked":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"27000","d25dd272-b39b-4a41-be0a-965de05594e2":"9000"},"reason":"everyone-left","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"27000","d25dd272-b39b-4a41-be0a-965de05594e2":"9000"},"revision":34,"collapsed":false,"eventIndex":3}
+round.completed · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:02 PM
+{"game":"cave","tick":3,"round":2,"banked":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"27000","d25dd272-b39b-4a41-be0a-965de05594e2":"9000"},"reason":"everyone-left","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"27000","d25dd272-b39b-4a41-be0a-965de05594e2":"9000"},"revision":34,"collapsed":false,"eventIndex":4}
+cave.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:46:06 PM
+{"round":3,"token":"4156f825-1f3e-4432-ab0c-162ad61632d5","revision":35,"starting":"2500","eventIndex":0,"nextTickAt":1791719176203}
+cave.survived · actor system:timer
+10/11/2026, 7:46:16 PM
+{"risk":0,"roll":0.7098382350523025,"tick":1,"token":"b346daf6-ea41-4fdf-a373-a2893c9f9300","revision":36,"unbanked":"10000","eventIndex":0,"nextTickAt":1791719186718}
+cave.default_stay · Edge Alpha · actor system:timer
+10/11/2026, 7:46:27 PM
+{"tick":1,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":37,"eventIndex":0}
+cave.default_stay · Edge Beta · actor system:timer
+10/11/2026, 7:46:27 PM
+{"tick":1,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":37,"eventIndex":1}
+cave.survived · actor system:timer
+10/11/2026, 7:46:27 PM
+{"risk":0,"roll":0.915796477580443,"tick":2,"token":"fbf6f25e-a4f2-4d6a-9b2f-da899eb4746d","revision":37,"unbanked":"40000","eventIndex":2,"nextTickAt":1791719197204}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:29 PM
+{"token":"fbf6f25e-a4f2-4d6a-9b2f-da899eb4746d","action":{"type":"cave.decide","decision":"leave"},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":38,"requestId":"0188f72d-93ed-4ce1-8308-4dcfa167aa41","signature":"8a25de290a3be00f2a1f6cd5c80892a7cd62f277795ffcac70740aed43cbfffd","eventIndex":0}
+cave.decision · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:29 PM
+{"tick":2,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","decision":"leave","revision":38,"eventIndex":1}
+cave.earnings · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:29 PM
+{"tick":2,"amount":"40000","banked":"40000","teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","balance":"99411","revision":38,"eventIndex":2}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:30 PM
+{"token":"fbf6f25e-a4f2-4d6a-9b2f-da899eb4746d","action":{"type":"cave.decide","decision":"leave"},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":39,"requestId":"f27898a6-618e-475e-b39e-3ffe3609b2eb","signature":"8a25de290a3be00f2a1f6cd5c80892a7cd62f277795ffcac70740aed43cbfffd","eventIndex":0}
+cave.decision · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:30 PM
+{"tick":2,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","decision":"leave","revision":39,"eventIndex":1}
+cave.earnings · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:30 PM
+{"tick":2,"amount":"40000","banked":"40000","teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","balance":"81901","revision":39,"eventIndex":2}
+cave.ended · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:30 PM
+{"tick":2,"banked":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"40000","d25dd272-b39b-4a41-be0a-965de05594e2":"40000"},"reason":"everyone-left","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"40000","d25dd272-b39b-4a41-be0a-965de05594e2":"40000"},"revision":39,"collapsed":false,"eventIndex":3}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:30 PM
+{"game":"cave","tick":2,"round":3,"banked":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"40000","d25dd272-b39b-4a41-be0a-965de05594e2":"40000"},"reason":"everyone-left","payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"40000","d25dd272-b39b-4a41-be0a-965de05594e2":"40000"},"revision":39,"collapsed":false,"eventIndex":4}
+circle.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:46:34 PM
+{"next":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"d25dd272-b39b-4a41-be0a-965de05594e2","d25dd272-b39b-4a41-be0a-965de05594e2":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"},"round":1,"token":"f8ec8f34-eeb5-470c-b80a-3f92300539a4","sender":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"d25dd272-b39b-4a41-be0a-965de05594e2","d25dd272-b39b-4a41-be0a-965de05594e2":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"},"circles":[["98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","d25dd272-b39b-4a41-be0a-965de05594e2"]],"revision":40,"eventIndex":0}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:46 PM
+{"token":"f8ec8f34-eeb5-470c-b80a-3f92300539a4","action":{"type":"circle.send","money":"0","stars":0},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":41,"requestId":"acd71d8b-47cd-4833-9356-12198d81cf37","signature":"2639fa60bef505658c9fdc6011a8a4dd6fd165ad2a4df23c995e207c519c4d82","eventIndex":0}
+circle.transfer_submitted · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:46 PM
+{"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":41,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:47 PM
+{"token":"f8ec8f34-eeb5-470c-b80a-3f92300539a4","action":{"type":"circle.send","money":"0","stars":0},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":42,"requestId":"0cb39689-8b51-482c-9049-aa3db2ef1aa7","signature":"2639fa60bef505658c9fdc6011a8a4dd6fd165ad2a4df23c995e207c519c4d82","eventIndex":0}
+circle.transfer_submitted · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:47 PM
+{"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":42,"eventIndex":1}
+circle.transfer_received · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:47 PM
+{"money":"0.00","stars":0,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":42,"senderId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","eventIndex":2}
+circle.transfer_received · Edge Alpha · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:47 PM
+{"money":"0.00","stars":0,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":42,"senderId":"d25dd272-b39b-4a41-be0a-965de05594e2","eventIndex":3}
+circle.returns_opened · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:47 PM
+{"token":"5b98a0d4-a45c-430b-a427-acb936b9baac","revision":42,"eventIndex":4}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:51 PM
+{"token":"5b98a0d4-a45c-430b-a427-acb936b9baac","action":{"type":"circle.return","money":"0","stars":0},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":43,"requestId":"c6f577a8-3abb-47ef-8f11-be1d670b6eda","signature":"f5b85b2de5c09a9fc755f20017aad85898ae8447535f4cc66b5bb7bfcdd97ae1","eventIndex":0}
+circle.return_submitted · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:46:51 PM
+{"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":43,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:51 PM
+{"token":"5b98a0d4-a45c-430b-a427-acb936b9baac","action":{"type":"circle.return","money":"0","stars":0},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":44,"requestId":"c015d390-310c-40f4-be22-cba13da59599","signature":"f5b85b2de5c09a9fc755f20017aad85898ae8447535f4cc66b5bb7bfcdd97ae1","eventIndex":0}
+circle.return_submitted · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:51 PM
+{"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":44,"eventIndex":1}
+circle.return_received · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:51 PM
+{"money":"0.00","stars":0,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":44,"eventIndex":2,"fromTeamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"}
+circle.return_received · Edge Alpha · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:51 PM
+{"money":"0.00","stars":0,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":44,"eventIndex":3,"fromTeamId":"d25dd272-b39b-4a41-be0a-965de05594e2"}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:46:51 PM
+{"game":"circle","round":1,"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"netStars":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":0,"d25dd272-b39b-4a41-be0a-965de05594e2":0},"revision":44,"transfers":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":{"sent":{"money":"0.00","stars":0},"received":{"money":"0.00","stars":0},"returned":{"money":"0.00","stars":0},"returnedToTeam":{"money":"0.00","stars":0}},"d25dd272-b39b-4a41-be0a-965de05594e2":{"sent":{"money":"0.00","stars":0},"received":{"money":"0.00","stars":0},"returned":{"money":"0.00","stars":0},"returnedToTeam":{"money":"0.00","stars":0}}},"eventIndex":4}
+circle.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:46:53 PM
+{"next":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"d25dd272-b39b-4a41-be0a-965de05594e2","d25dd272-b39b-4a41-be0a-965de05594e2":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"},"round":2,"token":"0f7d68d4-07da-4b13-98d7-fee00ecd91ba","sender":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"d25dd272-b39b-4a41-be0a-965de05594e2","d25dd272-b39b-4a41-be0a-965de05594e2":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"},"circles":[["98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","d25dd272-b39b-4a41-be0a-965de05594e2"]],"revision":45,"eventIndex":0}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:00 PM
+{"token":"0f7d68d4-07da-4b13-98d7-fee00ecd91ba","action":{"type":"circle.send","money":"994.11","stars":0},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":46,"requestId":"87ec4b2e-7baa-4147-a93a-7290935beb3f","signature":"84a3f4a0924802f991c9aa61bb6b285158bf76519d6e82355a54e00e0a40c19f","eventIndex":0}
+circle.transfer_submitted · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:00 PM
+{"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":46,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:00 PM
+{"token":"0f7d68d4-07da-4b13-98d7-fee00ecd91ba","action":{"type":"circle.send","money":"819.01","stars":0},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":47,"requestId":"2ff3f36e-0045-426d-baca-7013a0fbe52e","signature":"d02f722a451f1fbddc013e23f080b95ba684f3e0bc33759a52184c196379036e","eventIndex":0}
+circle.transfer_submitted · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:00 PM
+{"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":47,"eventIndex":1}
+circle.transfer_received · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:00 PM
+{"money":"4970.55","stars":0,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":47,"senderId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","eventIndex":2}
+circle.transfer_received · Edge Alpha · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:00 PM
+{"money":"4095.05","stars":0,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":47,"senderId":"d25dd272-b39b-4a41-be0a-965de05594e2","eventIndex":3}
+circle.returns_opened · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:00 PM
+{"token":"fcdf886a-82f5-42c1-9827-2b5a4b188b19","revision":47,"eventIndex":4}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:05 PM
+{"token":"fcdf886a-82f5-42c1-9827-2b5a4b188b19","action":{"type":"circle.return","money":"4095.05","stars":0},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":48,"requestId":"48ed1f1e-beed-4216-b0c2-1584f6e4b8f1","signature":"4a9139ddbc14d90ee9834f279d3c8dc4aadd31749c41826486520889c6560ca4","eventIndex":0}
+circle.return_submitted · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:05 PM
+{"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":48,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:06 PM
+{"token":"fcdf886a-82f5-42c1-9827-2b5a4b188b19","action":{"type":"circle.return","money":"4970.55","stars":0},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":49,"requestId":"f62deda3-2021-4080-8fb1-b375952964df","signature":"1997237d0ad6f9da4a817c96384561e624dafc0db2bea1bf752fd7f096fe1dd5","eventIndex":0}
+circle.return_submitted · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:06 PM
+{"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":49,"eventIndex":1}
+circle.return_received · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:06 PM
+{"money":"4095.05","stars":0,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":49,"eventIndex":2,"fromTeamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"}
+circle.return_received · Edge Alpha · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:06 PM
+{"money":"4970.55","stars":0,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":49,"eventIndex":3,"fromTeamId":"d25dd272-b39b-4a41-be0a-965de05594e2"}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:06 PM
+{"game":"circle","round":2,"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"397644","d25dd272-b39b-4a41-be0a-965de05594e2":"327604"},"netStars":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":0,"d25dd272-b39b-4a41-be0a-965de05594e2":0},"revision":49,"transfers":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":{"sent":{"money":"994.11","stars":0},"received":{"money":"4095.05","stars":0},"returned":{"money":"4095.05","stars":0},"returnedToTeam":{"money":"4970.55","stars":0}},"d25dd272-b39b-4a41-be0a-965de05594e2":{"sent":{"money":"819.01","stars":0},"received":{"money":"4970.55","stars":0},"returned":{"money":"4970.55","stars":0},"returnedToTeam":{"money":"4095.05","stars":0}}},"eventIndex":4}
+circle.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:47:11 PM
+{"next":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"d25dd272-b39b-4a41-be0a-965de05594e2","d25dd272-b39b-4a41-be0a-965de05594e2":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"},"round":3,"token":"a84127eb-2bc8-40e6-b22e-6465144eab22","sender":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"d25dd272-b39b-4a41-be0a-965de05594e2","d25dd272-b39b-4a41-be0a-965de05594e2":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"},"circles":[["d25dd272-b39b-4a41-be0a-965de05594e2","98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"]],"revision":50,"eventIndex":0}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:17 PM
+{"token":"a84127eb-2bc8-40e6-b22e-6465144eab22","action":{"type":"circle.send","money":"0","stars":0},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":51,"requestId":"e2ec362f-768a-41ac-aadf-aab0c880d1ee","signature":"99901d32ee8220a9d0401334dd67fbe18f9735787ade2fbcd82e9bc3420e8727","eventIndex":0}
+circle.transfer_submitted · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:17 PM
+{"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":51,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:18 PM
+{"token":"a84127eb-2bc8-40e6-b22e-6465144eab22","action":{"type":"circle.send","money":"0","stars":0},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":52,"requestId":"686360ad-db78-4dbd-9e75-9bcdbafd2b4f","signature":"99901d32ee8220a9d0401334dd67fbe18f9735787ade2fbcd82e9bc3420e8727","eventIndex":0}
+circle.transfer_submitted · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:18 PM
+{"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":52,"eventIndex":1}
+circle.transfer_received · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:18 PM
+{"money":"0.00","stars":0,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":52,"senderId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","eventIndex":2}
+circle.transfer_received · Edge Alpha · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:18 PM
+{"money":"0.00","stars":0,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":52,"senderId":"d25dd272-b39b-4a41-be0a-965de05594e2","eventIndex":3}
+circle.returns_opened · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:18 PM
+{"token":"ea2c5338-527e-407f-902a-a1958d056e01","revision":52,"eventIndex":4}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:20 PM
+{"token":"ea2c5338-527e-407f-902a-a1958d056e01","action":{"type":"circle.return","money":"0","stars":0},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":53,"requestId":"dd0b4b19-8240-4f08-b237-6f27635eec5c","signature":"540d504274d8c6ca13bd692b279193dfbb7e05bc81aaa075bff5013bbd7d2940","eventIndex":0}
+circle.return_submitted · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:20 PM
+{"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":53,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:21 PM
+{"token":"ea2c5338-527e-407f-902a-a1958d056e01","action":{"type":"circle.return","money":"0","stars":0},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":54,"requestId":"865dc031-c244-47c5-b59d-bde782b9db29","signature":"540d504274d8c6ca13bd692b279193dfbb7e05bc81aaa075bff5013bbd7d2940","eventIndex":0}
+circle.return_submitted · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:21 PM
+{"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":54,"eventIndex":1}
+circle.return_received · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:21 PM
+{"money":"0.00","stars":0,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":54,"eventIndex":2,"fromTeamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"}
+circle.return_received · Edge Alpha · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:21 PM
+{"money":"0.00","stars":0,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":54,"eventIndex":3,"fromTeamId":"d25dd272-b39b-4a41-be0a-965de05594e2"}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:21 PM
+{"game":"circle","round":3,"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"netStars":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":0,"d25dd272-b39b-4a41-be0a-965de05594e2":0},"revision":54,"transfers":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":{"sent":{"money":"0.00","stars":0},"received":{"money":"0.00","stars":0},"returned":{"money":"0.00","stars":0},"returnedToTeam":{"money":"0.00","stars":0}},"d25dd272-b39b-4a41-be0a-965de05594e2":{"sent":{"money":"0.00","stars":0},"received":{"money":"0.00","stars":0},"returned":{"money":"0.00","stars":0},"returnedToTeam":{"money":"0.00","stars":0}}},"eventIndex":4}
+bomb.advantage_revealed · Edge Alpha · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:47:21 PM
+{"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":55,"eventIndex":0,"maxChitsPerPile":60}
+bomb.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:47:21 PM
+{"round":1,"token":"9f8f84bf-0b90-4e13-96ee-6804cac23e77","revision":55,"eventIndex":1}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:34 PM
+{"token":"9f8f84bf-0b90-4e13-96ee-6804cac23e77","action":{"up":0,"down":60,"type":"bomb.allocate","recipients":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":1,"d25dd272-b39b-4a41-be0a-965de05594e2":0}},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":56,"requestId":"f2104649-1977-4247-8dd8-c536bb5efb45","signature":"b7d713415d62704282bbef13a9fd37e0bf55bf81ce73a349a66809b15cf53c1c","eventIndex":0}
+bomb.allocation_submitted · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:34 PM
+{"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":56,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:34 PM
+{"token":"9f8f84bf-0b90-4e13-96ee-6804cac23e77","action":{"up":0,"down":1,"type":"bomb.allocate","recipients":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":1,"d25dd272-b39b-4a41-be0a-965de05594e2":0}},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":57,"requestId":"ae6d1ab9-2165-4280-9ab9-32f05f04b35e","signature":"bf2d24fd6ef6eb8423f1d16677a87a50e48acde37a652457f00ab3e4b4a5ee3d","eventIndex":0}
+bomb.allocation_submitted · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:34 PM
+{"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":57,"eventIndex":1}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:34 PM
+{"game":"bomb","round":1,"outcome":{"after":"2485.28","delta":"-2485.27","before":"4970.55","factor":2,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","direction":"down"},"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"-248527","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"revision":57,"eventIndex":2}
+bomb.resolved · Edge Alpha · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:34 PM
+{"after":"2485.28","delta":"-2485.27","before":"4970.55","factor":2,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":57,"direction":"down","eventIndex":3}
+bomb.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:47:38 PM
+{"round":2,"token":"ce36c5b8-00a9-4d5b-b626-08760f5114bc","revision":58,"eventIndex":0}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:43 PM
+{"token":"ce36c5b8-00a9-4d5b-b626-08760f5114bc","action":{"up":0,"down":60,"type":"bomb.allocate","recipients":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":1,"d25dd272-b39b-4a41-be0a-965de05594e2":0}},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":59,"requestId":"114ecec9-4494-49f1-9c2e-20283f1b5181","signature":"c70a990c0cce888d47b83dc10b67cb2b5294447fae1114ee33afbc37d5168856","eventIndex":0}
+bomb.allocation_submitted · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:43 PM
+{"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":59,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:43 PM
+{"token":"ce36c5b8-00a9-4d5b-b626-08760f5114bc","action":{"up":0,"down":1,"type":"bomb.allocate","recipients":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":1,"d25dd272-b39b-4a41-be0a-965de05594e2":0}},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":60,"requestId":"e5496c46-1282-448a-9e81-939394b66487","signature":"8974834dee7d9aeaf4af0ffb04b5ed4d78123ec8b5619504fdd2f23bbc92544e","eventIndex":0}
+bomb.allocation_submitted · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:43 PM
+{"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":60,"eventIndex":1}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:43 PM
+{"game":"bomb","round":2,"outcome":{"after":"497.06","delta":"-1988.22","before":"2485.28","factor":5,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","direction":"down"},"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"-198822","d25dd272-b39b-4a41-be0a-965de05594e2":"0"},"revision":60,"eventIndex":2}
+bomb.resolved · Edge Alpha · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:43 PM
+{"after":"497.06","delta":"-1988.22","before":"2485.28","factor":5,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":60,"direction":"down","eventIndex":3}
+bomb.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:47:44 PM
+{"round":3,"token":"1e6d2858-372a-41d1-bf10-69230b458c6e","revision":61,"eventIndex":0}
+player.command · Edge Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:49 PM
+{"token":"1e6d2858-372a-41d1-bf10-69230b458c6e","action":{"up":0,"down":60,"type":"bomb.allocate","recipients":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":0,"d25dd272-b39b-4a41-be0a-965de05594e2":1}},"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","playerId":"83d5d2a7-2388-4a06-ac52-e39338461bda","revision":62,"requestId":"447ac722-516d-4af2-ba4c-d1fb14e62e7b","signature":"db7a1dd281a60a75c881c8c8b4f71833a336488a83e6f5802b99d3f7ab7cd02d","eventIndex":0}
+bomb.allocation_submitted · Edge Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:47:49 PM
+{"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd","revision":62,"eventIndex":1}
+player.command · Edge Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:49 PM
+{"token":"1e6d2858-372a-41d1-bf10-69230b458c6e","action":{"up":0,"down":1,"type":"bomb.allocate","recipients":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":0,"d25dd272-b39b-4a41-be0a-965de05594e2":1}},"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","playerId":"e0ce7a3d-c707-49a4-8023-6988fab2272b","revision":63,"requestId":"a34104ef-8d5d-438c-b599-80accdef846a","signature":"29a82f2b6951b8d2e795b317dd5b2f04102dc6bf36a264036dbffd0ae4bd8234","eventIndex":0}
+bomb.allocation_submitted · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:49 PM
+{"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":63,"eventIndex":1}
+round.completed · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:49 PM
+{"game":"bomb","round":3,"outcome":{"after":"409.51","delta":"-3685.54","before":"4095.05","factor":10,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","direction":"down"},"payouts":{"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd":"0","d25dd272-b39b-4a41-be0a-965de05594e2":"-368554"},"revision":63,"eventIndex":2}
+bomb.resolved · Edge Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:47:49 PM
+{"after":"409.51","delta":"-3685.54","before":"4095.05","factor":10,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2","revision":63,"direction":"down","eventIndex":3}
+playthrough.finished · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:47:51 PM
+{"rankings":[{"rank":1,"teamId":"98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"},{"rank":2,"teamId":"d25dd272-b39b-4a41-be0a-965de05594e2"}],"revision":64,"eventIndex":0}

@@ -1,0 +1,78 @@
+- link "Skip to content":
+  - /url: "#main-content"
+- banner:
+  - link "Game Theory Night 2":
+    - /url: /
+  - navigation "Main navigation":
+    - link "Home":
+      - /url: /
+  - generic "e2e-20261011-b1@example.test"
+  - generic: Test login
+  - button "Log out"
+- main:
+  - heading "Game" [level=1]
+  - paragraph: Browser E2E 2026-10-11
+  - generic: Gamble bomb · Round 1
+  - heading "Beta" [level=2]
+  - generic: Your balance stays private. Your rank is shared only during a reveal.
+  - paragraph: Balance
+  - paragraph: "1178.00"
+  - paragraph: Your rank
+  - paragraph: 2nd
+  - paragraph: Stars
+  - paragraph: "1"
+  - heading "Reveal pot" [level=2]
+  - generic: Contribute from your balance to reveal team rankings. The pot resets after a reveal.
+  - paragraph: 0.00 / 642.48
+  - generic: Contribution
+  - spinbutton "Contribution": "0"
+  - button "Contribute to reveal pot" [disabled]
+  - heading "Teams and stars" [level=2]
+  - generic: Star totals are public. Other teams’ balances and ranks stay private.
+  - generic: Alpha
+  - generic: 6 ★
+  - generic: Beta (you)
+  - generic: 1 ★
+  - generic: Gamma
+  - generic: 1 ★
+  - generic: Delta
+  - generic: 8 ★
+  - generic: Epsilon
+  - generic: 2 ★
+  - heading "Round settings" [level=2]
+  - generic: Public settings for this round.
+  - term: Bomb factor
+  - definition: 2×
+  - heading "Finale advantage revealed" [level=2]
+  - paragraph: Delta can allocate up to 60 chits per pile. Other teams can allocate up to 20.
+  - heading "Gamble bomb" [level=2]
+  - generic: Allocate up/down chits and choose the recipients for your piles.
+  - paragraph: "Bomb recipient: Alpha"
+  - status: Your action is submitted. Waiting for the round to continue.
+  - heading "Your round earnings" [level=2]
+  - generic: Gamble bomb · Round 1
+  - generic: "0.00"
+  - generic: What goes around comes around · Round 3
+  - generic: "9.00"
+  - generic: What goes around comes around · Round 2
+  - generic: "4.00"
+  - generic: What goes around comes around · Round 1
+  - generic: "2.00"
+  - generic: Cave mining · Round 3
+  - generic: "0.00"
+  - generic: Cave mining · Round 2
+  - generic: "30.00"
+  - generic: Cave mining · Round 1
+  - generic: "0.00"
+  - generic: High or low · Round 3
+  - generic: "1000.00"
+  - generic: High or low · Round 2
+  - generic: "10.00"
+  - generic: High or low · Round 1
+  - generic: "0.00"
+  - generic: Will we get bonus this year · Round 3
+  - generic: "0.00"
+  - generic: Will we get bonus this year · Round 2
+  - generic: "3.00"
+  - generic: Will we get bonus this year · Round 1
+  - generic: "120.00"

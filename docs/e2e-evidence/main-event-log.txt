@@ -1,0 +1,904 @@
+Event log
+session.created · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:27:00 PM
+{"emails":["e2e-20261011-a1@example.test","e2e-20261011-a2@example.test","e2e-20261011-b1@example.test","e2e-20261011-b2@example.test","e2e-20261011-c1@example.test","e2e-20261011-c2@example.test","e2e-20261011-d1@example.test","e2e-20261011-d2@example.test","e2e-20261011-e1@example.test"]}
+player.arrived · e2e-20261011-a1@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:27:48 PM
+{"playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","arrivalOrder":1}
+player.arrived · e2e-20261011-a2@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:30:48 PM
+{"playerId":"4fb4c38a-5c94-41d6-8ea5-8296383309e9","arrivalOrder":2}
+player.arrived · e2e-20261011-b1@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:30:48 PM
+{"playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","arrivalOrder":3}
+player.arrived · e2e-20261011-b2@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:30:49 PM
+{"playerId":"b9668473-9e98-49e2-82aa-766c2f71aae7","arrivalOrder":4}
+player.arrived · e2e-20261011-c1@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:30:49 PM
+{"playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","arrivalOrder":5}
+player.arrived · e2e-20261011-c2@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:30:50 PM
+{"playerId":"66419a0e-f74d-4ca5-8cea-8b6451e069df","arrivalOrder":6}
+player.arrived · e2e-20261011-d1@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:30:51 PM
+{"playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","arrivalOrder":7}
+player.arrived · e2e-20261011-d2@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:30:51 PM
+{"playerId":"2efa0fe5-4ec8-4043-a02d-cac58b6c4439","arrivalOrder":8}
+player.arrived · e2e-20261011-e1@example.test · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:30:51 PM
+{"playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","arrivalOrder":9}
+players.reordered · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:31:19 PM
+{"playerIds":["991889d9-cf73-41a3-8f3c-19939ff4a0e6","c3d0a58f-00f3-4a31-9d3c-7398f6db157d","4fb4c38a-5c94-41d6-8ea5-8296383309e9","b9668473-9e98-49e2-82aa-766c2f71aae7","88540f1c-7631-47a0-833e-67cab1bcbebc","66419a0e-f74d-4ca5-8cea-8b6451e069df","ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","2efa0fe5-4ec8-4043-a02d-cac58b6c4439","93ee44d1-40f2-42e4-b52a-7cc59dab79d0"]}
+players.reordered · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:31:23 PM
+{"playerIds":["991889d9-cf73-41a3-8f3c-19939ff4a0e6","4fb4c38a-5c94-41d6-8ea5-8296383309e9","c3d0a58f-00f3-4a31-9d3c-7398f6db157d","b9668473-9e98-49e2-82aa-766c2f71aae7","88540f1c-7631-47a0-833e-67cab1bcbebc","66419a0e-f74d-4ca5-8cea-8b6451e069df","ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","2efa0fe5-4ec8-4043-a02d-cac58b6c4439","93ee44d1-40f2-42e4-b52a-7cc59dab79d0"]}
+session.activated · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:31:52 PM
+{}
+playthrough.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:32:23 PM
+{"teams":[{"id":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","name":"Alpha","stars":0,"balance":"0","tieOrder":1,"playerIds":["991889d9-cf73-41a3-8f3c-19939ff4a0e6","4fb4c38a-5c94-41d6-8ea5-8296383309e9"]},{"id":"2589f809-22cb-4f2c-b0df-543af99b38ee","name":"Beta","stars":0,"balance":"0","tieOrder":3,"playerIds":["c3d0a58f-00f3-4a31-9d3c-7398f6db157d","b9668473-9e98-49e2-82aa-766c2f71aae7"]},{"id":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","name":"Gamma","stars":0,"balance":"0","tieOrder":5,"playerIds":["88540f1c-7631-47a0-833e-67cab1bcbebc","66419a0e-f74d-4ca5-8cea-8b6451e069df"]},{"id":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","name":"Delta","stars":0,"balance":"0","tieOrder":7,"playerIds":["ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","2efa0fe5-4ec8-4043-a02d-cac58b6c4439"]},{"id":"d0ff7ee9-c93f-43d5-9762-543810aabbab","name":"Epsilon","stars":0,"balance":"0","tieOrder":9,"playerIds":["93ee44d1-40f2-42e4-b52a-7cc59dab79d0"]}],"config":{"bomb":{"factor":[2,5,10],"maxChits":20,"minChits":1,"advantageChits":60},"cave":{"stars":3,"growth":[2,3,4],"tickSeconds":30,"collapseRisk":[0,100,100,100,100],"startingMoney":[5,10,25]},"bonus":{"bag":[100,100,100],"stars":1,"threshold":[100,100,100],"multiplier":[3,5,10]},"circle":{"multiplier":[3,5,10]},"highLow":{"pool":[100,100,100],"stars":2,"multiplier":[2,5,10]},"initialBalance":0,"revealPotMultiplier":1},"revision":1,"eventIndex":0}
+bonus.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:32:23 PM
+{"round":1,"token":"2647637a-33b0-4d2b-8730-49436017e617","revision":1,"eventIndex":1}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:32:39 PM
+{"token":"2647637a-33b0-4d2b-8730-49436017e617","action":{"type":"bonus.take","amount":"10"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":2,"requestId":"416356c9-d034-44e7-9eaf-fcbcc05e05c1","signature":"17cb14842859a8de2b7d13369af045ce8216093654e456507afd0205e0b9aa00","eventIndex":0}
+bonus.choice · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:32:39 PM
+{"amount":"1000","teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":2,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:33:28 PM
+{"token":"2647637a-33b0-4d2b-8730-49436017e617","action":{"type":"bonus.take","amount":"20"},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":3,"requestId":"6cb8a13a-d1f5-4b5a-9719-33bec88caa06","signature":"5c92f0f8e9018b5dde2e1f4197d1e1b9fbac8f6a18a61b073f71df749ecd3a03","eventIndex":0}
+bonus.choice · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:33:28 PM
+{"amount":"2000","teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":3,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:33:28 PM
+{"token":"2647637a-33b0-4d2b-8730-49436017e617","action":{"type":"bonus.take","amount":"30"},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":4,"requestId":"b81b3714-862d-4cde-a18d-0a0fbd567463","signature":"130956090265d2edb0113bf5e60cf48a652a522aefa61ce5c5f328f401e50d75","eventIndex":0}
+bonus.choice · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:33:28 PM
+{"amount":"3000","teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":4,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:33:29 PM
+{"token":"2647637a-33b0-4d2b-8730-49436017e617","action":{"type":"bonus.take","amount":"0"},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":5,"requestId":"85c14ffe-a0ee-4a09-9c9c-0ed4f6829a16","signature":"62dafa166687e09fb09411caf78960c5c64b3feef9246ff21cf4a8a99292ab66","eventIndex":0}
+bonus.choice · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:33:29 PM
+{"amount":"0","teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":5,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:33:29 PM
+{"token":"2647637a-33b0-4d2b-8730-49436017e617","action":{"type":"bonus.take","amount":"0"},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":6,"requestId":"6debcf35-fd5a-4c17-842c-b4595e6d6fd2","signature":"62dafa166687e09fb09411caf78960c5c64b3feef9246ff21cf4a8a99292ab66","eventIndex":0}
+bonus.choice · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:33:29 PM
+{"amount":"0","teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":6,"eventIndex":1}
+bonus.resolved · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:33:29 PM
+{"choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"2000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"3000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"1000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"12000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"18000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"6000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":6,"eventIndex":2,"totalTaken":"6000","zeroTakers":2,"thresholdBonus":3}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:33:29 PM
+{"game":"bonus","round":1,"choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"2000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"3000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"1000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"12000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"18000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"6000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":6,"eventIndex":3,"totalTaken":"6000","zeroTakers":2,"thresholdBonus":3}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:33:44 PM
+{"token":"2647637a-33b0-4d2b-8730-49436017e617","action":{"type":"pot.contribute","amount":"10"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":7,"requestId":"d0be51c7-af46-4fda-9620-e511e94b86b5","signature":"eeca2e07f672c36b15a657b4ec85856a389dfac5bec2fab56a56576d59ae34f6","eventIndex":0}
+pot.contributed · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:33:44 PM
+{"total":"1000","amount":"1000","target":"7200","teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":7,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:33:57 PM
+{"token":"2647637a-33b0-4d2b-8730-49436017e617","action":{"type":"pot.contribute","amount":"62"},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":8,"requestId":"8bf514d1-bf80-4724-a14b-0f0bf0981371","signature":"362f0ee05986069280ff1293a94e0e0b0f0247b07d9511ad0b09eafbefab28aa","eventIndex":0}
+pot.contributed · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:33:57 PM
+{"total":"7200","amount":"6200","target":"7200","teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":8,"eventIndex":1}
+rankings.revealed · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:33:57 PM
+{"rankings":[{"rank":1,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee"},{"rank":2,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d"},{"rank":3,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf"},{"rank":4,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367"},{"rank":5,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab"}],"revealId":"a458e04a-5052-4c5d-bb32-b75b03473db0","revision":8,"eventIndex":2}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:34:05 PM
+{"token":"5c5277a2-be98-4c78-9de1-a55f7c238f29","action":{"type":"reveal.acknowledge"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":9,"requestId":"8c68ab61-16d4-4d88-bb86-0fd9f632660c","signature":"8112dce19d602cd4fe961fa0230ba0f8c6bc1b89a1a80e267dd259055193353a","eventIndex":0}
+reveal.acknowledged · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:34:05 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revealId":"a458e04a-5052-4c5d-bb32-b75b03473db0","revision":9,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:34:11 PM
+{"token":"5c5277a2-be98-4c78-9de1-a55f7c238f29","action":{"type":"reveal.acknowledge"},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":10,"requestId":"050f7b3f-d289-45e1-ac4e-7ed4c2222d9b","signature":"8112dce19d602cd4fe961fa0230ba0f8c6bc1b89a1a80e267dd259055193353a","eventIndex":0}
+reveal.acknowledged · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:34:11 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revealId":"a458e04a-5052-4c5d-bb32-b75b03473db0","revision":10,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:34:11 PM
+{"token":"5c5277a2-be98-4c78-9de1-a55f7c238f29","action":{"type":"reveal.acknowledge"},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":11,"requestId":"c2295dd5-79e0-4fed-9a9e-13260769446b","signature":"8112dce19d602cd4fe961fa0230ba0f8c6bc1b89a1a80e267dd259055193353a","eventIndex":0}
+reveal.acknowledged · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:34:11 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revealId":"a458e04a-5052-4c5d-bb32-b75b03473db0","revision":11,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:34:12 PM
+{"token":"5c5277a2-be98-4c78-9de1-a55f7c238f29","action":{"type":"reveal.acknowledge"},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":12,"requestId":"e62eb4c4-780e-47b0-af97-ec4577524a48","signature":"8112dce19d602cd4fe961fa0230ba0f8c6bc1b89a1a80e267dd259055193353a","eventIndex":0}
+reveal.acknowledged · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:34:12 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revealId":"a458e04a-5052-4c5d-bb32-b75b03473db0","revision":12,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:12 PM
+{"token":"5c5277a2-be98-4c78-9de1-a55f7c238f29","action":{"type":"reveal.acknowledge"},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":13,"requestId":"c7710389-351d-4d7a-84e2-9389b8b1462c","signature":"8112dce19d602cd4fe961fa0230ba0f8c6bc1b89a1a80e267dd259055193353a","eventIndex":0}
+reveal.acknowledged · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:12 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revealId":"a458e04a-5052-4c5d-bb32-b75b03473db0","revision":13,"eventIndex":1}
+reveal.closed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:12 PM
+{"revealId":"a458e04a-5052-4c5d-bb32-b75b03473db0","revision":13,"eventIndex":2}
+bonus.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:34:18 PM
+{"round":2,"token":"b5e81f5e-ef05-4328-8a71-1b0349848a14","revision":14,"eventIndex":0}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:34:23 PM
+{"token":"b5e81f5e-ef05-4328-8a71-1b0349848a14","action":{"type":"bonus.take","amount":"100"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":15,"requestId":"1843fc18-96f0-42e4-b069-e1c437291e51","signature":"6174ab7a2001aed071ce2880e988a638b629718aab7bfd4589b5cff466f9e93a","eventIndex":0}
+bonus.choice · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:34:23 PM
+{"amount":"10000","teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":15,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:34:23 PM
+{"token":"b5e81f5e-ef05-4328-8a71-1b0349848a14","action":{"type":"bonus.take","amount":"1"},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":16,"requestId":"f0659654-f6b6-4029-8165-ea963d53da03","signature":"d663da8a9b40c9af68d4dc9401e5c7cca01580d6fdf5145a64aef16af2d06d49","eventIndex":0}
+bonus.choice · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:34:23 PM
+{"amount":"100","teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":16,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:34:23 PM
+{"token":"b5e81f5e-ef05-4328-8a71-1b0349848a14","action":{"type":"bonus.take","amount":"0"},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":17,"requestId":"7c21f935-0260-4429-8d0d-d22a3d054090","signature":"feff92df1a60abf2f923078ef671a16eb8176fbeaecddf9e0c9e6e8db640083a","eventIndex":0}
+bonus.choice · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:34:23 PM
+{"amount":"0","teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":17,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:34:23 PM
+{"token":"b5e81f5e-ef05-4328-8a71-1b0349848a14","action":{"type":"bonus.take","amount":"0"},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":18,"requestId":"9cc34126-b30a-4895-a6ce-aba872d9cc4f","signature":"feff92df1a60abf2f923078ef671a16eb8176fbeaecddf9e0c9e6e8db640083a","eventIndex":0}
+bonus.choice · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:34:23 PM
+{"amount":"0","teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":18,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:24 PM
+{"token":"b5e81f5e-ef05-4328-8a71-1b0349848a14","action":{"type":"bonus.take","amount":"0"},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":19,"requestId":"522150e4-ba26-4f6e-81b5-c67aed81ba4a","signature":"feff92df1a60abf2f923078ef671a16eb8176fbeaecddf9e0c9e6e8db640083a","eventIndex":0}
+bonus.choice · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:24 PM
+{"amount":"0","teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":19,"eventIndex":1}
+bonus.resolved · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:24 PM
+{"choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"100","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"10000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"300","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"30000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":19,"eventIndex":2,"totalTaken":"10100","zeroTakers":3,"thresholdBonus":1}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:24 PM
+{"game":"bonus","round":2,"choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"100","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"10000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"300","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"30000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":19,"eventIndex":3,"totalTaken":"10100","zeroTakers":3,"thresholdBonus":1}
+bonus.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:34:27 PM
+{"round":3,"token":"594cc883-151e-43bf-abb6-1a60acc3ba2f","revision":20,"eventIndex":0}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:34:39 PM
+{"token":"594cc883-151e-43bf-abb6-1a60acc3ba2f","action":{"type":"bonus.take","amount":"0"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":21,"requestId":"f5ea6d92-730b-4b16-9093-9ce9c6e1dcbc","signature":"0f6588e3f825eded9fb8b6110b76f253e3db0bd080b1400555955d2a274d6e01","eventIndex":0}
+bonus.choice · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:34:39 PM
+{"amount":"0","teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":21,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:34:39 PM
+{"token":"594cc883-151e-43bf-abb6-1a60acc3ba2f","action":{"type":"bonus.take","amount":"0"},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":22,"requestId":"266fc0e9-e13d-4007-af98-ff9ee2ba80f9","signature":"0f6588e3f825eded9fb8b6110b76f253e3db0bd080b1400555955d2a274d6e01","eventIndex":0}
+bonus.choice · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:34:39 PM
+{"amount":"0","teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":22,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:34:39 PM
+{"token":"594cc883-151e-43bf-abb6-1a60acc3ba2f","action":{"type":"bonus.take","amount":"0"},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":23,"requestId":"8331879c-8a9e-4e58-a1cc-b195420cb774","signature":"0f6588e3f825eded9fb8b6110b76f253e3db0bd080b1400555955d2a274d6e01","eventIndex":0}
+bonus.choice · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:34:39 PM
+{"amount":"0","teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":23,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:34:40 PM
+{"token":"594cc883-151e-43bf-abb6-1a60acc3ba2f","action":{"type":"bonus.take","amount":"0"},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":24,"requestId":"1c0dc288-d500-46d5-8e24-f4c929ad77d8","signature":"0f6588e3f825eded9fb8b6110b76f253e3db0bd080b1400555955d2a274d6e01","eventIndex":0}
+bonus.choice · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:34:40 PM
+{"amount":"0","teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":24,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:40 PM
+{"token":"594cc883-151e-43bf-abb6-1a60acc3ba2f","action":{"type":"bonus.take","amount":"0"},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":25,"requestId":"dd297414-16af-4ce0-89e8-212a5c1a32e5","signature":"0f6588e3f825eded9fb8b6110b76f253e3db0bd080b1400555955d2a274d6e01","eventIndex":0}
+bonus.choice · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:40 PM
+{"amount":"0","teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":25,"eventIndex":1}
+bonus.resolved · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:40 PM
+{"choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":25,"eventIndex":2,"totalTaken":"0","zeroTakers":5,"thresholdBonus":10}
+stars.awarded · Alpha · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:40 PM
+{"game":"bonus","count":1,"round":3,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":25,"eventIndex":3}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:40 PM
+{"game":"bonus","round":3,"choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":25,"eventIndex":4,"totalTaken":"0","zeroTakers":5,"thresholdBonus":10}
+high-low.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:34:44 PM
+{"round":1,"token":"5281fd4f-9515-45fb-8f7b-9384faef0fbe","revision":26,"eventIndex":0}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:34:54 PM
+{"token":"5281fd4f-9515-45fb-8f7b-9384faef0fbe","action":{"type":"high-low.choose","amount":"0"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":27,"requestId":"8fd57cf2-4276-4a37-9d20-f86c2039fb81","signature":"a002a2a7a1cc01bcf8bd4fb95fdc6dcc89bb654d3d54e1b6599910602a739ee9","eventIndex":0}
+high-low.choice · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:34:54 PM
+{"amount":"0","teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":27,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:34:54 PM
+{"token":"5281fd4f-9515-45fb-8f7b-9384faef0fbe","action":{"type":"high-low.choose","amount":"50"},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":28,"requestId":"acc7998a-36f7-45d0-92c6-1d78b4690196","signature":"1ae87602639cb979592cef60c375e4294c1d33166bee50491c294daaa2884c25","eventIndex":0}
+high-low.choice · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:34:54 PM
+{"amount":"5000","teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":28,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:34:55 PM
+{"token":"5281fd4f-9515-45fb-8f7b-9384faef0fbe","action":{"type":"high-low.choose","amount":"100"},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":29,"requestId":"19ccb424-600f-47c5-82fc-18410f0f00d4","signature":"4af5449b850e3c41f74db5bf507074a827139ae56ed15f0eaffd744c429d34f3","eventIndex":0}
+high-low.choice · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:34:55 PM
+{"amount":"10000","teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":29,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:34:55 PM
+{"token":"5281fd4f-9515-45fb-8f7b-9384faef0fbe","action":{"type":"high-low.choose","amount":"150"},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":30,"requestId":"74e88e6b-5b84-4fd3-8ef3-e601ca15089b","signature":"a80a40e0d712e3926bc6d8e636edcb5b0251dd4dd75a5df596e208cfa77b1265","eventIndex":0}
+high-low.choice · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:34:55 PM
+{"amount":"15000","teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":30,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:55 PM
+{"token":"5281fd4f-9515-45fb-8f7b-9384faef0fbe","action":{"type":"high-low.choose","amount":"200"},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":31,"requestId":"5b8699ac-fa1e-4eb6-b4eb-26b06d4dc04a","signature":"ea36f4315989c3af846ff6101a8b5d2395d839536aed12cb5359a7928ddd13a6","eventIndex":0}
+high-low.choice · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:55 PM
+{"amount":"20000","teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":31,"eventIndex":1}
+high-low.resolved · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:55 PM
+{"lowest":"0","winner":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"15000","2589f809-22cb-4f2c-b0df-543af99b38ee":"5000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"10000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"20000"},"highest":"20000","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"20000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":31,"eventIndex":2}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:34:55 PM
+{"game":"high-low","round":1,"lowest":"0","winner":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"15000","2589f809-22cb-4f2c-b0df-543af99b38ee":"5000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"10000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"20000"},"highest":"20000","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"20000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":31,"eventIndex":3}
+high-low.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:34:59 PM
+{"round":2,"token":"01dafa72-73e4-42e7-90f7-985bde9c71d0","revision":32,"eventIndex":0}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:35:03 PM
+{"token":"01dafa72-73e4-42e7-90f7-985bde9c71d0","action":{"type":"high-low.choose","amount":"10"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":33,"requestId":"f3e318a8-89bd-4663-aa1b-7730af16e618","signature":"a61aa42cceab32eef043c1880298bea75caefd2b7b8641f1518afc03aec2f028","eventIndex":0}
+high-low.choice · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:35:03 PM
+{"amount":"1000","teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":33,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:35:03 PM
+{"token":"01dafa72-73e4-42e7-90f7-985bde9c71d0","action":{"type":"high-low.choose","amount":"10"},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":34,"requestId":"5c14e126-c62a-41b9-b32a-5dcbea663ffa","signature":"a61aa42cceab32eef043c1880298bea75caefd2b7b8641f1518afc03aec2f028","eventIndex":0}
+high-low.choice · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:35:03 PM
+{"amount":"1000","teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":34,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:35:03 PM
+{"token":"01dafa72-73e4-42e7-90f7-985bde9c71d0","action":{"type":"high-low.choose","amount":"100"},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":35,"requestId":"24d710cf-9447-4517-9de7-437bc344db33","signature":"075c61a5d351c2f81c3d91f1e15b3df706be3eaf4b9e8747e5846c1677c64a1d","eventIndex":0}
+high-low.choice · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:35:03 PM
+{"amount":"10000","teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":35,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:35:04 PM
+{"token":"01dafa72-73e4-42e7-90f7-985bde9c71d0","action":{"type":"high-low.choose","amount":"200"},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":36,"requestId":"e077c093-d11e-47bf-8bdc-5c48ec77c513","signature":"c1521980620df5d5528710e08a46bd3e71ffe7dc6abe2a5331be7748da580d87","eventIndex":0}
+high-low.choice · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:35:04 PM
+{"amount":"20000","teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":36,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:35:04 PM
+{"token":"01dafa72-73e4-42e7-90f7-985bde9c71d0","action":{"type":"high-low.choose","amount":"500"},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":37,"requestId":"f89801a0-b75a-4e6f-b73a-082adfb844ee","signature":"64e677a2c5d3d1a99339a53b4ebd2b39c7563aa5a3e7806ae0a17e4f8c636a4c","eventIndex":0}
+high-low.choice · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:35:04 PM
+{"amount":"50000","teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":37,"eventIndex":1}
+high-low.resolved · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:35:04 PM
+{"lowest":"1000","winner":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"20000","2589f809-22cb-4f2c-b0df-543af99b38ee":"1000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"10000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"1000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"50000"},"highest":"50000","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"1000","2589f809-22cb-4f2c-b0df-543af99b38ee":"1000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"1000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"50000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"1000"},"revision":37,"eventIndex":2}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:35:04 PM
+{"game":"high-low","round":2,"lowest":"1000","winner":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"20000","2589f809-22cb-4f2c-b0df-543af99b38ee":"1000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"10000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"1000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"50000"},"highest":"50000","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"1000","2589f809-22cb-4f2c-b0df-543af99b38ee":"1000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"1000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"50000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"1000"},"revision":37,"eventIndex":3}
+high-low.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:35:07 PM
+{"round":3,"token":"36e6c60f-e91d-490a-af2d-e5fe0d403ca6","revision":38,"eventIndex":0}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:35:12 PM
+{"token":"36e6c60f-e91d-490a-af2d-e5fe0d403ca6","action":{"type":"high-low.choose","amount":"10"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":39,"requestId":"f19d169a-19ce-45ff-a867-fcd535582f77","signature":"30ae636d3f5d0409b65ff68c685dcabf2ba031507911a732292267b81669a68e","eventIndex":0}
+high-low.choice · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:35:12 PM
+{"amount":"1000","teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":39,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:35:12 PM
+{"token":"36e6c60f-e91d-490a-af2d-e5fe0d403ca6","action":{"type":"high-low.choose","amount":"0"},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":40,"requestId":"cf48fd76-6f70-4a34-8bd4-6e08406442e8","signature":"606e160dcf140c228b0723c67622e13c819305c2f03a660128e34595b400fa33","eventIndex":0}
+high-low.choice · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:35:12 PM
+{"amount":"0","teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":40,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:35:13 PM
+{"token":"36e6c60f-e91d-490a-af2d-e5fe0d403ca6","action":{"type":"high-low.choose","amount":"100"},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":41,"requestId":"a0b3306a-ccf6-4732-b9b7-790ff0ddb6f6","signature":"0c70c8a1998111f66a213564e3385ad1b1fe0791a945936b22d4bf3c3e5a71bb","eventIndex":0}
+high-low.choice · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:35:13 PM
+{"amount":"10000","teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":41,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:35:13 PM
+{"token":"36e6c60f-e91d-490a-af2d-e5fe0d403ca6","action":{"type":"high-low.choose","amount":"200"},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":42,"requestId":"cb823fcf-8b5d-4879-bef2-bc25098d4e06","signature":"308f5ffd7e2ce61ce0cf31aba8bed0e9a1bb1032740d378c3a81504fde38937b","eventIndex":0}
+high-low.choice · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:35:13 PM
+{"amount":"20000","teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":42,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:35:13 PM
+{"token":"36e6c60f-e91d-490a-af2d-e5fe0d403ca6","action":{"type":"high-low.choose","amount":"1000"},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":43,"requestId":"b2c267a6-f981-4aab-abf0-1d1cd8424231","signature":"ca9f0cf89df58fdbb38f8117727daa049bf43588b1a59233c736489d14266ee2","eventIndex":0}
+high-low.choice · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:35:13 PM
+{"amount":"100000","teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":43,"eventIndex":1}
+high-low.resolved · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:35:13 PM
+{"lowest":"0","winner":"2589f809-22cb-4f2c-b0df-543af99b38ee","choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"20000","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"10000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"1000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"100000"},"highest":"100000","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"100000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":43,"eventIndex":2}
+stars.awarded · Beta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:35:13 PM
+{"game":"high-low","count":2,"round":3,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":43,"eventIndex":3}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:35:13 PM
+{"game":"high-low","round":3,"lowest":"0","winner":"2589f809-22cb-4f2c-b0df-543af99b38ee","choices":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"20000","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"10000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"1000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"100000"},"highest":"100000","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"100000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":43,"eventIndex":4}
+cave.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:35:27 PM
+{"round":1,"token":"0eddf11f-1693-47c3-aab0-fa04611ddaba","revision":44,"starting":"500","eventIndex":0,"nextTickAt":1791718557293}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:35:34 PM
+{"token":"0eddf11f-1693-47c3-aab0-fa04611ddaba","action":{"type":"pot.contribute","amount":"480.60"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":45,"requestId":"15178ae2-4c85-4d16-b361-84231b03609c","signature":"088163fefe48936309b1e61d72dfd89be12b0cdc027b602a0b55276cfaf19403","eventIndex":0}
+pot.contributed · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:35:34 PM
+{"total":"48060","amount":"48060","target":"48060","teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":45,"eventIndex":1}
+rankings.revealed · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:35:34 PM
+{"rankings":[{"rank":1,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee"},{"rank":2,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf"},{"rank":3,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d"},{"rank":4,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367"},{"rank":5,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab"}],"revealId":"447df098-25bb-470b-8510-03ff0d5d69fd","revision":45,"eventIndex":2}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:36:32 PM
+{"token":"8eb1cd59-27ff-4d63-a747-085d5d10b51c","action":{"type":"reveal.acknowledge"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":46,"requestId":"90a01ce2-b1e7-42f4-b5c8-72e01e7d9bf0","signature":"78458527d3b0e9c0b7f9c0c77b6f1cb141c5ff2980b96c654f7ca769e4a9b7df","eventIndex":0}
+reveal.acknowledged · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:36:32 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revealId":"447df098-25bb-470b-8510-03ff0d5d69fd","revision":46,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:36:32 PM
+{"token":"8eb1cd59-27ff-4d63-a747-085d5d10b51c","action":{"type":"reveal.acknowledge"},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":47,"requestId":"fed5dd44-c48c-4d17-b0cf-9b26fe76fc8d","signature":"78458527d3b0e9c0b7f9c0c77b6f1cb141c5ff2980b96c654f7ca769e4a9b7df","eventIndex":0}
+reveal.acknowledged · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:36:32 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revealId":"447df098-25bb-470b-8510-03ff0d5d69fd","revision":47,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:36:32 PM
+{"token":"8eb1cd59-27ff-4d63-a747-085d5d10b51c","action":{"type":"reveal.acknowledge"},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":48,"requestId":"6488b642-92b0-40b4-a26e-6a73287493de","signature":"78458527d3b0e9c0b7f9c0c77b6f1cb141c5ff2980b96c654f7ca769e4a9b7df","eventIndex":0}
+reveal.acknowledged · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:36:32 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revealId":"447df098-25bb-470b-8510-03ff0d5d69fd","revision":48,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:36:32 PM
+{"token":"8eb1cd59-27ff-4d63-a747-085d5d10b51c","action":{"type":"reveal.acknowledge"},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":49,"requestId":"d8e3549e-88c2-475b-b358-1d569d635fe9","signature":"78458527d3b0e9c0b7f9c0c77b6f1cb141c5ff2980b96c654f7ca769e4a9b7df","eventIndex":0}
+reveal.acknowledged · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:36:32 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revealId":"447df098-25bb-470b-8510-03ff0d5d69fd","revision":49,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:36:33 PM
+{"token":"8eb1cd59-27ff-4d63-a747-085d5d10b51c","action":{"type":"reveal.acknowledge"},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":50,"requestId":"50c49689-aaa2-4734-a05b-693b2e0bda11","signature":"78458527d3b0e9c0b7f9c0c77b6f1cb141c5ff2980b96c654f7ca769e4a9b7df","eventIndex":0}
+reveal.acknowledged · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:36:33 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revealId":"447df098-25bb-470b-8510-03ff0d5d69fd","revision":50,"eventIndex":1}
+reveal.closed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:36:33 PM
+{"revealId":"447df098-25bb-470b-8510-03ff0d5d69fd","revision":50,"eventIndex":2}
+cave.survived · actor system:timer
+10/11/2026, 7:37:03 PM
+{"risk":0,"roll":0.2620430001989007,"tick":1,"token":"46d161af-10b9-4571-9c80-acee5e9405c8","revision":51,"unbanked":"1000","eventIndex":0,"nextTickAt":1791718653363}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:37:17 PM
+{"token":"46d161af-10b9-4571-9c80-acee5e9405c8","action":{"type":"cave.decide","decision":"leave"},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":52,"requestId":"4c09b8ad-9239-4377-b6fe-71ca30ece04e","signature":"a7dac644640237a967d175a4f133306efde7b7832aebe9f9b419d52196a4a583","eventIndex":0}
+cave.decision · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:37:17 PM
+{"tick":1,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","decision":"leave","revision":52,"eventIndex":1}
+cave.earnings · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:37:17 PM
+{"tick":1,"amount":"1000","banked":"1000","teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","balance":"57940","revision":52,"eventIndex":2}
+cave.default_stay · Beta · actor system:timer
+10/11/2026, 7:37:33 PM
+{"tick":1,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":53,"eventIndex":0}
+cave.default_stay · Gamma · actor system:timer
+10/11/2026, 7:37:33 PM
+{"tick":1,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":53,"eventIndex":1}
+cave.default_stay · Delta · actor system:timer
+10/11/2026, 7:37:33 PM
+{"tick":1,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":53,"eventIndex":2}
+cave.default_stay · Epsilon · actor system:timer
+10/11/2026, 7:37:33 PM
+{"tick":1,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":53,"eventIndex":3}
+cave.collapsed · actor system:timer
+10/11/2026, 7:37:33 PM
+{"risk":100,"roll":0.3464339436031878,"tick":1,"departed":1,"revision":53,"eventIndex":4}
+cave.ended · actor system:timer
+10/11/2026, 7:37:33 PM
+{"tick":1,"banked":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"1000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"reason":"collapsed","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"1000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":53,"collapsed":true,"eventIndex":5}
+round.completed · actor system:timer
+10/11/2026, 7:37:33 PM
+{"game":"cave","tick":1,"round":1,"banked":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"1000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"reason":"collapsed","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"1000","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":53,"collapsed":true,"eventIndex":6}
+cave.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:37:42 PM
+{"round":2,"token":"4441d2e9-b06f-44c6-ae68-3e0c68061272","revision":54,"starting":"1000","eventIndex":0,"nextTickAt":1791718692330}
+cave.survived · actor system:timer
+10/11/2026, 7:38:12 PM
+{"risk":0,"roll":0.8148102175910026,"tick":1,"token":"6d8281c4-6898-4eea-8781-8ce8445e21a5","revision":55,"unbanked":"3000","eventIndex":0,"nextTickAt":1791718722478}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:38:27 PM
+{"token":"6d8281c4-6898-4eea-8781-8ce8445e21a5","action":{"type":"cave.decide","decision":"leave"},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":56,"requestId":"aabc6e99-d8cf-405a-a073-b2dc7a4d4c42","signature":"44013548d848d26e54f22483f795e71b12a61d7a05372c244518ff10d9fc8b55","eventIndex":0}
+cave.decision · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:38:27 PM
+{"tick":1,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","decision":"leave","revision":56,"eventIndex":1}
+cave.earnings · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:38:27 PM
+{"tick":1,"amount":"3000","banked":"3000","teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","balance":"116300","revision":56,"eventIndex":2}
+cave.default_stay · Alpha · actor system:timer
+10/11/2026, 7:38:42 PM
+{"tick":1,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":57,"eventIndex":0}
+cave.default_stay · Gamma · actor system:timer
+10/11/2026, 7:38:42 PM
+{"tick":1,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":57,"eventIndex":1}
+cave.default_stay · Delta · actor system:timer
+10/11/2026, 7:38:42 PM
+{"tick":1,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":57,"eventIndex":2}
+cave.default_stay · Epsilon · actor system:timer
+10/11/2026, 7:38:42 PM
+{"tick":1,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":57,"eventIndex":3}
+cave.collapsed · actor system:timer
+10/11/2026, 7:38:42 PM
+{"risk":100,"roll":0.262621232541278,"tick":1,"departed":1,"revision":57,"eventIndex":4}
+cave.ended · actor system:timer
+10/11/2026, 7:38:42 PM
+{"tick":1,"banked":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"3000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"reason":"collapsed","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"3000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":57,"collapsed":true,"eventIndex":5}
+round.completed · actor system:timer
+10/11/2026, 7:38:42 PM
+{"game":"cave","tick":1,"round":2,"banked":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"3000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"reason":"collapsed","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"3000","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":57,"collapsed":true,"eventIndex":6}
+cave.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:38:59 PM
+{"round":3,"token":"9080de50-f24e-4c81-a721-c8d82158ecad","revision":58,"starting":"2500","eventIndex":0,"nextTickAt":1791718769089}
+cave.survived · actor system:timer
+10/11/2026, 7:39:29 PM
+{"risk":0,"roll":0.7608323940075934,"tick":1,"token":"d91fa044-15ef-4a21-929b-064d512230cc","revision":59,"unbanked":"10000","eventIndex":0,"nextTickAt":1791718799094}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:39:40 PM
+{"token":"d91fa044-15ef-4a21-929b-064d512230cc","action":{"type":"cave.decide","decision":"leave"},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":60,"requestId":"bcc8f8bc-2609-4e7a-911d-2afe7ebfaf13","signature":"2c8ad39b2ff81296561208e79a079debc95e8fd6ff125172b0d6b0221cdccb53","eventIndex":0}
+cave.decision · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:39:40 PM
+{"tick":1,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","decision":"leave","revision":60,"eventIndex":1}
+cave.earnings · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:39:40 PM
+{"tick":1,"amount":"10000","banked":"10000","teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","balance":"22800","revision":60,"eventIndex":2}
+cave.default_stay · Alpha · actor system:timer
+10/11/2026, 7:39:59 PM
+{"tick":1,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":61,"eventIndex":0}
+cave.default_stay · Beta · actor system:timer
+10/11/2026, 7:39:59 PM
+{"tick":1,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":61,"eventIndex":1}
+cave.default_stay · Delta · actor system:timer
+10/11/2026, 7:39:59 PM
+{"tick":1,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":61,"eventIndex":2}
+cave.default_stay · Epsilon · actor system:timer
+10/11/2026, 7:39:59 PM
+{"tick":1,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":61,"eventIndex":3}
+cave.collapsed · actor system:timer
+10/11/2026, 7:39:59 PM
+{"risk":100,"roll":0.8259905241429806,"tick":1,"departed":1,"revision":61,"eventIndex":4}
+cave.ended · actor system:timer
+10/11/2026, 7:39:59 PM
+{"tick":1,"banked":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"10000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"reason":"collapsed","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"10000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":61,"collapsed":true,"eventIndex":5}
+stars.awarded · Gamma · actor system:timer
+10/11/2026, 7:39:59 PM
+{"game":"cave","count":3,"round":3,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":61,"eventIndex":6}
+round.completed · actor system:timer
+10/11/2026, 7:39:59 PM
+{"game":"cave","tick":1,"round":3,"banked":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"10000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"reason":"collapsed","payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"10000","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":61,"collapsed":true,"eventIndex":7}
+circle.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:40:27 PM
+{"next":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"2589f809-22cb-4f2c-b0df-543af99b38ee","2589f809-22cb-4f2c-b0df-543af99b38ee":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"d0ff7ee9-c93f-43d5-9762-543810aabbab","d0ff7ee9-c93f-43d5-9762-543810aabbab":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d"},"round":1,"token":"e9308683-5433-469a-a9b0-9aab847e8a48","sender":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","2589f809-22cb-4f2c-b0df-543af99b38ee":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"d0ff7ee9-c93f-43d5-9762-543810aabbab","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"2589f809-22cb-4f2c-b0df-543af99b38ee","d0ff7ee9-c93f-43d5-9762-543810aabbab":"bbb07f24-a3db-4383-b1f2-0185bb9708bf"},"circles":[["bbb07f24-a3db-4383-b1f2-0185bb9708bf","d0ff7ee9-c93f-43d5-9762-543810aabbab","448a5dd9-b5a8-4cb7-bfe4-c852d724376d","1ccb5798-ee77-4b38-bd63-e60fe2ebf367","2589f809-22cb-4f2c-b0df-543af99b38ee"]],"revision":62,"eventIndex":0}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:40:40 PM
+{"token":"e9308683-5433-469a-a9b0-9aab847e8a48","action":{"type":"circle.send","money":"1","stars":1},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":63,"requestId":"fffac3f4-28bf-4dcc-b153-fce28d675834","signature":"c6cc0995a81631930686878b6b1dc343bac176484697d14a5fa09754ca63bd87","eventIndex":0}
+circle.transfer_submitted · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:40:40 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":63,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:40:40 PM
+{"token":"e9308683-5433-469a-a9b0-9aab847e8a48","action":{"type":"circle.send","money":"1","stars":2},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":64,"requestId":"85c627fa-a244-40a4-bc65-48070af322e1","signature":"deb07bbe29f3703586fe94ae159f769ca90fc2799850d74c4b0cafeb58f48ea1","eventIndex":0}
+circle.transfer_submitted · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:40:40 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":64,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:40:40 PM
+{"token":"e9308683-5433-469a-a9b0-9aab847e8a48","action":{"type":"circle.send","money":"1","stars":3},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":65,"requestId":"a9c2642e-243d-4de2-9506-180939b2e048","signature":"971f2efa73f0b46a5f262e697872ff37cf8a76fe383db39c2898551981a79eb8","eventIndex":0}
+circle.transfer_submitted · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:40:40 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":65,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:40:41 PM
+{"token":"e9308683-5433-469a-a9b0-9aab847e8a48","action":{"type":"circle.send","money":"1","stars":0},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":66,"requestId":"008cb701-6666-4354-8f39-20f0dc11edb8","signature":"4ff39a3c51219ebee288822695fdbf5eccc155fdb5d8539076104c982fec20f1","eventIndex":0}
+circle.transfer_submitted · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:40:41 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":66,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:41 PM
+{"token":"e9308683-5433-469a-a9b0-9aab847e8a48","action":{"type":"circle.send","money":"1","stars":0},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":67,"requestId":"9071880f-8830-406c-ad88-f2626d1568d6","signature":"4ff39a3c51219ebee288822695fdbf5eccc155fdb5d8539076104c982fec20f1","eventIndex":0}
+circle.transfer_submitted · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:41 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":67,"eventIndex":1}
+circle.transfer_received · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:41 PM
+{"money":"3.00","stars":3,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":67,"senderId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","eventIndex":2}
+circle.transfer_received · Alpha · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:41 PM
+{"money":"3.00","stars":6,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":67,"senderId":"2589f809-22cb-4f2c-b0df-543af99b38ee","eventIndex":3}
+circle.transfer_received · Delta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:41 PM
+{"money":"3.00","stars":9,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":67,"senderId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","eventIndex":4}
+circle.transfer_received · Beta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:41 PM
+{"money":"3.00","stars":0,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":67,"senderId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","eventIndex":5}
+circle.transfer_received · Gamma · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:41 PM
+{"money":"3.00","stars":0,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":67,"senderId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","eventIndex":6}
+circle.returns_opened · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:41 PM
+{"token":"cf892178-e648-47e9-ad11-7f2556d95dca","revision":67,"eventIndex":7}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:40:51 PM
+{"token":"cf892178-e648-47e9-ad11-7f2556d95dca","action":{"type":"circle.return","money":"2","stars":1},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":68,"requestId":"077ad904-7bac-4230-9353-740232875c8e","signature":"5901da2079cbf11d3f64a09ec7dd18c624228d78bdf418710a21c4905d14b878","eventIndex":0}
+circle.return_submitted · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:40:51 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":68,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:40:51 PM
+{"token":"cf892178-e648-47e9-ad11-7f2556d95dca","action":{"type":"circle.return","money":"2","stars":0},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":69,"requestId":"39cb040d-a872-44af-b686-b038e7542ef4","signature":"ea326cc1f1e68578e61533ed7b9c4cf1a398c7a13f823127000a1f41d3608027","eventIndex":0}
+circle.return_submitted · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:40:51 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":69,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:40:51 PM
+{"token":"cf892178-e648-47e9-ad11-7f2556d95dca","action":{"type":"circle.return","money":"2","stars":0},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":70,"requestId":"71d1c1a7-677b-4f94-9933-1a20058b144c","signature":"ea326cc1f1e68578e61533ed7b9c4cf1a398c7a13f823127000a1f41d3608027","eventIndex":0}
+circle.return_submitted · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:40:51 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":70,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:40:52 PM
+{"token":"cf892178-e648-47e9-ad11-7f2556d95dca","action":{"type":"circle.return","money":"2","stars":1},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":71,"requestId":"fab131d3-e1fe-4121-a9c2-70afb3887080","signature":"5901da2079cbf11d3f64a09ec7dd18c624228d78bdf418710a21c4905d14b878","eventIndex":0}
+circle.return_submitted · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:40:52 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":71,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:52 PM
+{"token":"cf892178-e648-47e9-ad11-7f2556d95dca","action":{"type":"circle.return","money":"2","stars":1},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":72,"requestId":"e76c2abd-dff5-44cb-8338-094e45f2ef1c","signature":"5901da2079cbf11d3f64a09ec7dd18c624228d78bdf418710a21c4905d14b878","eventIndex":0}
+circle.return_submitted · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:52 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":72,"eventIndex":1}
+circle.return_received · Beta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:52 PM
+{"money":"2.00","stars":1,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":72,"eventIndex":2,"fromTeamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf"}
+circle.return_received · Delta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:52 PM
+{"money":"2.00","stars":0,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":72,"eventIndex":3,"fromTeamId":"2589f809-22cb-4f2c-b0df-543af99b38ee"}
+circle.return_received · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:52 PM
+{"money":"2.00","stars":0,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":72,"eventIndex":4,"fromTeamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d"}
+circle.return_received · Gamma · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:52 PM
+{"money":"2.00","stars":1,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":72,"eventIndex":5,"fromTeamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367"}
+circle.return_received · Alpha · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:52 PM
+{"money":"2.00","stars":1,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":72,"eventIndex":6,"fromTeamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab"}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:40:52 PM
+{"game":"circle","round":1,"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"200","2589f809-22cb-4f2c-b0df-543af99b38ee":"200","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"200","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"200","d0ff7ee9-c93f-43d5-9762-543810aabbab":"200"},"netStars":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":8,"2589f809-22cb-4f2c-b0df-543af99b38ee":-1,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":-2,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":5,"d0ff7ee9-c93f-43d5-9762-543810aabbab":2},"revision":72,"transfers":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":{"sent":{"money":"1.00","stars":0},"received":{"money":"3.00","stars":9},"returned":{"money":"2.00","stars":1},"returnedToTeam":{"money":"2.00","stars":0}},"2589f809-22cb-4f2c-b0df-543af99b38ee":{"sent":{"money":"1.00","stars":2},"received":{"money":"3.00","stars":0},"returned":{"money":"2.00","stars":0},"returnedToTeam":{"money":"2.00","stars":1}},"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":{"sent":{"money":"1.00","stars":3},"received":{"money":"3.00","stars":0},"returned":{"money":"2.00","stars":0},"returnedToTeam":{"money":"2.00","stars":1}},"bbb07f24-a3db-4383-b1f2-0185bb9708bf":{"sent":{"money":"1.00","stars":1},"received":{"money":"3.00","stars":6},"returned":{"money":"2.00","stars":1},"returnedToTeam":{"money":"2.00","stars":1}},"d0ff7ee9-c93f-43d5-9762-543810aabbab":{"sent":{"money":"1.00","stars":0},"received":{"money":"3.00","stars":3},"returned":{"money":"2.00","stars":1},"returnedToTeam":{"money":"2.00","stars":0}}},"eventIndex":7}
+circle.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:40:55 PM
+{"next":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"d0ff7ee9-c93f-43d5-9762-543810aabbab","2589f809-22cb-4f2c-b0df-543af99b38ee":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","d0ff7ee9-c93f-43d5-9762-543810aabbab":"2589f809-22cb-4f2c-b0df-543af99b38ee"},"round":2,"token":"828dbddf-273f-46a5-a5fd-2aa3be73fa1f","sender":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","2589f809-22cb-4f2c-b0df-543af99b38ee":"d0ff7ee9-c93f-43d5-9762-543810aabbab","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"2589f809-22cb-4f2c-b0df-543af99b38ee","d0ff7ee9-c93f-43d5-9762-543810aabbab":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367"},"circles":[["448a5dd9-b5a8-4cb7-bfe4-c852d724376d","1ccb5798-ee77-4b38-bd63-e60fe2ebf367","d0ff7ee9-c93f-43d5-9762-543810aabbab","2589f809-22cb-4f2c-b0df-543af99b38ee","bbb07f24-a3db-4383-b1f2-0185bb9708bf"]],"revision":73,"eventIndex":0}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:41:02 PM
+{"token":"828dbddf-273f-46a5-a5fd-2aa3be73fa1f","action":{"type":"circle.send","money":"1","stars":0},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":74,"requestId":"43f50b68-024f-4f8a-b1bf-c586668de96c","signature":"66c766fdf9aa29f5a02b331b63c62a5fad3b49f356d461c951dc429fdee9a5c7","eventIndex":0}
+circle.transfer_submitted · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:41:02 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":74,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:41:02 PM
+{"token":"828dbddf-273f-46a5-a5fd-2aa3be73fa1f","action":{"type":"circle.send","money":"1","stars":0},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":75,"requestId":"9225f41b-bec2-425a-b2d3-576c1b9dcae0","signature":"66c766fdf9aa29f5a02b331b63c62a5fad3b49f356d461c951dc429fdee9a5c7","eventIndex":0}
+circle.transfer_submitted · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:41:02 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":75,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:41:02 PM
+{"token":"828dbddf-273f-46a5-a5fd-2aa3be73fa1f","action":{"type":"circle.send","money":"1","stars":0},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":76,"requestId":"5840941b-e79e-4fe3-8e00-f6bb257f70d5","signature":"66c766fdf9aa29f5a02b331b63c62a5fad3b49f356d461c951dc429fdee9a5c7","eventIndex":0}
+circle.transfer_submitted · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:41:02 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":76,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:41:03 PM
+{"token":"828dbddf-273f-46a5-a5fd-2aa3be73fa1f","action":{"type":"circle.send","money":"1","stars":0},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":77,"requestId":"ce71358f-3887-4f24-bc33-7fa15e6944f8","signature":"66c766fdf9aa29f5a02b331b63c62a5fad3b49f356d461c951dc429fdee9a5c7","eventIndex":0}
+circle.transfer_submitted · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:41:03 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":77,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:03 PM
+{"token":"828dbddf-273f-46a5-a5fd-2aa3be73fa1f","action":{"type":"circle.send","money":"1","stars":0},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":78,"requestId":"291d12a2-3c3c-43fe-b00b-824bad981baa","signature":"66c766fdf9aa29f5a02b331b63c62a5fad3b49f356d461c951dc429fdee9a5c7","eventIndex":0}
+circle.transfer_submitted · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:03 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":78,"eventIndex":1}
+circle.transfer_received · Gamma · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:03 PM
+{"money":"5.00","stars":0,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":78,"senderId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","eventIndex":2}
+circle.transfer_received · Alpha · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:03 PM
+{"money":"5.00","stars":0,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":78,"senderId":"2589f809-22cb-4f2c-b0df-543af99b38ee","eventIndex":3}
+circle.transfer_received · Delta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:03 PM
+{"money":"5.00","stars":0,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":78,"senderId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","eventIndex":4}
+circle.transfer_received · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:03 PM
+{"money":"5.00","stars":0,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":78,"senderId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","eventIndex":5}
+circle.transfer_received · Beta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:03 PM
+{"money":"5.00","stars":0,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":78,"senderId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","eventIndex":6}
+circle.returns_opened · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:03 PM
+{"token":"3f40c0f2-02ef-4a11-ac1f-abda247744b0","revision":78,"eventIndex":7}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:41:08 PM
+{"token":"3f40c0f2-02ef-4a11-ac1f-abda247744b0","action":{"type":"circle.return","money":"10","stars":0},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":79,"requestId":"f10e8ff7-bb03-4bd5-b296-bcfd1533896b","signature":"d55a782c902d2ea813b812d1550db30c0709c9b45477678b70fd07690078785a","eventIndex":0}
+circle.return_submitted · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:41:08 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":79,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:41:08 PM
+{"token":"3f40c0f2-02ef-4a11-ac1f-abda247744b0","action":{"type":"circle.return","money":"10","stars":0},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":80,"requestId":"7807fe1c-1b41-4a4f-99db-418c910f8ac2","signature":"d55a782c902d2ea813b812d1550db30c0709c9b45477678b70fd07690078785a","eventIndex":0}
+circle.return_submitted · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:41:08 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":80,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:41:09 PM
+{"token":"3f40c0f2-02ef-4a11-ac1f-abda247744b0","action":{"type":"circle.return","money":"10","stars":0},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":81,"requestId":"9da1360a-c3f4-44f6-a7d3-5df94e35ad9b","signature":"d55a782c902d2ea813b812d1550db30c0709c9b45477678b70fd07690078785a","eventIndex":0}
+circle.return_submitted · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:41:09 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":81,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:41:09 PM
+{"token":"3f40c0f2-02ef-4a11-ac1f-abda247744b0","action":{"type":"circle.return","money":"10","stars":0},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":82,"requestId":"b6e43165-26f8-4ad9-912f-52801436e24c","signature":"d55a782c902d2ea813b812d1550db30c0709c9b45477678b70fd07690078785a","eventIndex":0}
+circle.return_submitted · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:41:09 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":82,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:09 PM
+{"token":"3f40c0f2-02ef-4a11-ac1f-abda247744b0","action":{"type":"circle.return","money":"10","stars":0},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":83,"requestId":"ab359629-00c8-419e-aee8-407b6d72124b","signature":"d55a782c902d2ea813b812d1550db30c0709c9b45477678b70fd07690078785a","eventIndex":0}
+circle.return_submitted · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:09 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":83,"eventIndex":1}
+circle.return_received · Beta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:09 PM
+{"money":"10.00","stars":0,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":83,"eventIndex":2,"fromTeamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf"}
+circle.return_received · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:09 PM
+{"money":"10.00","stars":0,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":83,"eventIndex":3,"fromTeamId":"2589f809-22cb-4f2c-b0df-543af99b38ee"}
+circle.return_received · Alpha · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:09 PM
+{"money":"10.00","stars":0,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":83,"eventIndex":4,"fromTeamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d"}
+circle.return_received · Gamma · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:09 PM
+{"money":"10.00","stars":0,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":83,"eventIndex":5,"fromTeamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367"}
+circle.return_received · Delta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:09 PM
+{"money":"10.00","stars":0,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":83,"eventIndex":6,"fromTeamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab"}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:09 PM
+{"game":"circle","round":2,"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"400","2589f809-22cb-4f2c-b0df-543af99b38ee":"400","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"400","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"400","d0ff7ee9-c93f-43d5-9762-543810aabbab":"400"},"netStars":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0},"revision":83,"transfers":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":{"sent":{"money":"1.00","stars":0},"received":{"money":"5.00","stars":0},"returned":{"money":"10.00","stars":0},"returnedToTeam":{"money":"10.00","stars":0}},"2589f809-22cb-4f2c-b0df-543af99b38ee":{"sent":{"money":"1.00","stars":0},"received":{"money":"5.00","stars":0},"returned":{"money":"10.00","stars":0},"returnedToTeam":{"money":"10.00","stars":0}},"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":{"sent":{"money":"1.00","stars":0},"received":{"money":"5.00","stars":0},"returned":{"money":"10.00","stars":0},"returnedToTeam":{"money":"10.00","stars":0}},"bbb07f24-a3db-4383-b1f2-0185bb9708bf":{"sent":{"money":"1.00","stars":0},"received":{"money":"5.00","stars":0},"returned":{"money":"10.00","stars":0},"returnedToTeam":{"money":"10.00","stars":0}},"d0ff7ee9-c93f-43d5-9762-543810aabbab":{"sent":{"money":"1.00","stars":0},"received":{"money":"5.00","stars":0},"returned":{"money":"10.00","stars":0},"returnedToTeam":{"money":"10.00","stars":0}}},"eventIndex":7}
+circle.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:41:15 PM
+{"next":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"2589f809-22cb-4f2c-b0df-543af99b38ee","2589f809-22cb-4f2c-b0df-543af99b38ee":"d0ff7ee9-c93f-43d5-9762-543810aabbab","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","d0ff7ee9-c93f-43d5-9762-543810aabbab":"bbb07f24-a3db-4383-b1f2-0185bb9708bf"},"round":3,"token":"d8e6cba1-f8f4-4612-bf8f-6c8e02b016d2","sender":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","2589f809-22cb-4f2c-b0df-543af99b38ee":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"d0ff7ee9-c93f-43d5-9762-543810aabbab","d0ff7ee9-c93f-43d5-9762-543810aabbab":"2589f809-22cb-4f2c-b0df-543af99b38ee"},"circles":[["bbb07f24-a3db-4383-b1f2-0185bb9708bf","448a5dd9-b5a8-4cb7-bfe4-c852d724376d","1ccb5798-ee77-4b38-bd63-e60fe2ebf367","2589f809-22cb-4f2c-b0df-543af99b38ee","d0ff7ee9-c93f-43d5-9762-543810aabbab"]],"revision":84,"eventIndex":0}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:41:19 PM
+{"token":"d8e6cba1-f8f4-4612-bf8f-6c8e02b016d2","action":{"type":"circle.send","money":"1","stars":0},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":85,"requestId":"510c26fd-8c11-4b77-81ee-2e0651f11dea","signature":"21ee260b5626aa1b810ff68fd4f2faebd4b4bab74ca947855c3cebaceb825ab7","eventIndex":0}
+circle.transfer_submitted · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:41:19 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":85,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:41:20 PM
+{"token":"d8e6cba1-f8f4-4612-bf8f-6c8e02b016d2","action":{"type":"circle.send","money":"1","stars":0},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":86,"requestId":"ca81a97f-784a-4b33-83fe-80a7344175c0","signature":"21ee260b5626aa1b810ff68fd4f2faebd4b4bab74ca947855c3cebaceb825ab7","eventIndex":0}
+circle.transfer_submitted · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:41:20 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":86,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:41:20 PM
+{"token":"d8e6cba1-f8f4-4612-bf8f-6c8e02b016d2","action":{"type":"circle.send","money":"1","stars":0},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":87,"requestId":"e19ff988-a07e-4070-b2b8-765caabcaa52","signature":"21ee260b5626aa1b810ff68fd4f2faebd4b4bab74ca947855c3cebaceb825ab7","eventIndex":0}
+circle.transfer_submitted · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:41:20 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":87,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:41:20 PM
+{"token":"d8e6cba1-f8f4-4612-bf8f-6c8e02b016d2","action":{"type":"circle.send","money":"1","stars":0},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":88,"requestId":"7d21fcea-39e9-4239-9757-3f69639804da","signature":"21ee260b5626aa1b810ff68fd4f2faebd4b4bab74ca947855c3cebaceb825ab7","eventIndex":0}
+circle.transfer_submitted · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:41:20 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":88,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:21 PM
+{"token":"d8e6cba1-f8f4-4612-bf8f-6c8e02b016d2","action":{"type":"circle.send","money":"1","stars":0},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":89,"requestId":"a617406a-0126-4940-ab85-4fe68765f6b7","signature":"21ee260b5626aa1b810ff68fd4f2faebd4b4bab74ca947855c3cebaceb825ab7","eventIndex":0}
+circle.transfer_submitted · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:21 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":89,"eventIndex":1}
+circle.transfer_received · Gamma · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:21 PM
+{"money":"10.00","stars":0,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":89,"senderId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","eventIndex":2}
+circle.transfer_received · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:21 PM
+{"money":"10.00","stars":0,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":89,"senderId":"2589f809-22cb-4f2c-b0df-543af99b38ee","eventIndex":3}
+circle.transfer_received · Delta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:21 PM
+{"money":"10.00","stars":0,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":89,"senderId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","eventIndex":4}
+circle.transfer_received · Beta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:21 PM
+{"money":"10.00","stars":0,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":89,"senderId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","eventIndex":5}
+circle.transfer_received · Alpha · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:21 PM
+{"money":"10.00","stars":0,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":89,"senderId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","eventIndex":6}
+circle.returns_opened · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:21 PM
+{"token":"0612bc5e-428f-4fad-93c7-7aff060db145","revision":89,"eventIndex":7}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:41:26 PM
+{"token":"0612bc5e-428f-4fad-93c7-7aff060db145","action":{"type":"circle.return","money":"0","stars":0},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":90,"requestId":"fc68e230-ddd6-4e09-a14a-6f266c0c353a","signature":"e643de137a64535284353c81d500b9462b12f552cc7ffa58e6552f16381c6ece","eventIndex":0}
+circle.return_submitted · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:41:26 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":90,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:41:26 PM
+{"token":"0612bc5e-428f-4fad-93c7-7aff060db145","action":{"type":"circle.return","money":"0","stars":0},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":91,"requestId":"a22f3303-2247-4aeb-ac33-2c37abb0a064","signature":"e643de137a64535284353c81d500b9462b12f552cc7ffa58e6552f16381c6ece","eventIndex":0}
+circle.return_submitted · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:41:26 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":91,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:41:26 PM
+{"token":"0612bc5e-428f-4fad-93c7-7aff060db145","action":{"type":"circle.return","money":"0","stars":0},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":92,"requestId":"9eca5b43-6608-4816-82c1-1290f230b830","signature":"e643de137a64535284353c81d500b9462b12f552cc7ffa58e6552f16381c6ece","eventIndex":0}
+circle.return_submitted · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:41:26 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":92,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:41:26 PM
+{"token":"0612bc5e-428f-4fad-93c7-7aff060db145","action":{"type":"circle.return","money":"0","stars":0},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":93,"requestId":"e8a322b5-7619-4aa8-bc88-d013f1302541","signature":"e643de137a64535284353c81d500b9462b12f552cc7ffa58e6552f16381c6ece","eventIndex":0}
+circle.return_submitted · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:41:26 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":93,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:27 PM
+{"token":"0612bc5e-428f-4fad-93c7-7aff060db145","action":{"type":"circle.return","money":"0","stars":0},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":94,"requestId":"fd003d5c-a906-445a-8b49-355f5fff8946","signature":"e643de137a64535284353c81d500b9462b12f552cc7ffa58e6552f16381c6ece","eventIndex":0}
+circle.return_submitted · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:27 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":94,"eventIndex":1}
+circle.return_received · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:27 PM
+{"money":"0.00","stars":0,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":94,"eventIndex":2,"fromTeamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf"}
+circle.return_received · Delta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:27 PM
+{"money":"0.00","stars":0,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":94,"eventIndex":3,"fromTeamId":"2589f809-22cb-4f2c-b0df-543af99b38ee"}
+circle.return_received · Alpha · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:27 PM
+{"money":"0.00","stars":0,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":94,"eventIndex":4,"fromTeamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d"}
+circle.return_received · Gamma · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:27 PM
+{"money":"0.00","stars":0,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":94,"eventIndex":5,"fromTeamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367"}
+circle.return_received · Beta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:27 PM
+{"money":"0.00","stars":0,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":94,"eventIndex":6,"fromTeamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab"}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:27 PM
+{"game":"circle","round":3,"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"900","2589f809-22cb-4f2c-b0df-543af99b38ee":"900","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"900","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"900","d0ff7ee9-c93f-43d5-9762-543810aabbab":"900"},"netStars":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0},"revision":94,"transfers":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":{"sent":{"money":"1.00","stars":0},"received":{"money":"10.00","stars":0},"returned":{"money":"0.00","stars":0},"returnedToTeam":{"money":"0.00","stars":0}},"2589f809-22cb-4f2c-b0df-543af99b38ee":{"sent":{"money":"1.00","stars":0},"received":{"money":"10.00","stars":0},"returned":{"money":"0.00","stars":0},"returnedToTeam":{"money":"0.00","stars":0}},"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":{"sent":{"money":"1.00","stars":0},"received":{"money":"10.00","stars":0},"returned":{"money":"0.00","stars":0},"returnedToTeam":{"money":"0.00","stars":0}},"bbb07f24-a3db-4383-b1f2-0185bb9708bf":{"sent":{"money":"1.00","stars":0},"received":{"money":"10.00","stars":0},"returned":{"money":"0.00","stars":0},"returnedToTeam":{"money":"0.00","stars":0}},"d0ff7ee9-c93f-43d5-9762-543810aabbab":{"sent":{"money":"1.00","stars":0},"received":{"money":"10.00","stars":0},"returned":{"money":"0.00","stars":0},"returnedToTeam":{"money":"0.00","stars":0}}},"eventIndex":7}
+bomb.advantage_revealed · Delta · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:41:35 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":95,"eventIndex":0,"maxChitsPerPile":60}
+bomb.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:41:35 PM
+{"round":1,"token":"77b97992-caf5-4dd5-b5da-ba1aded114f3","revision":95,"eventIndex":1}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:41:54 PM
+{"token":"77b97992-caf5-4dd5-b5da-ba1aded114f3","action":{"up":20,"down":0,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":20,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0}},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":96,"requestId":"1c12481e-bec4-4414-97de-69aade7cd31d","signature":"e8664ab78d7ca29f5299e065928defe733a1ee13730da70aefb8e2e95219a8ac","eventIndex":0}
+bomb.allocation_submitted · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:41:54 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":96,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:41:55 PM
+{"token":"77b97992-caf5-4dd5-b5da-ba1aded114f3","action":{"up":20,"down":0,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":20,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0}},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":97,"requestId":"eeb40ddc-89cf-49a3-b37a-178352feb464","signature":"e8664ab78d7ca29f5299e065928defe733a1ee13730da70aefb8e2e95219a8ac","eventIndex":0}
+bomb.allocation_submitted · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:41:55 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":97,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:41:55 PM
+{"token":"77b97992-caf5-4dd5-b5da-ba1aded114f3","action":{"up":20,"down":0,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":20,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0}},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":98,"requestId":"4d81dca2-8192-4418-be4e-4831e4c26ff4","signature":"e8664ab78d7ca29f5299e065928defe733a1ee13730da70aefb8e2e95219a8ac","eventIndex":0}
+bomb.allocation_submitted · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:41:55 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":98,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:41:55 PM
+{"token":"77b97992-caf5-4dd5-b5da-ba1aded114f3","action":{"up":60,"down":0,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":60,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0}},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":99,"requestId":"e3dc1d26-81cc-41a3-9f96-9892b5e9754e","signature":"9ab7a312a67d07bd3d8ae43a33860b38485d4e120eb5cf843c338e34f6f4b0af","eventIndex":0}
+bomb.allocation_submitted · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:41:55 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":99,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:56 PM
+{"token":"77b97992-caf5-4dd5-b5da-ba1aded114f3","action":{"up":20,"down":0,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":20,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0}},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":100,"requestId":"a619af01-0f8b-4e99-a290-3762c75afb8c","signature":"e8664ab78d7ca29f5299e065928defe733a1ee13730da70aefb8e2e95219a8ac","eventIndex":0}
+bomb.allocation_submitted · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:56 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":100,"eventIndex":1}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:56 PM
+{"game":"bomb","round":1,"outcome":{"after":"1188.80","delta":"594.40","before":"594.40","factor":2,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","direction":"up"},"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"59440","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":100,"eventIndex":2}
+bomb.resolved · Alpha · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:41:56 PM
+{"after":"1188.80","delta":"594.40","before":"594.40","factor":2,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":100,"direction":"up","eventIndex":3}
+bomb.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:42:07 PM
+{"round":2,"token":"83309395-baae-4356-aa7f-7aeaba707e1d","revision":101,"eventIndex":0}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:42:25 PM
+{"token":"83309395-baae-4356-aa7f-7aeaba707e1d","action":{"up":0,"down":20,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":20,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0}},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":102,"requestId":"dfadd05a-f20f-420e-b414-f25b36dbde68","signature":"2eedd6ec60c130063900d07da619be1b710db43c38528943e6a110b633b6e726","eventIndex":0}
+bomb.allocation_submitted · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:42:25 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":102,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:42:25 PM
+{"token":"83309395-baae-4356-aa7f-7aeaba707e1d","action":{"up":0,"down":20,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":20,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0}},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":103,"requestId":"6f9824da-acad-483b-b167-5b40123ecf30","signature":"2eedd6ec60c130063900d07da619be1b710db43c38528943e6a110b633b6e726","eventIndex":0}
+bomb.allocation_submitted · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:42:25 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":103,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:42:25 PM
+{"token":"83309395-baae-4356-aa7f-7aeaba707e1d","action":{"up":0,"down":20,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":20,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0}},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":104,"requestId":"4ea182b1-c95e-48d8-853e-d8eaf52d11c4","signature":"2eedd6ec60c130063900d07da619be1b710db43c38528943e6a110b633b6e726","eventIndex":0}
+bomb.allocation_submitted · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:42:25 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":104,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:42:25 PM
+{"token":"83309395-baae-4356-aa7f-7aeaba707e1d","action":{"up":0,"down":60,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":60,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0}},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":105,"requestId":"e3b54f21-a6af-405e-a333-004a0b290487","signature":"5ee8ec5e505d6521485f328663d4a35d4ee6a4427b09de293c3bee9310df082c","eventIndex":0}
+bomb.allocation_submitted · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:42:25 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":105,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:42:26 PM
+{"token":"83309395-baae-4356-aa7f-7aeaba707e1d","action":{"up":0,"down":20,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":20,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":0}},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":106,"requestId":"28c0c67c-f4cb-4bed-8918-76ebdaa8164a","signature":"2eedd6ec60c130063900d07da619be1b710db43c38528943e6a110b633b6e726","eventIndex":0}
+bomb.allocation_submitted · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:42:26 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":106,"eventIndex":1}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:42:26 PM
+{"game":"bomb","round":2,"outcome":{"after":"235.60","delta":"-942.40","before":"1178.00","factor":5,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","direction":"down"},"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"-94240","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"0"},"revision":106,"eventIndex":2}
+bomb.resolved · Beta · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:42:26 PM
+{"after":"235.60","delta":"-942.40","before":"1178.00","factor":5,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":106,"direction":"down","eventIndex":3}
+bomb.started · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:42:31 PM
+{"round":3,"token":"a13057c9-0a5b-44fb-941d-45882efb4760","revision":107,"eventIndex":0}
+player.command · Alpha · e2e-20261011-a1@example.test · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:42:35 PM
+{"token":"a13057c9-0a5b-44fb-941d-45882efb4760","action":{"up":20,"down":0,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":20}},"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","playerId":"991889d9-cf73-41a3-8f3c-19939ff4a0e6","revision":108,"requestId":"1ed1a863-456c-4a8e-acc9-f4e55350514f","signature":"7b363df2edeb0d08046bfa4dc75479fcda245af8dee3d5fc5f5ac7e970613721","eventIndex":0}
+bomb.allocation_submitted · Alpha · actor 2fdd01b0-2e1b-453c-9abe-2f25a98e851d
+10/11/2026, 7:42:35 PM
+{"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf","revision":108,"eventIndex":1}
+player.command · Beta · e2e-20261011-b1@example.test · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:42:35 PM
+{"token":"a13057c9-0a5b-44fb-941d-45882efb4760","action":{"up":20,"down":0,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":20}},"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","playerId":"c3d0a58f-00f3-4a31-9d3c-7398f6db157d","revision":109,"requestId":"f9445025-2654-445f-acfd-1e71918046a5","signature":"7b363df2edeb0d08046bfa4dc75479fcda245af8dee3d5fc5f5ac7e970613721","eventIndex":0}
+bomb.allocation_submitted · Beta · actor 27446c58-0162-4c5c-933b-5644cd66fcab
+10/11/2026, 7:42:35 PM
+{"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee","revision":109,"eventIndex":1}
+player.command · Gamma · e2e-20261011-c1@example.test · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:42:36 PM
+{"token":"a13057c9-0a5b-44fb-941d-45882efb4760","action":{"up":20,"down":0,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":20}},"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","playerId":"88540f1c-7631-47a0-833e-67cab1bcbebc","revision":110,"requestId":"b45cb3ff-f6f0-499f-aa88-33687fc32d4b","signature":"7b363df2edeb0d08046bfa4dc75479fcda245af8dee3d5fc5f5ac7e970613721","eventIndex":0}
+bomb.allocation_submitted · Gamma · actor 9e3b59e4-30a4-4244-af9c-adbae478e0b1
+10/11/2026, 7:42:36 PM
+{"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d","revision":110,"eventIndex":1}
+player.command · Delta · e2e-20261011-d1@example.test · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:42:36 PM
+{"token":"a13057c9-0a5b-44fb-941d-45882efb4760","action":{"up":60,"down":0,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":60}},"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","playerId":"ede38c0a-a507-4170-9e2d-ac7eb4a10c3b","revision":111,"requestId":"c34ac067-1a19-4e0c-8fed-449d7547ba5f","signature":"62ba7b3a76f1c66e07ccb0e159bbe1296ab092a5f43ee7e7b94b827faf884e13","eventIndex":0}
+bomb.allocation_submitted · Delta · actor 0b56504b-5e30-4f9a-9c72-054d97c8cf09
+10/11/2026, 7:42:36 PM
+{"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367","revision":111,"eventIndex":1}
+player.command · Epsilon · e2e-20261011-e1@example.test · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:42:36 PM
+{"token":"a13057c9-0a5b-44fb-941d-45882efb4760","action":{"up":20,"down":0,"type":"bomb.allocate","recipients":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":0,"2589f809-22cb-4f2c-b0df-543af99b38ee":0,"448a5dd9-b5a8-4cb7-bfe4-c852d724376d":0,"bbb07f24-a3db-4383-b1f2-0185bb9708bf":0,"d0ff7ee9-c93f-43d5-9762-543810aabbab":20}},"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","playerId":"93ee44d1-40f2-42e4-b52a-7cc59dab79d0","revision":112,"requestId":"e9108448-f09a-4a09-b0bb-d81baf4d9468","signature":"7b363df2edeb0d08046bfa4dc75479fcda245af8dee3d5fc5f5ac7e970613721","eventIndex":0}
+bomb.allocation_submitted · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:42:36 PM
+{"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":112,"eventIndex":1}
+round.completed · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:42:36 PM
+{"game":"bomb","round":3,"outcome":{"after":"250.00","delta":"225.00","before":"25.00","factor":10,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","direction":"up"},"payouts":{"1ccb5798-ee77-4b38-bd63-e60fe2ebf367":"0","2589f809-22cb-4f2c-b0df-543af99b38ee":"0","448a5dd9-b5a8-4cb7-bfe4-c852d724376d":"0","bbb07f24-a3db-4383-b1f2-0185bb9708bf":"0","d0ff7ee9-c93f-43d5-9762-543810aabbab":"22500"},"revision":112,"eventIndex":2}
+bomb.resolved · Epsilon · actor a42da6a0-ebd5-4516-b07d-06ab8e3536dd
+10/11/2026, 7:42:36 PM
+{"after":"250.00","delta":"225.00","before":"25.00","factor":10,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab","revision":112,"direction":"up","eventIndex":3}
+playthrough.finished · actor 906d0180-4b08-40d5-b523-03fda039cac6
+10/11/2026, 7:42:40 PM
+{"rankings":[{"rank":1,"teamId":"bbb07f24-a3db-4383-b1f2-0185bb9708bf"},{"rank":2,"teamId":"d0ff7ee9-c93f-43d5-9762-543810aabbab"},{"rank":3,"teamId":"448a5dd9-b5a8-4cb7-bfe4-c852d724376d"},{"rank":4,"teamId":"2589f809-22cb-4f2c-b0df-543af99b38ee"},{"rank":5,"teamId":"1ccb5798-ee77-4b38-bd63-e60fe2ebf367"}],"revision":113,"eventIndex":0}

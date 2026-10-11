@@ -1,0 +1,1200 @@
+[
+  {
+    "check": "bonusR1",
+    "state": {
+      "game": "bonus",
+      "round": 1,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "6000",
+          "stars": 0
+        },
+        {
+          "name": "Beta",
+          "balance": "12000",
+          "stars": 0
+        },
+        {
+          "name": "Gamma",
+          "balance": "18000",
+          "stars": 0
+        },
+        {
+          "name": "Delta",
+          "balance": "0",
+          "stars": 0
+        },
+        {
+          "name": "Epsilon",
+          "balance": "0",
+          "stars": 0
+        }
+      ],
+      "current": {
+        "game": "bonus",
+        "phase": "complete",
+        "token": "2647637a-33b0-4d2b-8730-49436017e617",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "2000",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "3000",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "1000",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+        }
+      }
+    }
+  },
+  {
+    "check": "reveal1",
+    "balances": [
+      "5000",
+      "12000",
+      "11800",
+      "0",
+      "0"
+    ]
+  },
+  {
+    "check": "bonusR2",
+    "state": {
+      "game": "bonus",
+      "round": 2,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "35000",
+          "stars": 0
+        },
+        {
+          "name": "Beta",
+          "balance": "12300",
+          "stars": 0
+        },
+        {
+          "name": "Gamma",
+          "balance": "11800",
+          "stars": 0
+        },
+        {
+          "name": "Delta",
+          "balance": "0",
+          "stars": 0
+        },
+        {
+          "name": "Epsilon",
+          "balance": "0",
+          "stars": 0
+        }
+      ],
+      "current": {
+        "game": "bonus",
+        "phase": "complete",
+        "token": "b5e81f5e-ef05-4328-8a71-1b0349848a14",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "100",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "10000",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+        }
+      }
+    }
+  },
+  {
+    "check": "bonusR3",
+    "state": {
+      "game": "bonus",
+      "round": 3,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "35000",
+          "stars": 1
+        },
+        {
+          "name": "Beta",
+          "balance": "12300",
+          "stars": 0
+        },
+        {
+          "name": "Gamma",
+          "balance": "11800",
+          "stars": 0
+        },
+        {
+          "name": "Delta",
+          "balance": "0",
+          "stars": 0
+        },
+        {
+          "name": "Epsilon",
+          "balance": "0",
+          "stars": 0
+        }
+      ],
+      "current": {
+        "game": "bonus",
+        "phase": "complete",
+        "token": "594cc883-151e-43bf-abb6-1a60acc3ba2f",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "0",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "0",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+        }
+      }
+    }
+  },
+  {
+    "check": "highR1",
+    "state": {
+      "game": "high-low",
+      "round": 1,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "55000",
+          "stars": 1
+        },
+        {
+          "name": "Beta",
+          "balance": "12300",
+          "stars": 0
+        },
+        {
+          "name": "Gamma",
+          "balance": "11800",
+          "stars": 0
+        },
+        {
+          "name": "Delta",
+          "balance": "0",
+          "stars": 0
+        },
+        {
+          "name": "Epsilon",
+          "balance": "0",
+          "stars": 0
+        }
+      ],
+      "current": {
+        "game": "high-low",
+        "phase": "complete",
+        "token": "5281fd4f-9515-45fb-8f7b-9384faef0fbe",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "15000",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "5000",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "10000",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "0",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "20000"
+        }
+      }
+    }
+  },
+  {
+    "check": "highR2",
+    "state": {
+      "game": "high-low",
+      "round": 2,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "105000",
+          "stars": 1
+        },
+        {
+          "name": "Beta",
+          "balance": "13300",
+          "stars": 0
+        },
+        {
+          "name": "Gamma",
+          "balance": "12800",
+          "stars": 0
+        },
+        {
+          "name": "Delta",
+          "balance": "1000",
+          "stars": 0
+        },
+        {
+          "name": "Epsilon",
+          "balance": "1000",
+          "stars": 0
+        }
+      ],
+      "current": {
+        "game": "high-low",
+        "phase": "complete",
+        "token": "01dafa72-73e4-42e7-90f7-985bde9c71d0",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "20000",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "1000",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "10000",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "1000",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "50000"
+        }
+      }
+    }
+  },
+  {
+    "check": "highR3",
+    "state": {
+      "game": "high-low",
+      "round": 3,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "105000",
+          "stars": 1
+        },
+        {
+          "name": "Beta",
+          "balance": "113300",
+          "stars": 2
+        },
+        {
+          "name": "Gamma",
+          "balance": "12800",
+          "stars": 0
+        },
+        {
+          "name": "Delta",
+          "balance": "1000",
+          "stars": 0
+        },
+        {
+          "name": "Epsilon",
+          "balance": "1000",
+          "stars": 0
+        }
+      ],
+      "current": {
+        "game": "high-low",
+        "phase": "complete",
+        "token": "36e6c60f-e91d-490a-af2d-e5fe0d403ca6",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "20000",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "0",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "10000",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "1000",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "100000"
+        }
+      }
+    }
+  },
+  {
+    "check": "caveR1",
+    "state": {
+      "game": "cave",
+      "round": 1,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "57940",
+          "stars": 1
+        },
+        {
+          "name": "Beta",
+          "balance": "113300",
+          "stars": 2
+        },
+        {
+          "name": "Gamma",
+          "balance": "12800",
+          "stars": 0
+        },
+        {
+          "name": "Delta",
+          "balance": "1000",
+          "stars": 0
+        },
+        {
+          "name": "Epsilon",
+          "balance": "1000",
+          "stars": 0
+        }
+      ],
+      "current": {
+        "game": "cave",
+        "tick": 1,
+        "phase": "complete",
+        "stage": "ended",
+        "token": "46d161af-10b9-4571-9c80-acee5e9405c8",
+        "banked": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "0",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "1000",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+        },
+        "inside": [
+          "2589f809-22cb-4f2c-b0df-543af99b38ee",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d",
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab"
+        ],
+        "unbanked": "1000",
+        "collapsed": true,
+        "decisions": {
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "leave"
+        },
+        "nextTickAt": null
+      }
+    }
+  },
+  {
+    "check": "caveR2",
+    "state": {
+      "game": "cave",
+      "round": 2,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "57940",
+          "stars": 1
+        },
+        {
+          "name": "Beta",
+          "balance": "116300",
+          "stars": 2
+        },
+        {
+          "name": "Gamma",
+          "balance": "12800",
+          "stars": 0
+        },
+        {
+          "name": "Delta",
+          "balance": "1000",
+          "stars": 0
+        },
+        {
+          "name": "Epsilon",
+          "balance": "1000",
+          "stars": 0
+        }
+      ],
+      "current": {
+        "game": "cave",
+        "tick": 1,
+        "phase": "complete",
+        "stage": "ended",
+        "token": "6d8281c4-6898-4eea-8781-8ce8445e21a5",
+        "banked": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "3000",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "0",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+        },
+        "inside": [
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d",
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab"
+        ],
+        "unbanked": "3000",
+        "collapsed": true,
+        "decisions": {
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "leave"
+        },
+        "nextTickAt": null
+      }
+    }
+  },
+  {
+    "check": "caveR3",
+    "state": {
+      "game": "cave",
+      "round": 3,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "57940",
+          "stars": 1
+        },
+        {
+          "name": "Beta",
+          "balance": "116300",
+          "stars": 2
+        },
+        {
+          "name": "Gamma",
+          "balance": "22800",
+          "stars": 3
+        },
+        {
+          "name": "Delta",
+          "balance": "1000",
+          "stars": 0
+        },
+        {
+          "name": "Epsilon",
+          "balance": "1000",
+          "stars": 0
+        }
+      ],
+      "current": {
+        "game": "cave",
+        "tick": 1,
+        "phase": "complete",
+        "stage": "ended",
+        "token": "d91fa044-15ef-4a21-929b-064d512230cc",
+        "banked": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "0",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "10000",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "0",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+        },
+        "inside": [
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee",
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab"
+        ],
+        "unbanked": "10000",
+        "collapsed": true,
+        "decisions": {
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "leave"
+        },
+        "nextTickAt": null
+      }
+    }
+  },
+  {
+    "check": "circleR1",
+    "state": {
+      "game": "circle",
+      "round": 1,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "58140",
+          "stars": 6
+        },
+        {
+          "name": "Beta",
+          "balance": "116500",
+          "stars": 1
+        },
+        {
+          "name": "Gamma",
+          "balance": "23000",
+          "stars": 1
+        },
+        {
+          "name": "Delta",
+          "balance": "1200",
+          "stars": 8
+        },
+        {
+          "name": "Epsilon",
+          "balance": "1200",
+          "stars": 2
+        }
+      ],
+      "current": {
+        "game": "circle",
+        "next": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "2589f809-22cb-4f2c-b0df-543af99b38ee",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "bbb07f24-a3db-4383-b1f2-0185bb9708bf",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "1ccb5798-ee77-4b38-bd63-e60fe2ebf367",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "d0ff7ee9-c93f-43d5-9762-543810aabbab",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "448a5dd9-b5a8-4cb7-bfe4-c852d724376d"
+        },
+        "phase": "complete",
+        "token": "cf892178-e648-47e9-ad11-7f2556d95dca",
+        "sender": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "448a5dd9-b5a8-4cb7-bfe4-c852d724376d",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "1ccb5798-ee77-4b38-bd63-e60fe2ebf367",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "d0ff7ee9-c93f-43d5-9762-543810aabbab",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "2589f809-22cb-4f2c-b0df-543af99b38ee",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "bbb07f24-a3db-4383-b1f2-0185bb9708bf"
+        },
+        "returns": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "200",
+            "stars": 1
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "200",
+            "stars": 0
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "200",
+            "stars": 0
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "200",
+            "stars": 1
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "200",
+            "stars": 1
+          }
+        },
+        "received": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "300",
+            "stars": 9
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "300",
+            "stars": 0
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "300",
+            "stars": 0
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "300",
+            "stars": 6
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "300",
+            "stars": 3
+          }
+        },
+        "returned": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "200",
+            "stars": 0
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "200",
+            "stars": 1
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "200",
+            "stars": 1
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "200",
+            "stars": 1
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "200",
+            "stars": 0
+          }
+        },
+        "transfers": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "100",
+            "stars": 0
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "100",
+            "stars": 2
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "100",
+            "stars": 3
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "100",
+            "stars": 1
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "100",
+            "stars": 0
+          }
+        }
+      }
+    }
+  },
+  {
+    "check": "circleR2",
+    "state": {
+      "game": "circle",
+      "round": 2,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "58540",
+          "stars": 6
+        },
+        {
+          "name": "Beta",
+          "balance": "116900",
+          "stars": 1
+        },
+        {
+          "name": "Gamma",
+          "balance": "23400",
+          "stars": 1
+        },
+        {
+          "name": "Delta",
+          "balance": "1600",
+          "stars": 8
+        },
+        {
+          "name": "Epsilon",
+          "balance": "1600",
+          "stars": 2
+        }
+      ],
+      "current": {
+        "game": "circle",
+        "next": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "d0ff7ee9-c93f-43d5-9762-543810aabbab",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "bbb07f24-a3db-4383-b1f2-0185bb9708bf",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "1ccb5798-ee77-4b38-bd63-e60fe2ebf367",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "448a5dd9-b5a8-4cb7-bfe4-c852d724376d",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "2589f809-22cb-4f2c-b0df-543af99b38ee"
+        },
+        "phase": "complete",
+        "token": "3f40c0f2-02ef-4a11-ac1f-abda247744b0",
+        "sender": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "448a5dd9-b5a8-4cb7-bfe4-c852d724376d",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "d0ff7ee9-c93f-43d5-9762-543810aabbab",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "bbb07f24-a3db-4383-b1f2-0185bb9708bf",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "2589f809-22cb-4f2c-b0df-543af99b38ee",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "1ccb5798-ee77-4b38-bd63-e60fe2ebf367"
+        },
+        "returns": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "1000",
+            "stars": 0
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "1000",
+            "stars": 0
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "1000",
+            "stars": 0
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "1000",
+            "stars": 0
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "1000",
+            "stars": 0
+          }
+        },
+        "received": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "500",
+            "stars": 0
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "500",
+            "stars": 0
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "500",
+            "stars": 0
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "500",
+            "stars": 0
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "500",
+            "stars": 0
+          }
+        },
+        "returned": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "1000",
+            "stars": 0
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "1000",
+            "stars": 0
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "1000",
+            "stars": 0
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "1000",
+            "stars": 0
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "1000",
+            "stars": 0
+          }
+        },
+        "transfers": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "100",
+            "stars": 0
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "100",
+            "stars": 0
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "100",
+            "stars": 0
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "100",
+            "stars": 0
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "100",
+            "stars": 0
+          }
+        }
+      }
+    }
+  },
+  {
+    "check": "circleR3",
+    "state": {
+      "game": "circle",
+      "round": 3,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "59440",
+          "stars": 6
+        },
+        {
+          "name": "Beta",
+          "balance": "117800",
+          "stars": 1
+        },
+        {
+          "name": "Gamma",
+          "balance": "24300",
+          "stars": 1
+        },
+        {
+          "name": "Delta",
+          "balance": "2500",
+          "stars": 8
+        },
+        {
+          "name": "Epsilon",
+          "balance": "2500",
+          "stars": 2
+        }
+      ],
+      "current": {
+        "game": "circle",
+        "next": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "2589f809-22cb-4f2c-b0df-543af99b38ee",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "d0ff7ee9-c93f-43d5-9762-543810aabbab",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "1ccb5798-ee77-4b38-bd63-e60fe2ebf367",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "448a5dd9-b5a8-4cb7-bfe4-c852d724376d",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "bbb07f24-a3db-4383-b1f2-0185bb9708bf"
+        },
+        "phase": "complete",
+        "token": "0612bc5e-428f-4fad-93c7-7aff060db145",
+        "sender": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "448a5dd9-b5a8-4cb7-bfe4-c852d724376d",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "1ccb5798-ee77-4b38-bd63-e60fe2ebf367",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "bbb07f24-a3db-4383-b1f2-0185bb9708bf",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "d0ff7ee9-c93f-43d5-9762-543810aabbab",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "2589f809-22cb-4f2c-b0df-543af99b38ee"
+        },
+        "returns": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "0",
+            "stars": 0
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "0",
+            "stars": 0
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "0",
+            "stars": 0
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "0",
+            "stars": 0
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "0",
+            "stars": 0
+          }
+        },
+        "received": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "1000",
+            "stars": 0
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "1000",
+            "stars": 0
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "1000",
+            "stars": 0
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "1000",
+            "stars": 0
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "1000",
+            "stars": 0
+          }
+        },
+        "returned": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "0",
+            "stars": 0
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "0",
+            "stars": 0
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "0",
+            "stars": 0
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "0",
+            "stars": 0
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "0",
+            "stars": 0
+          }
+        },
+        "transfers": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "money": "100",
+            "stars": 0
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "money": "100",
+            "stars": 0
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "money": "100",
+            "stars": 0
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "money": "100",
+            "stars": 0
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "money": "100",
+            "stars": 0
+          }
+        }
+      }
+    }
+  },
+  {
+    "check": "bombR1",
+    "state": {
+      "game": "bomb",
+      "round": 1,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "118880",
+          "stars": 6
+        },
+        {
+          "name": "Beta",
+          "balance": "117800",
+          "stars": 1
+        },
+        {
+          "name": "Gamma",
+          "balance": "24300",
+          "stars": 1
+        },
+        {
+          "name": "Delta",
+          "balance": "2500",
+          "stars": 8
+        },
+        {
+          "name": "Epsilon",
+          "balance": "2500",
+          "stars": 2
+        }
+      ],
+      "current": {
+        "game": "bomb",
+        "phase": "complete",
+        "token": "77b97992-caf5-4dd5-b5da-ba1aded114f3",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "up": 60,
+            "down": 0,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 0,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 60,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 0
+            }
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "up": 20,
+            "down": 0,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 0,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 20,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 0
+            }
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "up": 20,
+            "down": 0,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 0,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 20,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 0
+            }
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "up": 20,
+            "down": 0,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 0,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 20,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 0
+            }
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "up": 20,
+            "down": 0,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 0,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 20,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 0
+            }
+          }
+        },
+        "direction": "up",
+        "recipient": "bbb07f24-a3db-4383-b1f2-0185bb9708bf"
+      }
+    }
+  },
+  {
+    "check": "bombR2",
+    "state": {
+      "game": "bomb",
+      "round": 2,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "118880",
+          "stars": 6
+        },
+        {
+          "name": "Beta",
+          "balance": "23560",
+          "stars": 1
+        },
+        {
+          "name": "Gamma",
+          "balance": "24300",
+          "stars": 1
+        },
+        {
+          "name": "Delta",
+          "balance": "2500",
+          "stars": 8
+        },
+        {
+          "name": "Epsilon",
+          "balance": "2500",
+          "stars": 2
+        }
+      ],
+      "current": {
+        "game": "bomb",
+        "phase": "complete",
+        "token": "83309395-baae-4356-aa7f-7aeaba707e1d",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "up": 0,
+            "down": 60,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 60,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 0,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 0
+            }
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "up": 0,
+            "down": 20,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 20,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 0,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 0
+            }
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "up": 0,
+            "down": 20,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 20,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 0,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 0
+            }
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "up": 0,
+            "down": 20,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 20,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 0,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 0
+            }
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "up": 0,
+            "down": 20,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 20,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 0,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 0
+            }
+          }
+        },
+        "direction": "down",
+        "recipient": "2589f809-22cb-4f2c-b0df-543af99b38ee"
+      }
+    }
+  },
+  {
+    "check": "bombR3",
+    "state": {
+      "game": "bomb",
+      "round": 3,
+      "phase": "complete",
+      "teams": [
+        {
+          "name": "Alpha",
+          "balance": "118880",
+          "stars": 6
+        },
+        {
+          "name": "Beta",
+          "balance": "23560",
+          "stars": 1
+        },
+        {
+          "name": "Gamma",
+          "balance": "24300",
+          "stars": 1
+        },
+        {
+          "name": "Delta",
+          "balance": "2500",
+          "stars": 8
+        },
+        {
+          "name": "Epsilon",
+          "balance": "25000",
+          "stars": 2
+        }
+      ],
+      "current": {
+        "game": "bomb",
+        "phase": "complete",
+        "token": "a13057c9-0a5b-44fb-941d-45882efb4760",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": {
+            "up": 60,
+            "down": 0,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 0,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 0,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 60
+            }
+          },
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": {
+            "up": 20,
+            "down": 0,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 0,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 0,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 20
+            }
+          },
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": {
+            "up": 20,
+            "down": 0,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 0,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 0,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 20
+            }
+          },
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": {
+            "up": 20,
+            "down": 0,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 0,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 0,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 20
+            }
+          },
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": {
+            "up": 20,
+            "down": 0,
+            "recipients": {
+              "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": 0,
+              "2589f809-22cb-4f2c-b0df-543af99b38ee": 0,
+              "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": 0,
+              "bbb07f24-a3db-4383-b1f2-0185bb9708bf": 0,
+              "d0ff7ee9-c93f-43d5-9762-543810aabbab": 20
+            }
+          }
+        },
+        "direction": "up",
+        "recipient": "d0ff7ee9-c93f-43d5-9762-543810aabbab"
+      }
+    }
+  }
+]

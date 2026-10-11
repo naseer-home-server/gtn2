@@ -1,0 +1,5143 @@
+[
+  {
+    "pot": {
+      "amount": "0",
+      "target": "401"
+    },
+    "round": 1,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "401",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "401",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "bonus",
+      "phase": "complete",
+      "token": "d806f5a9-8df1-4080-ba85-844df1802bb5",
+      "choices": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+      }
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 3,
+    "gameIndex": 0,
+    "caveTotals": {},
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "651"
+    },
+    "round": 2,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "401",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "901",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "bonus",
+      "phase": "complete",
+      "token": "4c4295e6-5861-4ced-a1ff-fb388a997d44",
+      "choices": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+      }
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 6,
+    "gameIndex": 0,
+    "caveTotals": {},
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "656"
+    },
+    "round": 3,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "411",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "901",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "bonus",
+      "phase": "complete",
+      "token": "ade5099a-8191-4af9-a576-7ecb01d7e0fc",
+      "choices": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+      }
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 9,
+    "gameIndex": 0,
+    "caveTotals": {},
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "656"
+    },
+    "round": 1,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "411",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "901",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "high-low",
+      "phase": "complete",
+      "token": "8c1d79b8-65d1-4516-b1cb-3c2ccebe02c6",
+      "choices": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+      }
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 12,
+    "gameIndex": 1,
+    "caveTotals": {},
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "656"
+    },
+    "round": 2,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "411",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "901",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "high-low",
+      "phase": "complete",
+      "token": "e491e34c-1f50-4875-b008-764808adebdc",
+      "choices": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+      }
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 15,
+    "gameIndex": 1,
+    "caveTotals": {},
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "656"
+    },
+    "round": 3,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "411",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "901",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "high-low",
+      "phase": "complete",
+      "token": "38aa4fb3-a3d4-4a57-a84a-d3946098b65b",
+      "choices": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+      }
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 18,
+    "gameIndex": 1,
+    "caveTotals": {},
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "32656"
+    },
+    "round": 1,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "32411",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "32901",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "cave",
+      "tick": 6,
+      "phase": "complete",
+      "stage": "ended",
+      "token": "11062881-550d-40cc-ab92-a82b4b45a198",
+      "banked": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+      },
+      "inside": [],
+      "unbanked": "32000",
+      "collapsed": false,
+      "decisions": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "leave",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "leave"
+      },
+      "nextTickAt": null
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 1,
+        "details": {
+          "tick": 6,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 27,
+    "gameIndex": 2,
+    "caveTotals": {
+      "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+      "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+    },
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "50656"
+    },
+    "round": 2,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "59411",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "41901",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "cave",
+      "tick": 3,
+      "phase": "complete",
+      "stage": "ended",
+      "token": "897fe2fe-6cd2-4419-b88d-3fa90c7de7c1",
+      "banked": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+      },
+      "inside": [],
+      "unbanked": "27000",
+      "collapsed": false,
+      "decisions": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "leave"
+      },
+      "nextTickAt": null
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 1,
+        "details": {
+          "tick": 6,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 2,
+        "details": {
+          "tick": 3,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 34,
+    "gameIndex": 2,
+    "caveTotals": {
+      "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "59000",
+      "d25dd272-b39b-4a41-be0a-965de05594e2": "41000"
+    },
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "90656"
+    },
+    "round": 3,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "99411",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "81901",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "cave",
+      "tick": 2,
+      "phase": "complete",
+      "stage": "ended",
+      "token": "fbf6f25e-a4f2-4d6a-9b2f-da899eb4746d",
+      "banked": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+      },
+      "inside": [],
+      "unbanked": "40000",
+      "collapsed": false,
+      "decisions": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "leave",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "leave"
+      },
+      "nextTickAt": null
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 1,
+        "details": {
+          "tick": 6,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 2,
+        "details": {
+          "tick": 3,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 3,
+        "details": {
+          "tick": 2,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 39,
+    "gameIndex": 2,
+    "caveTotals": {
+      "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "99000",
+      "d25dd272-b39b-4a41-be0a-965de05594e2": "81000"
+    },
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "90656"
+    },
+    "round": 1,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "99411",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "81901",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "circle",
+      "next": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+      },
+      "phase": "complete",
+      "token": "5b98a0d4-a45c-430b-a427-acb936b9baac",
+      "sender": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+      },
+      "returns": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "0",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "0",
+          "stars": 0
+        }
+      },
+      "received": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "0",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "0",
+          "stars": 0
+        }
+      },
+      "returned": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "0",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "0",
+          "stars": 0
+        }
+      },
+      "transfers": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "0",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "0",
+          "stars": 0
+        }
+      }
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 1,
+        "details": {
+          "tick": 6,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 2,
+        "details": {
+          "tick": 3,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 3,
+        "details": {
+          "tick": 2,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 1,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 44,
+    "gameIndex": 3,
+    "caveTotals": {
+      "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "99000",
+      "d25dd272-b39b-4a41-be0a-965de05594e2": "81000"
+    },
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "453280"
+    },
+    "round": 2,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "497055",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "409505",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "circle",
+      "next": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+      },
+      "phase": "complete",
+      "token": "fcdf886a-82f5-42c1-9827-2b5a4b188b19",
+      "sender": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+      },
+      "returns": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "409505",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "497055",
+          "stars": 0
+        }
+      },
+      "received": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "409505",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "497055",
+          "stars": 0
+        }
+      },
+      "returned": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "497055",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "409505",
+          "stars": 0
+        }
+      },
+      "transfers": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "99411",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "81901",
+          "stars": 0
+        }
+      }
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 1,
+        "details": {
+          "tick": 6,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 2,
+        "details": {
+          "tick": 3,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 3,
+        "details": {
+          "tick": 2,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 1,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 2,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "994.11",
+                "stars": 0
+              },
+              "received": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4970.55",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "819.01",
+                "stars": 0
+              },
+              "received": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4095.05",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "397644",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "327604"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 49,
+    "gameIndex": 3,
+    "caveTotals": {
+      "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "99000",
+      "d25dd272-b39b-4a41-be0a-965de05594e2": "81000"
+    },
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "453280"
+    },
+    "round": 3,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "497055",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "409505",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "circle",
+      "next": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+      },
+      "phase": "complete",
+      "token": "ea2c5338-527e-407f-902a-a1958d056e01",
+      "sender": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "d25dd272-b39b-4a41-be0a-965de05594e2": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+      },
+      "returns": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "0",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "0",
+          "stars": 0
+        }
+      },
+      "received": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "0",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "0",
+          "stars": 0
+        }
+      },
+      "returned": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "0",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "0",
+          "stars": 0
+        }
+      },
+      "transfers": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "money": "0",
+          "stars": 0
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "money": "0",
+          "stars": 0
+        }
+      }
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 1,
+        "details": {
+          "tick": 6,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 2,
+        "details": {
+          "tick": 3,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 3,
+        "details": {
+          "tick": 2,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 1,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 2,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "994.11",
+                "stars": 0
+              },
+              "received": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4970.55",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "819.01",
+                "stars": 0
+              },
+              "received": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4095.05",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "397644",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "327604"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 3,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 54,
+    "gameIndex": 3,
+    "caveTotals": {
+      "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "99000",
+      "d25dd272-b39b-4a41-be0a-965de05594e2": "81000"
+    },
+    "advantagedTeamId": null
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "329017"
+    },
+    "round": 1,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "248528",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "409505",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "bomb",
+      "phase": "complete",
+      "token": "9f8f84bf-0b90-4e13-96ee-6804cac23e77",
+      "choices": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "up": 0,
+          "down": 60,
+          "recipients": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 1,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          }
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "up": 0,
+          "down": 1,
+          "recipients": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 1,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          }
+        }
+      },
+      "direction": "down",
+      "recipient": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 1,
+        "details": {
+          "tick": 6,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 2,
+        "details": {
+          "tick": 3,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 3,
+        "details": {
+          "tick": 2,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 1,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 2,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "994.11",
+                "stars": 0
+              },
+              "received": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4970.55",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "819.01",
+                "stars": 0
+              },
+              "received": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4095.05",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "397644",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "327604"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 3,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "bomb",
+        "round": 1,
+        "details": {
+          "outcome": {
+            "after": "2485.28",
+            "delta": "-2485.27",
+            "before": "4970.55",
+            "factor": 2,
+            "teamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+            "direction": "down"
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "-248527",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 57,
+    "gameIndex": 4,
+    "caveTotals": {
+      "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "99000",
+      "d25dd272-b39b-4a41-be0a-965de05594e2": "81000"
+    },
+    "advantagedTeamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "229606"
+    },
+    "round": 2,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "49706",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "409505",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "bomb",
+      "phase": "complete",
+      "token": "ce36c5b8-00a9-4d5b-b626-08760f5114bc",
+      "choices": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "up": 0,
+          "down": 60,
+          "recipients": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 1,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          }
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "up": 0,
+          "down": 1,
+          "recipients": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 1,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          }
+        }
+      },
+      "direction": "down",
+      "recipient": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 1,
+        "details": {
+          "tick": 6,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 2,
+        "details": {
+          "tick": 3,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 3,
+        "details": {
+          "tick": 2,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 1,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 2,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "994.11",
+                "stars": 0
+              },
+              "received": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4970.55",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "819.01",
+                "stars": 0
+              },
+              "received": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4095.05",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "397644",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "327604"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 3,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "bomb",
+        "round": 1,
+        "details": {
+          "outcome": {
+            "after": "2485.28",
+            "delta": "-2485.27",
+            "before": "4970.55",
+            "factor": 2,
+            "teamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+            "direction": "down"
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "-248527",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "bomb",
+        "round": 2,
+        "details": {
+          "outcome": {
+            "after": "497.06",
+            "delta": "-1988.22",
+            "before": "2485.28",
+            "factor": 5,
+            "teamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+            "direction": "down"
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "-198822",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 60,
+    "gameIndex": 4,
+    "caveTotals": {
+      "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "99000",
+      "d25dd272-b39b-4a41-be0a-965de05594e2": "81000"
+    },
+    "advantagedTeamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "45329"
+    },
+    "round": 3,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "49706",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "40951",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "playing",
+    "current": {
+      "game": "bomb",
+      "phase": "complete",
+      "token": "1e6d2858-372a-41d1-bf10-69230b458c6e",
+      "choices": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "up": 0,
+          "down": 60,
+          "recipients": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 1
+          }
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "up": 0,
+          "down": 1,
+          "recipients": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 1
+          }
+        }
+      },
+      "direction": "down",
+      "recipient": "d25dd272-b39b-4a41-be0a-965de05594e2"
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 1,
+        "details": {
+          "tick": 6,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 2,
+        "details": {
+          "tick": 3,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 3,
+        "details": {
+          "tick": 2,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 1,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 2,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "994.11",
+                "stars": 0
+              },
+              "received": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4970.55",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "819.01",
+                "stars": 0
+              },
+              "received": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4095.05",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "397644",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "327604"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 3,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "bomb",
+        "round": 1,
+        "details": {
+          "outcome": {
+            "after": "2485.28",
+            "delta": "-2485.27",
+            "before": "4970.55",
+            "factor": 2,
+            "teamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+            "direction": "down"
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "-248527",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "bomb",
+        "round": 2,
+        "details": {
+          "outcome": {
+            "after": "497.06",
+            "delta": "-1988.22",
+            "before": "2485.28",
+            "factor": 5,
+            "teamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+            "direction": "down"
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "-198822",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "bomb",
+        "round": 3,
+        "details": {
+          "outcome": {
+            "after": "409.51",
+            "delta": "-3685.54",
+            "before": "4095.05",
+            "factor": 10,
+            "teamId": "d25dd272-b39b-4a41-be0a-965de05594e2",
+            "direction": "down"
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "-368554"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 63,
+    "gameIndex": 4,
+    "caveTotals": {
+      "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "99000",
+      "d25dd272-b39b-4a41-be0a-965de05594e2": "81000"
+    },
+    "advantagedTeamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+  },
+  {
+    "pot": {
+      "amount": "0",
+      "target": "45329"
+    },
+    "round": 3,
+    "teams": [
+      {
+        "id": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+        "name": "Edge Alpha",
+        "stars": 0,
+        "balance": "49706",
+        "tieOrder": 1,
+        "playerIds": [
+          "83d5d2a7-2388-4a06-ac52-e39338461bda",
+          "31e22b27-9610-4c58-ba77-bd73e98ac3f5"
+        ]
+      },
+      {
+        "id": "d25dd272-b39b-4a41-be0a-965de05594e2",
+        "name": "Edge Beta",
+        "stars": 0,
+        "balance": "40951",
+        "tieOrder": 3,
+        "playerIds": [
+          "e0ce7a3d-c707-49a4-8023-6988fab2272b"
+        ]
+      }
+    ],
+    "config": {
+      "bomb": {
+        "factor": [
+          2,
+          5,
+          10
+        ],
+        "maxChits": 20,
+        "minChits": 1,
+        "advantageChits": 60
+      },
+      "cave": {
+        "stars": 0,
+        "growth": [
+          2,
+          3,
+          4
+        ],
+        "tickSeconds": 10,
+        "collapseRisk": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "startingMoney": [
+          5,
+          10,
+          25
+        ]
+      },
+      "bonus": {
+        "bag": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "threshold": [
+          2,
+          2,
+          2
+        ],
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "circle": {
+        "multiplier": [
+          3,
+          5,
+          10
+        ]
+      },
+      "highLow": {
+        "pool": [
+          1,
+          1,
+          1
+        ],
+        "stars": 0,
+        "multiplier": [
+          2,
+          5,
+          10
+        ]
+      },
+      "initialBalance": 1.01,
+      "revealPotMultiplier": 1
+    },
+    "reveal": null,
+    "status": "finished",
+    "current": {
+      "game": "bomb",
+      "phase": "complete",
+      "token": "19921356-3892-4430-a5e8-62bbcee9dc7b",
+      "choices": {
+        "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+          "up": 0,
+          "down": 60,
+          "recipients": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 1
+          }
+        },
+        "d25dd272-b39b-4a41-be0a-965de05594e2": {
+          "up": 0,
+          "down": 1,
+          "recipients": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 1
+          }
+        }
+      },
+      "direction": "down",
+      "recipient": "d25dd272-b39b-4a41-be0a-965de05594e2"
+    },
+    "history": [
+      {
+        "game": "bonus",
+        "round": 1,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "100",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "200",
+          "zeroTakers": 1,
+          "thresholdBonus": 3
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "300",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "300"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 2,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "100"
+          },
+          "totalTaken": "100",
+          "zeroTakers": 1,
+          "thresholdBonus": 5
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "500"
+        }
+      },
+      {
+        "game": "bonus",
+        "round": 3,
+        "details": {
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "1",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "totalTaken": "1",
+          "zeroTakers": 1,
+          "thresholdBonus": 10
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "10",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 1,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 2,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "high-low",
+        "round": 3,
+        "details": {
+          "lowest": "0",
+          "winner": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+          "choices": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+          },
+          "highest": "0"
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 1,
+        "details": {
+          "tick": 6,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "32000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "32000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 2,
+        "details": {
+          "tick": 3,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "27000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "9000"
+        }
+      },
+      {
+        "game": "cave",
+        "round": 3,
+        "details": {
+          "tick": 2,
+          "banked": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+            "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+          },
+          "reason": "everyone-left",
+          "collapsed": false
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "40000",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "40000"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 1,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 2,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "994.11",
+                "stars": 0
+              },
+              "received": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4095.05",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4970.55",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "819.01",
+                "stars": 0
+              },
+              "received": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returned": {
+                "money": "4970.55",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "4095.05",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "397644",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "327604"
+        }
+      },
+      {
+        "game": "circle",
+        "round": 3,
+        "details": {
+          "netStars": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": 0,
+            "d25dd272-b39b-4a41-be0a-965de05594e2": 0
+          },
+          "transfers": {
+            "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            },
+            "d25dd272-b39b-4a41-be0a-965de05594e2": {
+              "sent": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "received": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returned": {
+                "money": "0.00",
+                "stars": 0
+              },
+              "returnedToTeam": {
+                "money": "0.00",
+                "stars": 0
+              }
+            }
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "bomb",
+        "round": 1,
+        "details": {
+          "outcome": {
+            "after": "2485.28",
+            "delta": "-2485.27",
+            "before": "4970.55",
+            "factor": 2,
+            "teamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+            "direction": "down"
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "-248527",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "bomb",
+        "round": 2,
+        "details": {
+          "outcome": {
+            "after": "497.06",
+            "delta": "-1988.22",
+            "before": "2485.28",
+            "factor": 5,
+            "teamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd",
+            "direction": "down"
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "-198822",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "0"
+        }
+      },
+      {
+        "game": "bomb",
+        "round": 3,
+        "details": {
+          "outcome": {
+            "after": "409.51",
+            "delta": "-3685.54",
+            "before": "4095.05",
+            "factor": 10,
+            "teamId": "d25dd272-b39b-4a41-be0a-965de05594e2",
+            "direction": "down"
+          }
+        },
+        "payouts": {
+          "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "0",
+          "d25dd272-b39b-4a41-be0a-965de05594e2": "-368554"
+        }
+      }
+    ],
+    "version": 1,
+    "potSpent": {},
+    "revision": 64,
+    "gameIndex": 4,
+    "caveTotals": {
+      "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd": "99000",
+      "d25dd272-b39b-4a41-be0a-965de05594e2": "81000"
+    },
+    "advantagedTeamId": "98a06f1c-2ee0-4ecc-b9c8-88a9daf68cfd"
+  }
+]

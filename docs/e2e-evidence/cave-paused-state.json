@@ -1,0 +1,337 @@
+{
+  "pot": {
+    "amount": "0",
+    "target": "48060"
+  },
+  "round": 1,
+  "teams": [
+    {
+      "id": "bbb07f24-a3db-4383-b1f2-0185bb9708bf",
+      "name": "Alpha",
+      "stars": 1,
+      "balance": "56940",
+      "tieOrder": 1,
+      "playerIds": [
+        "991889d9-cf73-41a3-8f3c-19939ff4a0e6",
+        "4fb4c38a-5c94-41d6-8ea5-8296383309e9"
+      ]
+    },
+    {
+      "id": "2589f809-22cb-4f2c-b0df-543af99b38ee",
+      "name": "Beta",
+      "stars": 2,
+      "balance": "113300",
+      "tieOrder": 3,
+      "playerIds": [
+        "c3d0a58f-00f3-4a31-9d3c-7398f6db157d",
+        "b9668473-9e98-49e2-82aa-766c2f71aae7"
+      ]
+    },
+    {
+      "id": "448a5dd9-b5a8-4cb7-bfe4-c852d724376d",
+      "name": "Gamma",
+      "stars": 0,
+      "balance": "12800",
+      "tieOrder": 5,
+      "playerIds": [
+        "88540f1c-7631-47a0-833e-67cab1bcbebc",
+        "66419a0e-f74d-4ca5-8cea-8b6451e069df"
+      ]
+    },
+    {
+      "id": "1ccb5798-ee77-4b38-bd63-e60fe2ebf367",
+      "name": "Delta",
+      "stars": 0,
+      "balance": "1000",
+      "tieOrder": 7,
+      "playerIds": [
+        "ede38c0a-a507-4170-9e2d-ac7eb4a10c3b",
+        "2efa0fe5-4ec8-4043-a02d-cac58b6c4439"
+      ]
+    },
+    {
+      "id": "d0ff7ee9-c93f-43d5-9762-543810aabbab",
+      "name": "Epsilon",
+      "stars": 0,
+      "balance": "1000",
+      "tieOrder": 9,
+      "playerIds": [
+        "93ee44d1-40f2-42e4-b52a-7cc59dab79d0"
+      ]
+    }
+  ],
+  "config": {
+    "bomb": {
+      "factor": [
+        2,
+        5,
+        10
+      ],
+      "maxChits": 20,
+      "minChits": 1,
+      "advantageChits": 60
+    },
+    "cave": {
+      "stars": 3,
+      "growth": [
+        2,
+        3,
+        4
+      ],
+      "tickSeconds": 30,
+      "collapseRisk": [
+        0,
+        100,
+        100,
+        100,
+        100
+      ],
+      "startingMoney": [
+        5,
+        10,
+        25
+      ]
+    },
+    "bonus": {
+      "bag": [
+        100,
+        100,
+        100
+      ],
+      "stars": 1,
+      "threshold": [
+        100,
+        100,
+        100
+      ],
+      "multiplier": [
+        3,
+        5,
+        10
+      ]
+    },
+    "circle": {
+      "multiplier": [
+        3,
+        5,
+        10
+      ]
+    },
+    "highLow": {
+      "pool": [
+        100,
+        100,
+        100
+      ],
+      "stars": 2,
+      "multiplier": [
+        2,
+        5,
+        10
+      ]
+    },
+    "initialBalance": 0,
+    "revealPotMultiplier": 1
+  },
+  "reveal": {
+    "id": "447df098-25bb-470b-8510-03ff0d5d69fd",
+    "rankings": [
+      {
+        "rank": 1,
+        "teamId": "2589f809-22cb-4f2c-b0df-543af99b38ee"
+      },
+      {
+        "rank": 2,
+        "teamId": "bbb07f24-a3db-4383-b1f2-0185bb9708bf"
+      },
+      {
+        "rank": 3,
+        "teamId": "448a5dd9-b5a8-4cb7-bfe4-c852d724376d"
+      },
+      {
+        "rank": 4,
+        "teamId": "1ccb5798-ee77-4b38-bd63-e60fe2ebf367"
+      },
+      {
+        "rank": 5,
+        "teamId": "d0ff7ee9-c93f-43d5-9762-543810aabbab"
+      }
+    ],
+    "acknowledged": []
+  },
+  "status": "playing",
+  "current": {
+    "game": "cave",
+    "tick": 0,
+    "phase": "cave",
+    "stage": "waiting",
+    "token": "8eb1cd59-27ff-4d63-a747-085d5d10b51c",
+    "banked": {
+      "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+      "2589f809-22cb-4f2c-b0df-543af99b38ee": "0",
+      "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+      "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "0",
+      "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+    },
+    "inside": [
+      "bbb07f24-a3db-4383-b1f2-0185bb9708bf",
+      "2589f809-22cb-4f2c-b0df-543af99b38ee",
+      "448a5dd9-b5a8-4cb7-bfe4-c852d724376d",
+      "1ccb5798-ee77-4b38-bd63-e60fe2ebf367",
+      "d0ff7ee9-c93f-43d5-9762-543810aabbab"
+    ],
+    "unbanked": "500",
+    "collapsed": false,
+    "decisions": {},
+    "nextTickAt": 1791718557293
+  },
+  "history": [
+    {
+      "game": "bonus",
+      "round": 1,
+      "details": {
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "2000",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "3000",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "1000",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+        },
+        "totalTaken": "6000",
+        "zeroTakers": 2,
+        "thresholdBonus": 3
+      },
+      "payouts": {
+        "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+        "2589f809-22cb-4f2c-b0df-543af99b38ee": "12000",
+        "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "18000",
+        "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "6000",
+        "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+      }
+    },
+    {
+      "game": "bonus",
+      "round": 2,
+      "details": {
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "100",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "10000",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+        },
+        "totalTaken": "10100",
+        "zeroTakers": 3,
+        "thresholdBonus": 1
+      },
+      "payouts": {
+        "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+        "2589f809-22cb-4f2c-b0df-543af99b38ee": "300",
+        "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+        "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "30000",
+        "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+      }
+    },
+    {
+      "game": "bonus",
+      "round": 3,
+      "details": {
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "0",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "0",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+        },
+        "totalTaken": "0",
+        "zeroTakers": 5,
+        "thresholdBonus": 10
+      },
+      "payouts": {
+        "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+        "2589f809-22cb-4f2c-b0df-543af99b38ee": "0",
+        "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+        "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "0",
+        "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+      }
+    },
+    {
+      "game": "high-low",
+      "round": 1,
+      "details": {
+        "lowest": "0",
+        "winner": "bbb07f24-a3db-4383-b1f2-0185bb9708bf",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "15000",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "5000",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "10000",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "0",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "20000"
+        },
+        "highest": "20000"
+      },
+      "payouts": {
+        "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+        "2589f809-22cb-4f2c-b0df-543af99b38ee": "0",
+        "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+        "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "20000",
+        "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+      }
+    },
+    {
+      "game": "high-low",
+      "round": 2,
+      "details": {
+        "lowest": "1000",
+        "winner": "bbb07f24-a3db-4383-b1f2-0185bb9708bf",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "20000",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "1000",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "10000",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "1000",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "50000"
+        },
+        "highest": "50000"
+      },
+      "payouts": {
+        "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "1000",
+        "2589f809-22cb-4f2c-b0df-543af99b38ee": "1000",
+        "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "1000",
+        "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "50000",
+        "d0ff7ee9-c93f-43d5-9762-543810aabbab": "1000"
+      }
+    },
+    {
+      "game": "high-low",
+      "round": 3,
+      "details": {
+        "lowest": "0",
+        "winner": "2589f809-22cb-4f2c-b0df-543af99b38ee",
+        "choices": {
+          "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "20000",
+          "2589f809-22cb-4f2c-b0df-543af99b38ee": "0",
+          "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "10000",
+          "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "1000",
+          "d0ff7ee9-c93f-43d5-9762-543810aabbab": "100000"
+        },
+        "highest": "100000"
+      },
+      "payouts": {
+        "1ccb5798-ee77-4b38-bd63-e60fe2ebf367": "0",
+        "2589f809-22cb-4f2c-b0df-543af99b38ee": "100000",
+        "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "0",
+        "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "0",
+        "d0ff7ee9-c93f-43d5-9762-543810aabbab": "0"
+      }
+    }
+  ],
+  "version": 1,
+  "potSpent": {
+    "448a5dd9-b5a8-4cb7-bfe4-c852d724376d": "6200",
+    "bbb07f24-a3db-4383-b1f2-0185bb9708bf": "49060"
+  },
+  "revision": 45,
+  "gameIndex": 2,
+  "caveTotals": {},
+  "advantagedTeamId": null
+}

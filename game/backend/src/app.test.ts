@@ -1,7 +1,4 @@
 import assert from 'node:assert/strict'
-import { mkdtemp, rm } from 'node:fs/promises'
-import os from 'node:os'
-import path from 'node:path'
 import { test } from 'node:test'
 import { createApp } from './app.js'
 import { SettingsStore } from './settings.js'
@@ -17,9 +14,7 @@ process.env.SUPERTOKENS_DASHBOARD_ADMINS = ''
 initSuperTokens()
 
 test('HTTP routes enforce authentication and do not expose ungated passwordless APIs', async (t) => {
-  const directory = await mkdtemp(path.join(os.tmpdir(), 'gtn2-http-'))
-  t.after(() => rm(directory, { recursive: true, force: true }))
-  const settings = new SettingsStore(path.join(directory, 'settings.json'))
+  const settings = new SettingsStore()
   const server = createApp(settings).listen(0, '127.0.0.1')
   t.after(() => new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve())))
   await new Promise<void>((resolve) => server.on('listening', resolve))

@@ -30,6 +30,6 @@ Set `SUPERTOKENS_DASHBOARD_ADMINS` to the comma-separated emails allowed into `<
 
 The `/admin` page can enable or disable email test login. When enabled, `/login` accepts any valid email without a password, OTP, or email delivery. Test identities remain separate from Google identities and cannot access admin features. Disabling the setting also blocks existing test sessions from protected game APIs.
 
-The setting starts disabled and persists in `DATA_DIR/settings.json`; Docker stores it in the `game-data` volume. Run `pnpm --filter backend test` to check authorization, validation, and persistence.
+The setting is held in memory and resets to disabled whenever the backend restarts. Run `pnpm --filter backend test` to check authorization, validation, and reset behavior.
 
 Run `pnpm --filter game build` to build both parts. The root `docker-compose.yml` is the monorepo service manifest; use `.env.example` for its environment variables. Run `pnpm docker:dev` to build and start services in the foreground, or `pnpm docker:prod` to build and start them in the background. The game service listens on container port 3000 and uses `/health` for container health checks.

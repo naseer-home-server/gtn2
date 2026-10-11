@@ -5,4 +5,3 @@ game/backend/public/
 .env
 .env.*
 !.env.example
-game/backend/data/

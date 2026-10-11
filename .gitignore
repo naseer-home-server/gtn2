@@ -2,3 +2,7 @@ node_modules/
 dist/
 game/backend/public/
 .DS_Store
+.env
+.env.*
+!.env.example
+game/backend/data/

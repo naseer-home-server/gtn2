@@ -5,6 +5,15 @@ services:
       dockerfile: game/backend/Dockerfile
     environment:
       PORT: 3000
+      APP_URL: ${APP_URL}
+      SUPERTOKENS_CONNECTION_URI: ${SUPERTOKENS_CONNECTION_URI}
+      SUPERTOKENS_API_KEY: ${SUPERTOKENS_API_KEY:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      SUPERTOKENS_DASHBOARD_ADMINS: ${SUPERTOKENS_DASHBOARD_ADMINS:-}
+      DATA_DIR: /app/data
+    volumes:
+      - game-data:/app/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/health"]
@@ -12,3 +21,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
+volumes:
+  game-data:

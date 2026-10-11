@@ -80,7 +80,8 @@ export class DbGameplayRepository implements GameplayRepository {
         const teams = assignments.map((assignment) => {
           const members = assignment.playerIds.map((id) => players.find((player) => player.id === id))
           ensure(members.every((member) => member && member.arrivalOrder !== null), 'All assigned players must be invited and marked arrived.')
-          return { id: randomUUID(), name: assignment.name.trim(), playerIds: assignment.playerIds, tieOrder: Math.min(...members.map((member) => member!.arrivalOrder!)), balance: '0', stars: 0 }
+          const leader = [...members].sort((a, b) => a!.arrivalOrder! - b!.arrivalOrder!)[0]!
+          return { id: randomUUID(), name: assignment.name.trim(), playerIds: assignment.playerIds, leaderPlayerId: leader.id, tieOrder: leader.arrivalOrder!, balance: '0', stars: 0 }
         })
         const { state, events } = startEngine(teams, config, this.env())
         await persist(tx, sessionId, state, events, actorId)
@@ -103,6 +104,7 @@ export class DbGameplayRepository implements GameplayRepository {
         ensure(state, 'The host has not started this playthrough.')
         const team = state.teams.find((item) => item.playerIds.includes(player.id))
         ensure(team, 'The host has not assigned you to a team.')
+        ensure((team.leaderPlayerId ?? team.playerIds[0]) === player.id, 'Only your team leader can submit decisions. Discuss your choice with them in person.')
         const [previous] = await tx.select().from(sessionEvents).where(and(eq(sessionEvents.sessionId, row.id), eq(sessionEvents.type, 'player.command'), sql`${sessionEvents.data}->>'requestId' = ${command.requestId}`)).limit(1)
         if (previous) {
           ensure(previous.data.teamId === team.id && previous.data.signature === signature(command), 'This request ID was already used for a different action.')

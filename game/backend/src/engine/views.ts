@@ -6,12 +6,13 @@ const publicTeam = (team: Team): PublicTeam => ({ id: team.id, name: team.name, 
 export function playerView(sessionId: string, sessionName: string, state: EngineState | null, playerId: string): PlayerGameView {
   const team = state?.teams.find((item) => item.playerIds.includes(playerId))
   const base: PlayerGameView = {
-    sessionId, sessionName, status: state?.status ?? 'waiting', team: null,
+    sessionId, sessionName, status: state?.status ?? 'waiting', isTeamLeader: false, team: null,
     teams: state?.teams.map(publicTeam) ?? [], game: state?.current.game ?? null, round: state?.round ?? null,
     token: null, pot: { amount: state ? units(state.pot.amount) : '0.00', target: state ? units(state.pot.target) : '0.00' },
     reveal: null, earnings: [], roundState: null, allowedActions: [],
   }
   if (!state || !team) return base
+  base.isTeamLeader = (team.leaderPlayerId ?? team.playerIds[0]) === playerId
   base.team = { id: team.id, name: team.name, balance: units(team.balance), stars: team.stars, rank: rankings(state).find((item) => item.teamId === team.id)!.rank }
   base.token = state.current.token
   base.earnings = state.history.map((result) => ({ game: result.game, round: result.round, amount: units(result.payouts[team.id] ?? '0') }))
@@ -68,5 +69,6 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
       base.allowedActions = ['reveal.acknowledge']
     }
   }
+  if (!base.isTeamLeader) base.allowedActions = []
   return base
 }

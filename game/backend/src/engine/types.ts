@@ -14,7 +14,7 @@ export type GameConfig = {
 }
 // Engine money is integer cents serialized as strings, so cave growth has no numeric ceiling.
 // API money values are decimal currency strings; action/config amounts use currency units.
-export type Team = { id: string; name: string; playerIds: string[]; tieOrder: number; balance: Money; stars: number }
+export type Team = { id: string; name: string; playerIds: string[]; leaderPlayerId?: string; tieOrder: number; balance: Money; stars: number }
 export type TeamAssignment = { name: string; playerIds: string[] }
 export type RoundResult = { game: GameId; round: number; payouts: Record<string, Money>; details: Record<string, unknown> }
 export type Ranking = { teamId: string; rank: number }
@@ -56,6 +56,7 @@ export type PlayerCommand = { requestId: string; token: string; action: GameActi
 export type PublicTeam = { id: string; name: string; stars: number }
 export type PlayerGameView = {
   sessionId: string; sessionName: string; status: 'waiting' | 'playing' | 'finished'
+  isTeamLeader: boolean
   team: { id: string; name: string; balance: string; stars: number; rank: number } | null
   teams: PublicTeam[]; game: GameId | null; round: number | null; token: string | null
   pot: { amount: string; target: string }; reveal: { id: string; rankings: Ranking[] } | null

@@ -2,7 +2,7 @@
 
 ## Shared rules
 - Five games, three rounds each; potential winnings increase across rounds and games. Current order: Will we get bonus this year → High or low → Cave mining → What goes around comes around → Gamble bomb finale.
-- Admins assign two to five teams of two, with one solo team if needed. “Player” means team. Both members share one action per decision; the first submitted choice is final.
+- Admins assign two to five teams of two, with one solo team if needed. “Player” means team. The member with the earlier arrival order leads the team; only they can submit game decisions, acknowledge a ranking reveal, or contribute to the reveal pot. Teammates discuss choices in person. A solo player is their own leader.
 - Round winnings enter each team's accumulated balance. Transfers and bombs affect this balance.
 - Start with each team's balance at 0. Rank teams by balance. Each team sees only its own position; other teams' positions and balances are hidden except during a reveal.
 - Game information is limited to the visibility rules below, in addition to the team's own rank.

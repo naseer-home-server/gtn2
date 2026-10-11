@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { ErrorMessage, LoadingMessage } from '@/components/page-feedback'
+import { AdminSessions } from '@/components/admin-sessions'
 import { useAdminSettings } from '../hooks/use-admin-settings'
 
 export function AdminPage() {
@@ -10,6 +11,7 @@ export function AdminPage() {
   if (settings.error) return <ErrorMessage message={settings.error.message} />
   return <div className="space-y-6">
     <h1 className="text-2xl font-semibold tracking-tight">Admin</h1>
+    <AdminSessions />
     <Card>
       <CardHeader>
         <CardTitle><h2>Login settings</h2></CardTitle>
@@ -19,7 +21,7 @@ export function AdminPage() {
         <div className="flex items-center justify-between gap-6">
           <div className="space-y-2">
             <Label htmlFor="email-login">Enable email test login</Label>
-            <p id="email-login-description" className="text-sm text-muted-foreground">Teams can log in with any email without a password.</p>
+            <p id="email-login-description" className="text-sm text-muted-foreground">Invited players in the active session can log in without a password.</p>
           </div>
           <Switch id="email-login" aria-describedby="email-login-description" checked={settings.data.emailLoginEnabled} disabled={update.isPending} onCheckedChange={(checked) => update.mutate(checked)} />
         </div>

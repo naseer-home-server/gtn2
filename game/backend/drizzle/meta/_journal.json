@@ -8,6 +8,20 @@
       "when": 1791709746282,
       "tag": "0000_add_app_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791710983879,
+      "tag": "0001_game_sessions",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791711256732,
+      "tag": "0002_arrival_order_constraints",
+      "breakpoints": true
     }
   ]
 }

@@ -1,3 +1,4 @@
+import { testSessions } from './session-test-fixture.js'
 import assert from 'node:assert/strict'
 import { mock, test } from 'node:test'
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express'
@@ -21,7 +22,7 @@ test('context ignores admin roles on test sessions and reads current roles for r
   t.after(() => mock.restoreAll())
   mock.method(SuperTokens, 'getUser', async () => ({ id: 'user-id', emails: ['admin@example.com'] }))
   const roles = mock.method(UserRoles, 'getRolesForUser', async () => ({ roles: ['admin'] }))
-  const context = makeContext(settings(true))
+  const context = makeContext(settings(true), testSessions)
   assert.equal((await context(request(true))).user?.isAdmin, false)
   assert.equal((await context(request(false))).user?.isAdmin, true)
   roles.mock.mockImplementation(async () => ({ roles: [] }))
@@ -33,7 +34,7 @@ test('test login issues a marked session with the passwordless recipe identity',
   const signIn = mock.method(Passwordless, 'signInUp', async () => ({ status: 'OK', recipeUserId }))
   const session = mock.method(Session, 'createNewSession', async () => ({}))
   const options = { req: {}, res: {} } as CreateExpressContextOptions
-  const ctx = await makeContext(settings(true))(options)
+  const ctx = await makeContext(settings(true), testSessions)(options)
   await ctx.signInWithTestEmail('admin@example.com')
   assert.deepEqual(signIn.mock.calls[0].arguments, [{ tenantId: 'public', email: 'admin@example.com' }])
   assert.deepEqual(session.mock.calls[0].arguments, [options.req, options.res, 'public', recipeUserId, { testLogin: true }])
@@ -47,7 +48,7 @@ test('disabling test login during identity creation prevents session issuance', 
   })
   const session = mock.method(Session, 'createNewSession', async () => ({}))
   const store = { get: async () => ({ emailLoginEnabled: enabled }) } as SettingsRepository
-  const ctx = await makeContext(store)({ req: {}, res: {} } as CreateExpressContextOptions)
+  const ctx = await makeContext(store, testSessions)({ req: {}, res: {} } as CreateExpressContextOptions)
   await assert.rejects(ctx.signInWithTestEmail('test@example.com'), { code: 'FORBIDDEN' })
   assert.equal(session.mock.callCount(), 0)
 })

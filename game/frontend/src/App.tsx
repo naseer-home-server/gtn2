@@ -4,6 +4,7 @@ import { SuperTokensWrapper } from 'supertokens-auth-react'
 import { SignInAndUpCallback } from 'supertokens-auth-react/recipe/thirdparty/prebuiltui'
 import { useAuth, useSignOut } from './hooks/use-auth'
 import { AdminPage } from './pages/AdminPage'
+import { SessionPage } from './pages/SessionPage'
 import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import { Badge } from '@/components/ui/badge'
@@ -50,6 +51,7 @@ export default function App() {
       <Route path="/" element={<RequireLogin><HomePage /></RequireLogin>} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/login/callback/:provider" element={<SignInAndUpCallback />} />
+      <Route path="/admin/sessions/:sessionId" element={<RequireLogin admin><SessionPage /></RequireLogin>} />
       <Route path="/admin" element={<RequireLogin admin><AdminPage /></RequireLogin>} />
       <Route path="*" element={<p>Page not found.</p>} />
     </Routes></main>

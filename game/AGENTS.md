@@ -6,6 +6,10 @@ Run `pnpm install` at the repository root, then `pnpm --filter game dev`. Build 
 
 SuperTokens handles Google login. `/admin` requires the `admin` role; Dashboard access is separate. Email test login is admin-controlled, defaults off, and never grants admin access. Keep authorization in backend procedures; PostgreSQL is the source of truth for settings.
 
+For local end-to-end testing only, `LOCAL=true` on the backend and `VITE_LOCAL=true` on the frontend select email/password authentication against the configured SuperTokens Core. The local `admin@test.com` account is granted the app admin role; production must use Google.
+
+Game sessions store invited emails, individual arrival order, gameplay state, and event history in PostgreSQL. Only one session can be active. Non-admin login and API access require membership in the active session; admins are exempt. Team formation comes later.
+
 Keep rules, payouts, star awards, and settings reusable by simulations. Enforce `docs/games.md` visibility and finale star advantage in backend responses as well as UI.
 
 Development phases apply to the whole project, not individual features:

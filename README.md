@@ -26,10 +26,20 @@ The frontend proxies `/auth` and `/trpc` to the backend on port 3000. tRPC share
 
 Register `<APP_URL>/login/callback/google` as an authorized redirect URI in Google OAuth. Google login is available in development and production.
 
-Set `SUPERTOKENS_DASHBOARD_ADMINS` to the comma-separated emails allowed into `<APP_URL>/auth/dashboard`. Log in to the game with Google, then open that user in the Dashboard and assign the `admin` role in the `public` tenant. Dashboard access and the game's `admin` role are separate. See [SuperTokens role assignment](https://supertokens.com/docs/post-authentication/dashboard/users-listing-and-details).
+Set `SUPERTOKENS_DASHBOARD_ADMINS` to the comma-separated emails allowed into `<APP_URL>/auth/dashboard`. Attempt Google login, then open that user in the Dashboard and assign the `admin` role in the `public` tenant. The first attempt creates the identity even if session membership blocks login; sign in again after assigning the role. Dashboard access and the game's `admin` role are separate. See [SuperTokens role assignment](https://supertokens.com/docs/post-authentication/dashboard/users-listing-and-details).
 
-The `/admin` page can enable or disable email test login. When enabled, `/login` accepts any valid email without a password, OTP, or email delivery. Test identities remain separate from Google identities and cannot access admin features. Disabling the setting also blocks existing test sessions from protected game APIs.
+The `/admin` page can enable or disable email test login. When enabled, invited players in the active session can log in with their email without a password, OTP, or email delivery. Test identities remain separate from Google identities and cannot access admin features. Disabling the setting also blocks existing test sessions from protected game APIs.
+
+For local end-to-end testing, set `LOCAL=true` in `game/backend/.env` and `VITE_LOCAL=true` in `game/frontend/.env`. The local app then uses the same SuperTokens Core's email/password account, `admin@test.com` / `abcd1234`; that account receives the app's `admin` role in local mode. Local email/password auth is rejected when the backend runs with `NODE_ENV=production`. Clear these flags to use Google login locally.
 
 The `app_settings` table is the source of truth for admin settings. Email test login defaults to disabled on first startup and is read from PostgreSQL for each authorization check.
+
+## Game sessions
+
+On `/admin`, create a named session with up to ten individual attendee emails, then set it active. Only one session can be active; activating another replaces it. Non-admin Google and test logins require an invited email in the active session. Protected API requests check membership again, so switching sessions also removes access for former participants. Admins can sign in without an invitation.
+
+Open a session's **Arrival order** page to mark attendees as they arrive and correct their order with the up/down controls. PostgreSQL stores invitations, arrival positions, and setup events. Session state and event history provide the foundation for recording games, earnings, and actions next; team formation is also deferred.
+
+Run `pnpm --filter backend test` for unit tests. With PostgreSQL configured, `RUN_DB_TESTS=1 pnpm --filter backend test` also verifies session persistence inside a transaction that rolls back its test data.
 
 Run `pnpm --filter game build` to build both parts. The root `docker-compose.yml` is the monorepo service manifest; use `.env.example` for its environment variables. Run `pnpm docker:dev` to build and start services in the foreground, or `pnpm docker:prod` to build and start them in the background. The game service listens on container port 3000 and uses `/health` for container health checks.

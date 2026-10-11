@@ -1,3 +1,4 @@
+import { testSessions } from './session-test-fixture.js'
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { appRouter } from './router.js'
@@ -18,7 +19,7 @@ async function fixture() {
   const settings = new MemorySettings()
   const logins: string[] = []
   const caller = (user: AuthUser | null) => appRouter.createCaller({
-    user, settings, signInWithTestEmail: async (email) => { logins.push(email) },
+    user, settings, sessions: testSessions, signInWithTestEmail: async (email) => { logins.push(email) },
   })
   return { caller, settings, logins }
 }

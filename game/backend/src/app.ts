@@ -8,13 +8,13 @@ import { makeContext } from './context.js'
 import { appRouter } from './router.js'
 import type { SettingsRepository } from './trpc.js'
 
-export function createApp(settings: SettingsRepository) {
+export function createApp(settings: SettingsRepository, sessions: import('./session-types.js').GameSessionsRepository) {
   const app = express()
   app.get('/health', (_request, response) => response.json({ status: 'ok' }))
   app.use(middleware())
   app.use('/trpc', verifySession({ sessionRequired: false }), createExpressMiddleware({
     router: appRouter,
-    createContext: makeContext(settings),
+    createContext: makeContext(settings, sessions),
   }))
   app.use(errorHandler())
   const publicDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public')

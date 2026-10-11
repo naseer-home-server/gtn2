@@ -6,8 +6,8 @@ import type { SessionRequest } from 'supertokens-node/framework/express'
 import UserRoles from 'supertokens-node/recipe/userroles'
 import { requireMembership, requireTestLoginEnabled, type AuthUser, type SettingsRepository, type TrpcContext } from './trpc.js'
 
-export function makeContext(settings: SettingsRepository, sessions: import('./session-types.js').GameSessionsRepository) {
-  return async ({ req, res }: CreateExpressContextOptions): Promise<TrpcContext> => {
+export function makeContext(settings: SettingsRepository, sessions: import('./session-types.js').GameSessionsRepository, gameplay?: import('./engine/types.js').GameplayRepository) {
+  return async ({ req, res }: Pick<CreateExpressContextOptions, 'req' | 'res'>): Promise<TrpcContext> => {
     const session = (req as SessionRequest).session
     let user: AuthUser | null = null
     if (session) {
@@ -20,7 +20,7 @@ export function makeContext(settings: SettingsRepository, sessions: import('./se
       }
     }
     return {
-      user, settings, sessions,
+      user, settings, sessions, gameplay,
       signInWithTestEmail: async (email) => {
         await requireTestLoginEnabled(settings)
         await requireMembership({ id: '', email, isAdmin: false, isTestLogin: true }, sessions)

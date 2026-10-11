@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { check, index, integer, jsonb, pgTable, text, timestamp, uuid, boolean, uniqueIndex } from 'drizzle-orm/pg-core'
+import { bigserial, check, index, integer, jsonb, pgTable, text, timestamp, uuid, boolean, uniqueIndex } from 'drizzle-orm/pg-core'
 
 export const gameSessions = pgTable('game_sessions', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -24,12 +24,17 @@ export const sessionPlayers = pgTable('session_players', {
 
 export const sessionEvents = pgTable('session_events', {
   id: uuid('id').defaultRandom().primaryKey(),
+  sequence: bigserial('sequence', { mode: 'number' }).notNull(),
   sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
   actorId: text('actor_id').notNull(),
   type: text('type').notNull(),
   data: jsonb('data').$type<Record<string, unknown>>().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-}, (table) => [index('session_event_history_idx').on(table.sessionId, table.createdAt)])
+}, (table) => [
+  index('session_event_history_idx').on(table.sessionId, table.createdAt),
+  index('session_event_sequence_idx').on(table.sessionId, table.sequence),
+  uniqueIndex('session_event_request_idx').on(table.sessionId, sql`(${table.data}->>'requestId')`).where(sql`${table.type} = 'player.command'`),
+])
 
 export const appSettings = pgTable('app_settings', {
   id: text('id').primaryKey(),

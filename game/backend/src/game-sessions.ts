@@ -67,6 +67,7 @@ export class DbGameSessionsRepository implements GameSessionsRepository {
       if (!session) throw missing()
       const players = await tx.select().from(sessionPlayers).where(eq(sessionPlayers.sessionId, sessionId))
       const arrived = players.filter((p) => p.arrivalOrder !== null)
+      if (Object.keys(session.state).length) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Arrival order is fixed once the playthrough starts.' })
       if (new Set(playerIds).size !== playerIds.length || playerIds.length !== arrived.length || arrived.some((p) => !playerIds.includes(p.id))) {
         throw new TRPCError({ code: 'BAD_REQUEST', message: 'Include every arrived player exactly once.' })
       }

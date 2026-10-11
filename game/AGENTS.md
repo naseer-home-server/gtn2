@@ -8,9 +8,9 @@ SuperTokens handles Google login. `/admin` requires the `admin` role; Dashboard 
 
 For local end-to-end testing only, `LOCAL=true` on the backend and `VITE_LOCAL=true` on the frontend select email/password authentication against the configured SuperTokens Core. The local `admin@test.com` account is granted the app admin role; production must use Google.
 
-Game sessions store invited emails, individual arrival order, gameplay state, and event history in PostgreSQL. Only one session can be active. Non-admin login and API access require membership in the active session; admins are exempt. Team formation comes later.
+Game sessions store invitations, arrival order, admin-assigned teams, configuration, gameplay state, and all actions/outcomes in PostgreSQL. Only one session can be active. Non-admin login and API access require membership in it; admins are exempt. Freeze team tie order when play starts.
 
-Keep rules, payouts, star awards, and settings reusable by simulations. Enforce `docs/games.md` visibility and finale star advantage in backend responses as well as UI.
+Keep the pure engine in `backend/src/engine` independent of UI, auth, and storage; inject time/randomness. Engine money is integer-cent strings; player API money is decimal strings. Enforce `docs/games.md` visibility on the server. See `docs/game-api.md` for state/action APIs and retry semantics. Admins see the full audit; players get filtered views only.
 
 Development phases apply to the whole project, not individual features:
 1. Functionality (current): verify behavior with a simple, neat UI using shadcn/ui. Keep logic, state, and API interactions separate from presentation. Do not use the frontend-design skill or establish a final theme yet.

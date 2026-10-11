@@ -32,6 +32,8 @@ test('HTTP routes enforce authentication and do not expose ungated passwordless 
   const loginSettings = await fetch(origin + '/trpc/auth.settings')
   assert.deepEqual(await loginSettings.json(), { result: { data: { emailLoginEnabled: false } } })
   assert.equal((await fetch(origin + '/trpc/hello')).status, 401)
+  assert.equal((await fetch(origin + '/api/game/state')).status, 401)
+  assert.equal((await post('/api/game/actions', { requestId: 'test', token: 'test', action: { type: 'bonus.take', amount: 0 } })).status, 401)
   assert.equal((await fetch(origin + '/trpc/admin.settings')).status, 401)
   assert.equal((await post('/trpc/admin.setEmailLoginEnabled', { enabled: true })).status, 401)
   assert.equal((await post('/trpc/auth.testEmailLogin', { email: 'test@example.com' })).status, 403)

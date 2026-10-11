@@ -2,17 +2,17 @@
 
 ## Shared rules
 - Five games, three rounds each; potential winnings increase across rounds and games. Current order: Will we get bonus this year → High or low → Cave mining → What goes around comes around → Gamble bomb finale.
-- Up to five teams of two; odd attendance leaves one solo team. “Player” means team.
+- Admins assign two to five teams of two, with one solo team if needed. “Player” means team. Both members share one action per decision; the first submitted choice is final.
 - Round winnings enter each team's accumulated balance. Transfers and bombs affect this balance.
 - Start with each team's balance at 0. Rank teams by balance. Each team sees only its own position; other teams' positions and balances are hidden except during a reveal.
 - Game information is limited to the visibility rules below, in addition to the team's own rank.
-- Teams may spend money from their accounts into the reveal pot at any time. Its progress and target are visible to every team; its target starts as average team earnings and remains configurable. Cap a contribution at the remaining amount needed to fill it. The instant it reaches its limit, reveal all rankings (never balances or earnings), reset the pot to 0, and hide rankings again. Contributions are spent and gone; fill it again to reveal again.
+- Teams may spend account money into the public reveal pot at any time. Freeze its target while filling; cap contributions at the remaining amount. Filling it immediately reveals a ranking snapshot, resets the pot to 0, and pauses play. Each team acknowledges once, hiding its snapshot; resume after all acknowledge. Contributions are gone; fill it again to reveal again.
 - Stars and star totals are public. Stars are awarded during the first four games. The team with the most stars gets a significant advantage in the final game; keep the nature of that advantage secret until then. Do not award stars in the finale.
-- Break all ties using a fixed team order based on each team's first member to arrive.
+- Break all ties using a fixed team order based on each team's first member to arrive, frozen when play starts. The host advances completed rounds.
 - Tune game defaults and round overrides through playtesting; share configuration with simulations. Values below are drafts; “TBD” means unset.
 - Round fractional money to two decimal places. High-or-low stake multipliers and the bomb factor use the round values below.
 
-For now, interpret average earnings as the mean earnings across teams; refine the exact formula during playtesting.
+For now, the pot target is average accumulated balances plus past pot spending (so spending does not shrink the target). It opens after positive earnings; tune its multiplier during playtesting.
 
 ## Will we get bonus this year
 
@@ -56,7 +56,7 @@ Each team begins with the starting money unbanked. Every tick:
 
 1. Check for collapse using the risk for teams already departed. Collapse ends the round; teams still inside earn zero.
 2. If the cave survives, multiply unbanked money by the growth multiplier.
-3. Teams choose to stay or leave. Leaving banks their current money and increases risk for the next tick.
+3. Teams choose to stay or leave before the next tick. No response means stay. Leaving banks their current money and increases risk for the next tick.
 
 Previously banked money is safe. There is no tick limit; play ends on collapse or when all teams leave.
 

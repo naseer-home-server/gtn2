@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ErrorMessage, LoadingMessage } from '@/components/page-feedback'
+import { AdminGame } from '@/components/admin-game'
 
 export function SessionPage() {
   const { sessionId = '' } = useParams()
@@ -13,6 +14,7 @@ export function SessionPage() {
   const arrived = session.data.players.filter((p) => p.arrivalOrder !== null).sort((a, b) => a.arrivalOrder! - b.arrivalOrder!)
   const waiting = session.data.players.filter((p) => p.arrivalOrder === null)
   const pending = arrive.isPending || reorder.isPending
+  const arrivalOrderLocked = session.data.currentGame !== null
   function move(index: number, offset: number) {
     const ids = arrived.map((p) => p.id)
     ;[ids[index], ids[index + offset]] = [ids[index + offset], ids[index]]
@@ -25,7 +27,7 @@ export function SessionPage() {
       {arrived.length === 0 && <p className="text-sm text-muted-foreground">Nobody has arrived yet.</p>}
       <ol className="space-y-2">{arrived.map((player, index) => <li key={player.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border p-3">
         <span className="break-all"><span className="mr-3 font-semibold">{player.arrivalOrder}.</span>{player.email}</span>
-        <div className="flex gap-2"><Button variant="outline" size="sm" aria-label={`Move ${player.email} earlier`} disabled={pending || index === 0} onClick={() => move(index, -1)}>Up</Button><Button variant="outline" size="sm" aria-label={`Move ${player.email} later`} disabled={pending || index === arrived.length - 1} onClick={() => move(index, 1)}>Down</Button></div>
+        <div className="flex gap-2"><Button variant="outline" size="sm" aria-label={`Move ${player.email} earlier`} disabled={arrivalOrderLocked || pending || index === 0} onClick={() => move(index, -1)}>Up</Button><Button variant="outline" size="sm" aria-label={`Move ${player.email} later`} disabled={arrivalOrderLocked || pending || index === arrived.length - 1} onClick={() => move(index, 1)}>Down</Button></div>
       </li>)}</ol>
       {reorder.error && <ErrorMessage message={reorder.error.message} />}
     </CardContent></Card>
@@ -34,5 +36,6 @@ export function SessionPage() {
       {waiting.map((player) => <div key={player.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3"><span className="break-all">{player.email}</span><Button disabled={pending} onClick={() => arrive.mutate(player.id)}>Mark arrived</Button></div>)}
       {arrive.error && <ErrorMessage message={arrive.error.message} />}
     </CardContent></Card>
+    <AdminGame sessionId={sessionId} players={session.data.players} />
   </div>
 }

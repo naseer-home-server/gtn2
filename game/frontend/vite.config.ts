@@ -11,6 +11,7 @@ export default defineConfig({
   resolve: { alias: { '@': path.resolve(frontendDir, 'src') } },
   server: {
     proxy: {
+      '/api': 'http://localhost:3000',
       '/trpc': 'http://localhost:3000',
       '/auth': 'http://localhost:3000',
     },

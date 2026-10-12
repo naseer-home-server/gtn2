@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { GameConfig, TeamAssignment } from 'backend/game'
+import type { GameConfig, GameId, TeamAssignment } from 'backend/game'
 import { useAdminGame } from '@/hooks/use-gameplay'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { ErrorMessage, LoadingMessage } from '@/components/page-feedback'
 
 type DraftTeam = { name: string; first: string; second: string }
+const GAME_ORDER: GameId[] = ['bonus', 'high-low', 'cave', 'circle', 'bomb']
 const freshTeam = (): DraftTeam => ({ name: '', first: '', second: '' })
 const money = (cents: string) => {
   const value = BigInt(cents)
@@ -18,11 +19,12 @@ const money = (cents: string) => {
 
 type SessionPlayer = { id: string; email: string; arrivalOrder: number | null }
 export function AdminGame({ sessionId, players }: { sessionId: string; players: SessionPlayer[] }) {
-  const { defaults, state, start, advance } = useAdminGame(sessionId)
+  const { defaults, state, start, advance, reset } = useAdminGame(sessionId)
   const [teams, setTeams] = useState<DraftTeam[]>([freshTeam(), freshTeam()])
   const [configText, setConfigText] = useState('')
   const [configTouched, setConfigTouched] = useState(false)
   const [configParseError, setConfigParseError] = useState('')
+  const [startingGame, setStartingGame] = useState<GameId>('bonus')
   const arrived = useMemo(() => players.filter((p) => p.arrivalOrder !== null).sort((a, b) => a.arrivalOrder! - b.arrivalOrder!), [players])
   useEffect(() => {
     if (defaults.data && !configTouched) setConfigText(JSON.stringify(defaults.data, null, 2))
@@ -51,13 +53,23 @@ export function AdminGame({ sessionId, players }: { sessionId: string; players: 
     let config: GameConfig
     try { config = JSON.parse(configText) as GameConfig; setConfigParseError('') } catch (error) { setConfigParseError(error instanceof Error ? error.message : 'Configuration must be valid JSON.'); return }
     const assignments: TeamAssignment[] = teams.map((team) => ({ name: team.name.trim(), playerIds: [team.first, team.second].filter(Boolean) }))
-    start.mutate({ teams: assignments, config })
+    start.mutate({ teams: assignments, config, startingGame })
+  }
+  function resetPlaythrough() {
+    if (engine && window.confirm(`Reset ${engine.current.game} to round 1? Earnings and stars from this game will be cleared. Balances, stars, and results from earlier games will be preserved.`)) reset.mutate()
   }
 
   return <Card>
     <CardHeader><CardTitle><h2>Gameplay control</h2></CardTitle><CardDescription>Assign arrived players to teams, configure the shared rules, then start the session.</CardDescription></CardHeader>
     <CardContent className="space-y-6">
       {!engine ? <>
+        <section className="max-w-sm space-y-2">
+          <Label htmlFor="starting-game">Start at game</Label>
+          <select id="starting-game" className="h-8 w-full rounded-lg border border-input bg-background px-2 text-sm" value={startingGame} onChange={(event) => setStartingGame(event.target.value as GameId)}>
+            {GAME_ORDER.map((game) => <option key={game} value={game}>{game}</option>)}
+          </select>
+          <p className="text-sm text-muted-foreground">Useful for preview sessions. The session starts at round 1 of this game.</p>
+        </section>
         <section className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-medium">Teams</h3><Button variant="outline" disabled={teams.length >= 5} onClick={() => setTeams((items) => [...items, freshTeam()])}>Add team</Button></div>
           <p className="text-sm text-muted-foreground">Choose 2–5 teams from arrived players. One team may be solo when attendance is odd.</p>
@@ -74,10 +86,10 @@ export function AdminGame({ sessionId, players }: { sessionId: string; players: 
         </section>
         {configParseError && <ErrorMessage message={`Invalid configuration JSON: ${configParseError}`} />}
         {start.error && <ErrorMessage message={start.error.message} />}
-        <Button disabled={!canStart || !configText.trim()} onClick={begin}>{start.isPending ? 'Starting…' : 'Start game'}</Button>
+        <Button disabled={!canStart || !configText.trim()} onClick={begin}>{start.isPending ? 'Starting…' : `Start at ${startingGame} · round 1`}</Button>
       </> : <>
         <div className="flex flex-wrap items-center gap-2"><Badge>{engine.status}</Badge><span className="font-medium">{engine.current.game} · Round {engine.round}</span><span className="text-sm text-muted-foreground">Phase: {engine.current.phase}</span></div>
-        <div className="flex flex-wrap gap-2">{engine.status === 'playing' && engine.current.phase === 'complete' && <Button disabled={advance.isPending} onClick={() => advance.mutate()}>{advance.isPending ? 'Advancing…' : 'Advance game'}</Button>}{engine.status === 'finished' && <p className="text-sm text-muted-foreground">Game finished.</p>}{advance.error && <ErrorMessage message={advance.error.message} />}</div>
+        <div className="flex flex-wrap items-center gap-2">{engine.status === 'playing' && engine.current.phase === 'complete' && <Button disabled={advance.isPending || reset.isPending} onClick={() => advance.mutate()}>{advance.isPending ? 'Advancing…' : 'Advance game'}</Button>}{engine.status === 'finished' && <p className="text-sm text-muted-foreground">Game finished.</p>}<Button variant="destructive" disabled={reset.isPending || advance.isPending} onClick={resetPlaythrough}>{reset.isPending ? 'Resetting…' : 'Reset current game'}</Button>{advance.error && <ErrorMessage message={advance.error.message} />}{reset.error && <ErrorMessage message={reset.error.message} />}</div>
         <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b text-muted-foreground"><th className="p-2">Team</th><th className="p-2">Balance</th><th className="p-2">Stars</th><th className="p-2">Players</th></tr></thead><tbody>{engine.teams.map((team) => <tr key={team.id} className="border-b"><td className="p-2 font-medium">{team.name}</td><td className="p-2">{money(team.balance)}</td><td className="p-2">{team.stars}</td><td className="p-2">{team.playerIds.map(playerName).join(', ')}</td></tr>)}</tbody></table></div>
         <section className="space-y-2"><h3 className="font-medium">Engine state</h3><pre className="max-h-72 overflow-auto rounded-lg bg-muted p-3 text-xs">{JSON.stringify(engine, null, 2)}</pre></section>
         <section className="space-y-2"><h3 className="font-medium">Event log</h3><div className="max-h-96 space-y-2 overflow-auto rounded-lg border p-3">{view.events.length === 0 ? <p className="text-sm text-muted-foreground">No events yet.</p> : view.events.map((event) => {

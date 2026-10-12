@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { DEFAULT_CONFIG, gameConfigSchema, playerCommandSchema } from './engine/config.js'
+import { GAME_ORDER } from './engine/types.js'
 import { adminProcedure, protectedProcedure, publicProcedure, requireMembership, requireTestLoginEnabled, router } from './trpc.js'
 
 export const appRouter = router({
@@ -39,11 +40,15 @@ export const appRouter = router({
         if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
         return ctx.gameplay.adminView(input.sessionId)
       }),
-      start: adminProcedure.input(z.object({ sessionId: z.uuid(), config: gameConfigSchema,
+      start: adminProcedure.input(z.object({ sessionId: z.uuid(), config: gameConfigSchema, startingGame: z.enum(GAME_ORDER).default('bonus'),
         teams: z.array(z.object({ name: z.string().trim().min(1).max(60), playerIds: z.array(z.uuid()).min(1).max(2) })).min(2).max(5),
       })).mutation(({ ctx, input }) => {
         if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
-        return ctx.gameplay.start(input.sessionId, input.teams, input.config, ctx.user.id)
+        return ctx.gameplay.start(input.sessionId, input.teams, input.config, ctx.user.id, input.startingGame)
+      }),
+      reset: adminProcedure.input(z.object({ sessionId: z.uuid() })).mutation(({ ctx, input }) => {
+        if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
+        return ctx.gameplay.reset(input.sessionId, ctx.user.id)
       }),
       advance: adminProcedure.input(z.object({ sessionId: z.uuid() })).mutation(({ ctx, input }) => {
         if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })

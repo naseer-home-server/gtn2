@@ -5,10 +5,10 @@ import { ZodError } from 'zod'
 import { GameRuleError } from './engine/errors.js'
 import type { AppDb } from './db/index.js'
 import { appSettings, gameSessions, sessionEvents, sessionPlayers } from './db/schema.js'
-import { advanceEngine, applyAction, startEngine, tickEngine } from './engine/index.js'
+import { advanceEngine, applyAction, resetCurrentGame, startEngine, tickEngine } from './engine/index.js'
 import { playerView } from './engine/views.js'
 import { ensure } from './engine/helpers.js'
-import type { AdminGameView, EngineEnv, EngineEvent, EngineState, GameConfig, GameplayRepository, PlayerCommand, TeamAssignment } from './engine/types.js'
+import type { AdminGameView, EngineEnv, EngineEvent, EngineState, GameConfig, GameId, GameplayRepository, PlayerCommand, TeamAssignment } from './engine/types.js'
 
 type Tx = Parameters<Parameters<AppDb['transaction']>[0]>[0]
 type SessionRow = typeof gameSessions.$inferSelect
@@ -65,7 +65,7 @@ export class DbGameplayRepository implements GameplayRepository {
       return playerView(row.id, row.name, readState(row), player.id)
     })
   }
-  async start(sessionId: string, assignments: TeamAssignment[], config: GameConfig, actorId: string) {
+  async start(sessionId: string, assignments: TeamAssignment[], config: GameConfig, actorId: string, startingGame: GameId = 'bonus') {
     try {
       await this.db.transaction(async (tx) => {
         const row = await lockedSession(tx, sessionId)
@@ -83,7 +83,7 @@ export class DbGameplayRepository implements GameplayRepository {
           const leader = [...members].sort((a, b) => a!.arrivalOrder! - b!.arrivalOrder!)[0]!
           return { id: randomUUID(), name: assignment.name.trim(), playerIds: assignment.playerIds, leaderPlayerId: leader.id, tieOrder: leader.arrivalOrder!, balance: '0', stars: 0 }
         })
-        const { state, events } = startEngine(teams, config, this.env())
+        const { state, events } = startEngine(teams, config, this.env(), startingGame)
         await persist(tx, sessionId, state, events, actorId)
       })
     } catch (error) { gameError(error) }
@@ -94,6 +94,15 @@ export class DbGameplayRepository implements GameplayRepository {
         const row = await lockedSession(tx, sessionId); const state = readState(row)
         ensure(state, 'Start the playthrough first.')
         await persist(tx, sessionId, state, advanceEngine(state, this.env()), actorId)
+      })
+    } catch (error) { gameError(error) }
+  }
+  async reset(sessionId: string, actorId: string) {
+    try {
+      await this.db.transaction(async (tx) => {
+        const row = await lockedSession(tx, sessionId); const state = readState(row)
+        ensure(state, 'Start the playthrough first.')
+        await persist(tx, sessionId, state, resetCurrentGame(state, this.env()), actorId)
       })
     } catch (error) { gameError(error) }
   }

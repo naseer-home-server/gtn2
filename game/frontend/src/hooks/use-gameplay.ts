@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRef } from 'react'
-import type { GameAction, GameConfig, PlayerGameView, TeamAssignment } from 'backend/game'
+import type { GameAction, GameConfig, GameId, PlayerGameView, TeamAssignment } from 'backend/game'
 import { queryClient } from '@/lib/query-client'
 import { trpc } from '@/trpc'
 
@@ -43,7 +43,7 @@ export function useAdminGame(sessionId: string) {
     refetchInterval: 1_000,
   })
   const start = useMutation({
-    mutationFn: (input: { teams: TeamAssignment[]; config: GameConfig }) => trpc.admin.game.start.mutate({ sessionId, ...input }),
+    mutationFn: (input: { teams: TeamAssignment[]; config: GameConfig; startingGame: GameId }) => trpc.admin.game.start.mutate({ sessionId, ...input }),
     onSuccess: () => Promise.all([
       queryClient.invalidateQueries({ queryKey: ['admin', 'game', sessionId] }),
       queryClient.invalidateQueries({ queryKey: ['admin', 'sessions'] }),
@@ -53,5 +53,12 @@ export function useAdminGame(sessionId: string) {
     mutationFn: () => trpc.admin.game.advance.mutate({ sessionId }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'game', sessionId] }),
   })
-  return { defaults, state, start, advance }
+  const reset = useMutation({
+    mutationFn: () => trpc.admin.game.reset.mutate({ sessionId }),
+    onSuccess: () => Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['admin', 'game', sessionId] }),
+      queryClient.invalidateQueries({ queryKey: ['admin', 'sessions'] }),
+    ]),
+  })
+  return { defaults, state, start, advance, reset }
 }

@@ -19,6 +19,16 @@ export type TeamAssignment = { name: string; playerIds: string[] }
 export type RoundResult = { game: GameId; round: number; payouts: Record<string, Money>; details: Record<string, unknown> }
 export type Ranking = { teamId: string; rank: number }
 export type Reveal = { id: string; rankings: Ranking[]; acknowledged: string[] }
+export type GameStartCheckpoint = {
+  gameIndex: number
+  accounts: Record<string, { balance: Money; stars: number }>
+  historyLength: number
+  caveTotals: Record<string, Money>
+  advantagedTeamId: string | null
+  pot: { amount: Money; target: Money }
+  potSpent: Record<string, Money>
+  reveal: Reveal | null
+}
 export type BaseRound = { token: string; phase: 'choices' | 'transfer' | 'return' | 'cave' | 'complete' }
 export type BonusRound = BaseRound & { game: 'bonus'; choices: Record<string, Money> }
 export type HighLowRound = BaseRound & { game: 'high-low'; choices: Record<string, Money> }
@@ -40,6 +50,7 @@ export type EngineState = {
   history: RoundResult[]; caveTotals: Record<string, Money>; advantagedTeamId: string | null
   pot: { amount: Money; target: Money }; reveal: Reveal | null
   potSpent?: Record<string, Money>
+  gameStart?: GameStartCheckpoint
 }
 export type EngineEvent = { type: string; data: Record<string, unknown> }
 export type EngineEnv = { now: number; random: () => number; token: () => string }
@@ -76,8 +87,9 @@ export type AdminGameView = { sessionId: string; sessionName: string; state: Eng
 export interface GameplayRepository {
   adminView(sessionId: string): Promise<AdminGameView>
   playerView(email: string): Promise<PlayerGameView>
-  start(sessionId: string, teams: TeamAssignment[], config: GameConfig, actorId: string): Promise<void>
+  start(sessionId: string, teams: TeamAssignment[], config: GameConfig, actorId: string, startingGame?: GameId): Promise<void>
   advance(sessionId: string, actorId: string): Promise<void>
+  reset(sessionId: string, actorId: string): Promise<void>
   action(email: string, command: PlayerCommand, actorId: string): Promise<PlayerGameView>
   tick(): Promise<void>
 }

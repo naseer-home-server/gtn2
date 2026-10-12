@@ -49,13 +49,13 @@ function cycleSizes(next: Record<string, string>) {
 test('circle reshuffles every round into only valid circles', () => {
   const state = fixture(3, 5)
   startFinalGame(state, env([0, 0, 0, 0, 0]))
-  assert.deepEqual(cycleSizes(state.current.game === 'circle' ? state.current.next : {}), [2, 3])
-  const firstNext = state.current.game === 'circle' ? { ...state.current.next } : {}
+  assert.deepEqual(cycleSizes(state.current.phase !== 'ready' && state.current.game === 'circle' ? state.current.next : {}), [2, 3])
+  const firstNext = state.current.phase !== 'ready' && state.current.game === 'circle' ? { ...state.current.next } : {}
 
   state.round = 2
   startFinalGame(state, env([0, 0.99, 0, 0, 0]))
-  assert.deepEqual(cycleSizes(state.current.game === 'circle' ? state.current.next : {}), [2, 3])
-  assert.notDeepEqual(state.current.game === 'circle' ? state.current.next : {}, firstNext)
+  assert.deepEqual(cycleSizes(state.current.phase !== 'ready' && state.current.game === 'circle' ? state.current.next : {}), [2, 3])
+  assert.notDeepEqual(state.current.phase !== 'ready' && state.current.game === 'circle' ? state.current.next : {}, firstNext)
 })
 
 test('circle debits submissions, multiplies money and stars, and settles simultaneous returns with net history', () => {
@@ -66,8 +66,8 @@ test('circle debits submissions, multiplies money and stars, and settles simulta
   state.teams[1].stars = 2
   const testEnv = env([0, 0, 0, 0])
   startFinalGame(state, testEnv)
-  const next = state.current.game === 'circle' ? state.current.next : {}
-  const senderForA = state.current.game === 'circle' ? state.current.sender.a : ''
+  const next = state.current.phase !== 'ready' && state.current.game === 'circle' ? state.current.next : {}
+  const senderForA = state.current.phase !== 'ready' && state.current.game === 'circle' ? state.current.sender.a : ''
   assert.notEqual(senderForA, 'a')
 
   actFinalGame(state, 'a', { type: 'circle.send', money: 2, stars: 1 }, testEnv)

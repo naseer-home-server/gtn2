@@ -46,6 +46,10 @@ export const appRouter = router({
         if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
         return ctx.gameplay.start(input.sessionId, input.teams, input.config, ctx.user.id, input.startingGame)
       }),
+      startRound: adminProcedure.input(z.object({ sessionId: z.uuid() })).mutation(({ ctx, input }) => {
+        if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
+        return ctx.gameplay.startRound(input.sessionId, ctx.user.id)
+      }),
       reset: adminProcedure.input(z.object({ sessionId: z.uuid() })).mutation(({ ctx, input }) => {
         if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
         return ctx.gameplay.reset(input.sessionId, ctx.user.id)

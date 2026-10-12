@@ -42,12 +42,20 @@ export function startEngine(teams: Team[], config: GameConfig, env: EngineEnv, s
   const state: EngineState = {
     version: 1, revision: 0, status: 'playing', config: structuredClone(config),
     teams: teams.map((team) => ({ ...team, balance: cents(config.initialBalance), stars: 0 })),
-    gameIndex: GAME_ORDER.indexOf(startingGame), round: 1, current: { game: startingGame, phase: 'choices', choices: {}, token: '' } as CurrentRound,
+    gameIndex: GAME_ORDER.indexOf(startingGame), round: 1, current: { game: startingGame, phase: 'ready', token: env.token() },
     history: [], caveTotals: {}, advantagedTeamId: null, pot: { amount: '0', target: '0' }, potSpent: {}, reveal: null,
   }
   captureGameStart(state)
-  const events: EngineEvent[] = [{ type: 'playthrough.started', data: { teams: structuredClone(state.teams), config: structuredClone(state.config) } }, ...startRound(state, env)]
+  const events: EngineEvent[] = [
+    { type: 'playthrough.started', data: { teams: structuredClone(state.teams), config: structuredClone(state.config) } },
+    { type: 'round.ready', data: { game: startingGame, round: state.round } },
+  ]
   return { state, events }
+}
+export function startRoundEngine(state: EngineState, env: EngineEnv): EngineEvent[] {
+  ensure(state.status === 'playing' && state.current.phase === 'ready', 'This round is not waiting to start.')
+  ensure(!state.reveal, 'All teams must acknowledge the rankings reveal first.')
+  return startRound(state, env)
 }
 export function advanceEngine(state: EngineState, env: EngineEnv): EngineEvent[] {
   ensure(state.status === 'playing' && state.current.phase === 'complete', 'Finish this round before advancing.')
@@ -66,7 +74,7 @@ export function resetCurrentGame(state: EngineState, env: EngineEnv): EngineEven
   if (!state.gameStart && state.round === 1 && state.status === 'playing'
     && !state.history.some((result) => result.game === state.current.game)
     && state.pot.amount === '0' && Object.keys(state.potSpent ?? {}).length === 0
-    && (state.current.game !== 'circle' || (Object.keys(state.current.transfers).length === 0 && Object.keys(state.current.returns).length === 0))) {
+    && (state.current.phase === 'ready' || state.current.game !== 'circle' || (Object.keys(state.current.transfers).length === 0 && Object.keys(state.current.returns).length === 0))) {
     if (state.current.game === 'cave') {
       for (const team of state.teams) team.balance = moneySub(team.balance, state.caveTotals[team.id] ?? '0')
       state.caveTotals = {}
@@ -92,9 +100,10 @@ export function resetCurrentGame(state: EngineState, env: EngineEnv): EngineEven
   state.reveal = structuredClone(checkpoint.reveal)
   state.round = 1
   state.status = 'playing'
+  state.current = { game, phase: 'ready', token: env.token() }
   return [
     { type: 'game.reset', data: { game, previousRound, preservedRounds: checkpoint.historyLength } },
-    ...startRound(state, env),
+    { type: 'round.ready', data: { game, round: state.round } },
   ]
 }
 export function applyAction(state: EngineState, teamId: string, token: string, action: GameAction, env: EngineEnv): EngineEvent[] {
@@ -131,6 +140,7 @@ export function applyAction(state: EngineState, teamId: string, token: string, a
     return events
   }
   ensure(state.status === 'playing', 'The playthrough is finished.')
+  ensure(state.current.phase !== 'ready', 'The host has not started this round.')
   if (action.type === 'cave.decide' && state.current.game === 'cave') {
     ensure(state.current.nextTickAt !== null && env.now < state.current.nextTickAt, 'This cave decision window has closed. Refresh your state.')
   }

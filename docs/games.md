@@ -52,11 +52,7 @@ Each team chooses between zero and base pool × stake multiplier. The lowest tea
 | Collapse risk by teams departed (0 / 1 / 2 / 3 / 4) | 5% / 20% / 40% / 60% / 80% |
 | Stars awarded | 3 to the team with the most banked across all rounds (draft) |
 
-Each team begins with the starting money unbanked. Every tick:
-
-1. Check for collapse using the risk for teams already departed. Collapse ends the round; teams still inside earn zero.
-2. If the cave survives, multiply unbanked money by the growth multiplier.
-3. Teams choose to stay or leave before the next tick. No response means stay. Leaving banks their current money and increases risk for the next tick.
+Each team begins with the starting money unbanked and immediately gets a decision window. The first window is safe: teams can leave and bank their starting money without a collapse check. If the window expires, the first collapse check uses the risk for teams already departed. Collapse ends the round; teams still inside earn zero. If the cave survives, multiply unbanked money by the growth multiplier and open the next decision window. No response means stay. Leaving banks the current amount and increases risk at the next check.
 
 Previously banked money is safe. There is no tick limit; play ends on collapse or when all teams leave.
 

@@ -88,27 +88,47 @@ test('third-round high-low stars go to the selected low chooser', () => {
   assert.equal(s.teams[1].stars, 0)
 })
 
-test('cave pauses during reveal, grows on one due tick, and banks leavers immediately', () => {
+test('cave starts with a safe decision window, pauses during reveal, grows on one due tick, and banks leavers immediately', () => {
   const s = state('cave')
   startEarlyGame(s, env(100))
-  const cave = s.current
+  const cave = s.current as CaveRound
   assert.equal(cave.game, 'cave')
+  assert.equal(cave.tick, 1)
+  assert.equal(cave.stage, 'decisions')
+  assert.equal(cave.unbanked, '500')
+  assert.deepEqual(actEarlyGame(s, 'a', { type: 'cave.decide', decision: 'leave' }, env(101)), [
+    { type: 'cave.decision', data: { teamId: 'a', decision: 'leave', tick: 1 } },
+    { type: 'cave.earnings', data: { teamId: 'a', amount: '500', banked: '500', balance: '500', tick: 1 } },
+  ])
   s.reveal = { id: 'r', rankings: [], acknowledged: [] }
   assert.deepEqual(tickCave(s, env(20_100)), [])
   s.reveal = null
-  assert.deepEqual(tickCave(s, env(10_100)).map((event) => event.type), ['cave.survived'])
+  assert.deepEqual(tickCave(s, env(10_100)).map((event) => event.type), ['cave.default_stay', 'cave.survived'])
   assert.equal(cave.unbanked, '1000')
-  assert.equal(cave.tick, 1)
+  assert.equal(cave.tick, 2)
   assert.equal(cave.stage, 'decisions')
-  actEarlyGame(s, 'a', { type: 'cave.decide', decision: 'leave' }, env())
-  assert.equal(s.teams[0].balance, '1000')
-  assert.equal(s.caveTotals.a, '1000')
+  assert.equal(s.teams[0].balance, '500')
+  assert.equal(s.caveTotals.a, '500')
   assert.deepEqual(cave.inside, ['b'])
   // No answer from B means B stays through the next tick and the shared pool grows again.
   tickCave(s, env(20_100))
   assert.equal(cave.stage, 'decisions')
   assert.equal(cave.unbanked, '2000')
   assert.deepEqual(cave.inside, ['b'])
+})
+
+test('cave cannot collapse before the initial decision window and banks the starting amount before later risk checks', () => {
+  const s = state('cave')
+  s.config.cave.collapseRisk = [0, 100, 100, 100, 100]
+  startEarlyGame(s, env(100))
+  const cave = s.current as CaveRound
+  assert.equal(cave.stage, 'decisions')
+  assert.deepEqual(actEarlyGame(s, 'a', { type: 'cave.decide', decision: 'leave' }, env(101)).map((event) => event.type), ['cave.decision', 'cave.earnings'])
+  const events = tickCave(s, env(10_100, () => 0.5))
+  assert.ok(events.some((event) => event.type === 'cave.collapsed'))
+  assert.equal(s.teams[0].balance, '500')
+  assert.equal(s.teams[1].balance, '0')
+  assert.deepEqual(s.history[0].payouts, { a: '500', b: '0' })
 })
 
 test('cave collapse uses departures from the previous decision window and preserves banked money', () => {

@@ -30,6 +30,7 @@ export type GameStartCheckpoint = {
   reveal: Reveal | null
 }
 export type BaseRound = { token: string; phase: 'choices' | 'transfer' | 'return' | 'cave' | 'complete' }
+export type ReadyRound = { token: string; game: GameId; phase: 'ready' }
 export type BonusRound = BaseRound & { game: 'bonus'; choices: Record<string, Money> }
 export type HighLowRound = BaseRound & { game: 'high-low'; choices: Record<string, Money> }
 export type CaveRound = BaseRound & {
@@ -43,7 +44,7 @@ export type CircleRound = BaseRound & {
 }
 export type BombChoice = { up: number; down: number; recipients: Record<string, number> }
 export type BombRound = BaseRound & { game: 'bomb'; choices: Record<string, BombChoice>; recipient: string | null; direction: 'up' | 'down' | null }
-export type CurrentRound = BonusRound | HighLowRound | CaveRound | CircleRound | BombRound
+export type CurrentRound = ReadyRound | BonusRound | HighLowRound | CaveRound | CircleRound | BombRound
 export type EngineState = {
   version: 1; revision: number; status: 'playing' | 'finished'; config: GameConfig
   teams: Team[]; gameIndex: number; round: number; current: CurrentRound
@@ -88,6 +89,7 @@ export interface GameplayRepository {
   adminView(sessionId: string): Promise<AdminGameView>
   playerView(email: string): Promise<PlayerGameView>
   start(sessionId: string, teams: TeamAssignment[], config: GameConfig, actorId: string, startingGame?: GameId): Promise<void>
+  startRound(sessionId: string, actorId: string): Promise<void>
   advance(sessionId: string, actorId: string): Promise<void>
   reset(sessionId: string, actorId: string): Promise<void>
   action(email: string, command: PlayerCommand, actorId: string): Promise<PlayerGameView>

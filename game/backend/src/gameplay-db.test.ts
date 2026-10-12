@@ -67,8 +67,13 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
       await assert.rejects(member.admin.game.state({ sessionId: session.id }), { code: 'FORBIDDEN' })
       await assert.rejects(member.admin.game.start({ sessionId: session.id, teams: assignments, config }), { code: 'FORBIDDEN' })
       await assert.rejects(member.admin.game.advance({ sessionId: session.id }), { code: 'FORBIDDEN' })
+      await assert.rejects(member.admin.game.startRound({ sessionId: session.id }), { code: 'FORBIDDEN' })
 
       await admin.admin.game.start({ sessionId: session.id, teams: assignments, config })
+      const prepared = (await admin.admin.game.state({ sessionId: session.id })).state!
+      assert.equal(prepared.current.phase, 'ready')
+      assert.equal((await member.game.state()).roundState?.phase, 'ready')
+      await admin.admin.game.startRound({ sessionId: session.id })
       const started = (await admin.admin.game.state({ sessionId: session.id })).state!
       assert.deepEqual(started.teams.map((team) => team.balance), ['10000', '10000', '10000'])
       assert.deepEqual(started.teams.map((team) => team.tieOrder), [1, 3, 5])
@@ -135,6 +140,7 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
 
       const playAllRounds = async () => {
         const state = (await admin.admin.game.state({ sessionId: session.id })).state!
+        if (state.current.phase === 'ready') throw new Error('The test must start a prepared round before playing it.')
         const repEmails = [emails[0], emails[2], emails[4]]
         if (state.current.game === 'bonus' || state.current.game === 'high-low') {
           for (const email of repEmails) await actionLog(email, { type: state.current.game === 'bonus' ? 'bonus.take' : 'high-low.choose', amount: 0 })
@@ -149,6 +155,7 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
               await gameplay.tick()
               const stillPaused = (await admin.admin.game.state({ sessionId: session.id })).state!
               assert.equal(stillPaused.current.game, 'cave')
+              if (stillPaused.current.phase === 'ready' || stillPaused.current.game !== 'cave') throw new Error('Expected paused cave round.')
               assert.equal(stillPaused.current.nextTickAt, caveState.nextTickAt)
               assert.equal(stillPaused.current.tick, 0)
               const revealToken = stillPaused.current.token
@@ -157,17 +164,20 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
               await actionLog(emails[4], { type: 'reveal.acknowledge' }, randomUUID(), revealToken)
               const resumed = (await admin.admin.game.state({ sessionId: session.id })).state!
               assert.equal(resumed.current.game, 'cave')
+              if (resumed.current.phase === 'ready' || resumed.current.game !== 'cave') throw new Error('Expected resumed cave round.')
               assert.equal(resumed.current.nextTickAt, now + config.cave.tickSeconds * 1000)
               const pausedAt = resumed.current.nextTickAt!
               now = pausedAt - 1
               await gameplay.tick()
               const beforeResumeTick = (await admin.admin.game.state({ sessionId: session.id })).state!
               assert.equal(beforeResumeTick.current.game, 'cave')
+              if (beforeResumeTick.current.phase === 'ready' || beforeResumeTick.current.game !== 'cave') throw new Error('Expected cave before resumed tick.')
               assert.equal(beforeResumeTick.current.tick, 0)
               now = pausedAt
               await gameplay.tick()
               const afterResumeTick = (await admin.admin.game.state({ sessionId: session.id })).state!
               assert.equal(afterResumeTick.current.game, 'cave')
+              if (afterResumeTick.current.phase === 'ready' || afterResumeTick.current.game !== 'cave') throw new Error('Expected cave after resumed tick.')
               assert.equal(afterResumeTick.current.tick, 1)
             }
             now = Math.max(now, caveState.nextTickAt ?? now)

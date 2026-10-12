@@ -8,6 +8,8 @@ SuperTokens handles Google login. `/admin` requires the `admin` role; Dashboard 
 
 For local end-to-end testing only, `LOCAL=true` on the backend and `VITE_LOCAL=true` on the frontend select email/password authentication against the configured SuperTokens Core. The local `admin@test.com` account is granted the app admin role; production must use Google.
 
+For manual gameplay/UI previews, sign in as `admin@test.com` with the locally configured test password, open **Sessions** in the admin page, and select the session for the game being previewed. Session player emails are listed on that session page; use those emails to sign in as invited players in separate browser profiles/tabs. Mark the invited players as arrived, assign them to teams, and select the desired game in **Start at game**. This prepares round 1; use **Start <game> · round 1** to launch it. After each round, the admin must use the button naming the next game and round to start play. Admin credentials should stay in local environment/configuration and must not be committed to this repository.
+
 Game sessions store invitations, arrival order, admin-assigned teams, configuration, gameplay state, and all actions/outcomes in PostgreSQL. Only one session can be active. Non-admin login and API access require membership in it; admins are exempt. Freeze team tie order when play starts.
 
 Keep the pure engine in `backend/src/engine` independent of UI, auth, and storage; inject time/randomness. Engine money is integer-cent strings; player API money is decimal strings. Enforce `docs/games.md` visibility on the server. See `docs/game-api.md` for state/action APIs and retry semantics. Admins see the full audit; players get filtered views only.

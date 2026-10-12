@@ -10,6 +10,7 @@ import { ErrorMessage, LoadingMessage } from '@/components/page-feedback'
 
 type DraftTeam = { name: string; first: string; second: string }
 const GAME_ORDER: GameId[] = ['bonus', 'high-low', 'cave', 'circle', 'bomb']
+const GAME_NAMES: Record<GameId, string> = { bonus: 'Will we get bonus this year', 'high-low': 'High or low', cave: 'Cave mining', circle: 'What goes around comes around', bomb: 'Gamble bomb' }
 const freshTeam = (): DraftTeam => ({ name: '', first: '', second: '' })
 const money = (cents: string) => {
   const value = BigInt(cents)
@@ -19,7 +20,7 @@ const money = (cents: string) => {
 
 type SessionPlayer = { id: string; email: string; arrivalOrder: number | null }
 export function AdminGame({ sessionId, players }: { sessionId: string; players: SessionPlayer[] }) {
-  const { defaults, state, start, advance, reset } = useAdminGame(sessionId)
+  const { defaults, state, start, startRound, advance, reset } = useAdminGame(sessionId)
   const [teams, setTeams] = useState<DraftTeam[]>([freshTeam(), freshTeam()])
   const [configText, setConfigText] = useState('')
   const [configTouched, setConfigTouched] = useState(false)
@@ -35,6 +36,8 @@ export function AdminGame({ sessionId, players }: { sessionId: string; players: 
   if (defaults.error) return <ErrorMessage message={defaults.error.message} />
   const view = state.data
   const engine = view.state
+  const nextGame = engine ? GAME_ORDER[engine.gameIndex + (engine.round === 3 ? 1 : 0)] : undefined
+  const nextRound = engine ? (engine.round === 3 ? 1 : engine.round + 1) : undefined
   const allIds = teams.flatMap((team) => [team.first, team.second].filter(Boolean))
   const validTeams = teams.length >= 2 && teams.length <= 5 && teams.every((team) => team.name.trim() && team.first)
   const soloCount = teams.filter((team) => team.first && !team.second).length
@@ -60,7 +63,7 @@ export function AdminGame({ sessionId, players }: { sessionId: string; players: 
   }
 
   return <Card>
-    <CardHeader><CardTitle><h2>Gameplay control</h2></CardTitle><CardDescription>Assign arrived players to teams, configure the shared rules, then start the session.</CardDescription></CardHeader>
+    <CardHeader><CardTitle><h2>Gameplay control</h2></CardTitle><CardDescription>Assign arrived players to teams and configure the shared rules. The session setup and each round start are separate host actions.</CardDescription></CardHeader>
     <CardContent className="space-y-6">
       {!engine ? <>
         <section className="max-w-sm space-y-2">
@@ -86,10 +89,11 @@ export function AdminGame({ sessionId, players }: { sessionId: string; players: 
         </section>
         {configParseError && <ErrorMessage message={`Invalid configuration JSON: ${configParseError}`} />}
         {start.error && <ErrorMessage message={start.error.message} />}
-        <Button disabled={!canStart || !configText.trim()} onClick={begin}>{start.isPending ? 'Starting…' : `Start at ${startingGame} · round 1`}</Button>
+        <Button disabled={!canStart || !configText.trim()} onClick={begin}>{start.isPending ? 'Preparing…' : `Prepare ${GAME_NAMES[startingGame]} · round 1`}</Button>
       </> : <>
+        <p className="text-sm text-muted-foreground">Each completed round waits for the host to start the next round.</p>
         <div className="flex flex-wrap items-center gap-2"><Badge>{engine.status}</Badge><span className="font-medium">{engine.current.game} · Round {engine.round}</span><span className="text-sm text-muted-foreground">Phase: {engine.current.phase}</span></div>
-        <div className="flex flex-wrap items-center gap-2">{engine.status === 'playing' && engine.current.phase === 'complete' && <Button disabled={advance.isPending || reset.isPending} onClick={() => advance.mutate()}>{advance.isPending ? 'Advancing…' : 'Advance game'}</Button>}{engine.status === 'finished' && <p className="text-sm text-muted-foreground">Game finished.</p>}<Button variant="destructive" disabled={reset.isPending || advance.isPending} onClick={resetPlaythrough}>{reset.isPending ? 'Resetting…' : 'Reset current game'}</Button>{advance.error && <ErrorMessage message={advance.error.message} />}{reset.error && <ErrorMessage message={reset.error.message} />}</div>
+        <div className="flex flex-wrap items-center gap-2">{engine.status === 'playing' && engine.current.phase === 'ready' && <Button disabled={startRound.isPending || reset.isPending} onClick={() => startRound.mutate()}>{startRound.isPending ? 'Starting…' : `Start ${GAME_NAMES[engine.current.game]} · round ${engine.round}`}</Button>}{engine.status === 'playing' && engine.current.phase === 'complete' && nextGame && nextRound && <Button disabled={advance.isPending || reset.isPending} onClick={() => advance.mutate()}>{advance.isPending ? 'Starting…' : `Start ${GAME_NAMES[nextGame]} · round ${nextRound}`}</Button>}{engine.status === 'finished' && <p className="text-sm text-muted-foreground">Game finished.</p>}<Button variant="destructive" disabled={reset.isPending || advance.isPending || startRound.isPending} onClick={resetPlaythrough}>{reset.isPending ? 'Resetting…' : 'Reset current game'}</Button>{startRound.error && <ErrorMessage message={startRound.error.message} />}{advance.error && <ErrorMessage message={advance.error.message} />}{reset.error && <ErrorMessage message={reset.error.message} />}</div>
         <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b text-muted-foreground"><th className="p-2">Team</th><th className="p-2">Balance</th><th className="p-2">Stars</th><th className="p-2">Players</th></tr></thead><tbody>{engine.teams.map((team) => <tr key={team.id} className="border-b"><td className="p-2 font-medium">{team.name}</td><td className="p-2">{money(team.balance)}</td><td className="p-2">{team.stars}</td><td className="p-2">{team.playerIds.map(playerName).join(', ')}</td></tr>)}</tbody></table></div>
         <section className="space-y-2"><h3 className="font-medium">Engine state</h3><pre className="max-h-72 overflow-auto rounded-lg bg-muted p-3 text-xs">{JSON.stringify(engine, null, 2)}</pre></section>
         <section className="space-y-2"><h3 className="font-medium">Event log</h3><div className="max-h-96 space-y-2 overflow-auto rounded-lg border p-3">{view.events.length === 0 ? <p className="text-sm text-muted-foreground">No events yet.</p> : view.events.map((event) => {

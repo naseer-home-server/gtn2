@@ -90,7 +90,7 @@ export function PlayerGame() {
       {view.status === 'playing' && round && view.game && <>
         {view.rules && <RoundSettings game={view.game} rules={view.rules} />}
         {view.game === 'bomb' && view.finaleAdvantage && <Card><CardHeader><CardTitle><h2>Finale advantage revealed</h2></CardTitle></CardHeader><CardContent><p>{view.teams.find((item) => item.id === view.finaleAdvantage?.teamId)?.name ?? 'The most-starred team'} can allocate up to {view.finaleAdvantage.maxChitsPerPile} chits per pile. Other teams can allocate up to {view.finaleAdvantage.standardMaxChits}.</p></CardContent></Card>}
-        <Card><CardHeader><CardTitle><h2>{gameNames[view.game]}</h2></CardTitle><CardDescription>{phaseDescription(view.game, round.phase, round.unbanked, round.nextTickAt, can('cave.decide'), round.hasLeft)}</CardDescription></CardHeader><CardContent className="space-y-4">
+        <Card><CardHeader><CardTitle><h2>{gameNames[view.game]}</h2></CardTitle><CardDescription>{phaseDescription(view.game, round.phase, round.unbanked, round.nextTickAt, can('cave.decide'), round.hasLeft)}</CardDescription>{view.game === 'cave' && round.nextTickAt != null && <CaveTickCountdown nextTickAt={round.nextTickAt} />}</CardHeader><CardContent className="space-y-4">
         {view.game === 'bonus' && can('bonus.take') && !isSubmitted && <><NumberField id="bonus-take" label="Amount to take" value={amount} onChange={setAmount} max={round.choiceLimit} /><Button disabled={action.isPending || (cents(amount) ?? -1n) < 0n || (round.choiceLimit !== undefined && !lessOrEqualMoney(amount, round.choiceLimit))} onClick={() => submitAction({ type: 'bonus.take', amount })}>Submit take</Button></>}
         {view.game === 'high-low' && can('high-low.choose') && !isSubmitted && <><NumberField id="high-low-choice" label="Choose an amount" value={amount} onChange={setAmount} max={round.choiceLimit} /><Button disabled={action.isPending || (cents(amount) ?? -1n) < 0n || (round.choiceLimit !== undefined && !lessOrEqualMoney(amount, round.choiceLimit))} onClick={() => submitAction({ type: 'high-low.choose', amount })}>Submit choice</Button></>}
         {view.game === 'cave' && can('cave.decide') && !isSubmitted && <div className="flex gap-2"><Button disabled={action.isPending} onClick={() => submitAction({ type: 'cave.decide', decision: 'stay' })}>Stay</Button><Button variant="outline" disabled={action.isPending} onClick={() => submitAction({ type: 'cave.decide', decision: 'leave' })}>Leave and bank</Button></div>}
@@ -111,12 +111,22 @@ export function PlayerGame() {
 }
 
 function ordinal(n: number) { return n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th' }
+function CaveTickCountdown({ nextTickAt }: { nextTickAt: number }) {
+  const [now, setNow] = useState(Date.now())
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 250)
+    return () => window.clearInterval(timer)
+  }, [])
+  const seconds = Math.max(0, Math.ceil((nextTickAt - now) / 1000))
+  return <p role="timer" aria-live="off" className="mt-2 text-sm font-semibold text-foreground">Next cave tick in {seconds} {seconds === 1 ? 'second' : 'seconds'}</p>
+}
 function phaseDescription(game: GameId, phase: string, unbanked?: string, nextTickAt?: number | null, canDecide = false, hasLeft = false) {
+  if (phase === 'ready') return 'Waiting for the host to start this round.'
   if (game === 'cave') {
     if (hasLeft) return 'You left the cave. Your banked amount is safe.'
     if (phase === 'complete') return 'The cave round is complete.'
-    if (canDecide) return `Unbanked: ${money(unbanked ?? '0.00')}. Decide to stay for another tick or leave and bank this amount.`
-    if (nextTickAt) return `Unbanked: ${money(unbanked ?? '0.00')}. Waiting for the automatic cave tick in ${Math.max(0, Math.ceil((nextTickAt - Date.now()) / 1000))} seconds.`
+    if (canDecide) return `Unbanked: ${money(unbanked ?? '0.00')}. Choose to stay for the next tick or leave and bank this amount.`
+    if (nextTickAt) return `Unbanked: ${money(unbanked ?? '0.00')}. Waiting for the automatic cave tick.`
     return `Unbanked: ${money(unbanked ?? '0.00')}. Waiting for the cave to resolve.`
   }
   if (game === 'circle') return phase === 'return' ? 'Choose money and stars to return to your sender.' : 'Choose money and stars to send to the next team.'

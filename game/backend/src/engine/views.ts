@@ -26,6 +26,10 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
     base.rules = { factor: state.config.bomb.factor[i] }
     base.finaleAdvantage = { teamId: state.advantagedTeamId!, maxChitsPerPile: state.config.bomb.advantageChits, standardMaxChits: state.config.bomb.maxChits }
   }
+  if (current.phase === 'ready') {
+    base.roundState = { phase: 'ready', submitted: false }
+    return base
+  }
   base.roundState = { phase: current.phase, submitted: false }
   if (current.game === 'bonus' || current.game === 'high-low') {
     base.roundState.submitted = current.choices[team.id] !== undefined
@@ -37,7 +41,7 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
     base.roundState.unbanked = hasLeft || current.phase === 'complete' ? '0.00' : units(current.unbanked)
     base.roundState.phase = current.phase === 'complete' ? 'complete' : hasLeft ? 'waiting' : current.stage === 'waiting' ? 'cave-waiting' : 'cave-decisions'
     base.roundState.submitted = current.decisions[team.id] !== undefined
-    if (!hasLeft && current.phase === 'cave') base.roundState.nextTickAt = state.reveal ? null : current.nextTickAt
+    if (current.phase === 'cave') base.roundState.nextTickAt = state.reveal ? null : current.nextTickAt
     if (!hasLeft && current.stage === 'decisions' && current.phase === 'cave' && !base.roundState.submitted) base.allowedActions.push('cave.decide')
   } else if (current.game === 'circle') {
     base.roundState.submitted = (current.phase === 'transfer' ? current.transfers : current.returns)[team.id] !== undefined

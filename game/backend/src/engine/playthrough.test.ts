@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { advanceEngine, applyAction, startEngine, tickEngine } from './index.js'
+import { advanceEngine, applyAction, startEngine, startRoundEngine, tickEngine } from './index.js'
 import { DEFAULT_CONFIG } from './config.js'
 import type { EngineEnv, EngineState, GameAction, Team } from './types.js'
 
@@ -39,7 +39,11 @@ test('complete deterministic 15-round playthrough covers stakes, cave banking, t
   const { state, events } = startEngine(teams(), structuredClone(DEFAULT_CONFIG), e)
   assert.equal(state.gameIndex, 0)
   assert.equal(current(state).game, 'bonus')
-  assert.equal(events.at(-1)?.type, 'bonus.started')
+  assert.equal(events.at(-1)?.type, 'round.ready')
+  assert.equal(current(state).phase, 'ready')
+  assert.throws(() => act(state, 'a', { type: 'bonus.take', amount: 0 }, e), /not started/)
+  startRoundEngine(state, e)
+  assert.equal(state.current.game, 'bonus')
 
   // Bonus rounds: the one zero taker multiplies every positive choice.
   for (let round = 1; round <= 3; round++) {
@@ -77,11 +81,13 @@ test('complete deterministic 15-round playthrough covers stakes, cave banking, t
     assert.equal(current(state).game, 'cave')
     const cave = current(state)
     assert.equal(cave.game, 'cave')
+    if (cave.phase === 'ready' || cave.game !== 'cave') throw new Error('Expected active cave round')
     const tickTime = cave.nextTickAt!
     const tickEvents = tickEngine(state, { ...e, now: tickTime })
-    assert.equal(tickEvents[0]?.type, 'cave.survived')
+    assert.ok(tickEvents.some((event) => event.type === 'cave.survived'))
     const afterTick = current(state)
     assert.equal(afterTick.game, 'cave')
+    if (afterTick.phase === 'ready' || afterTick.game !== 'cave') throw new Error('Expected active cave round')
     const unbanked = afterTick.unbanked
     const decisionsAt = afterTick.nextTickAt! - 1
     for (const team of state.teams) act(state, team.id, { type: 'cave.decide', decision: 'leave' }, { ...e, now: decisionsAt })
@@ -133,6 +139,7 @@ test('complete deterministic 15-round playthrough covers stakes, cave banking, t
     assert.equal(current(state).phase, 'complete')
     const completedBomb = current(state)
     assert.equal(completedBomb.game, 'bomb')
+    if (completedBomb.phase === 'ready' || completedBomb.game !== 'bomb') throw new Error('Expected active bomb round')
     assert.equal(completedBomb.direction, direction)
     assert.equal(completedBomb.recipient, recipient)
     assert.ok(finalEvents.some((event) => event.type === 'bomb.resolved'))
@@ -156,5 +163,6 @@ test('orchestrator rejects invalid starts, early advances, stale tokens, and wro
   const { state } = startEngine(teams(), structuredClone(DEFAULT_CONFIG), env())
   assert.throws(() => advanceEngine(state, env()), /Finish this round/)
   assert.throws(() => applyAction(state, 'a', 'old-token', { type: 'bonus.take', amount: 0 }, env()), /earlier round or tick/)
+  startRoundEngine(state, env())
   assert.throws(() => act(state, 'a', { type: 'high-low.choose', amount: 1 }, env()), /not accepting this action/)
 })

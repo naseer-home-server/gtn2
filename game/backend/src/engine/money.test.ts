@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { applyAction, refreshPotTarget, startEngine } from './index.js'
+import { applyAction, refreshPotTarget, startEngine, startRoundEngine } from './index.js'
 import { DEFAULT_CONFIG } from './config.js'
 import { cents, moneyDivide, moneyMultiply, moneyMultiplyMany, moneyScale, units } from './money.js'
 import type { EngineEnv, Team } from './types.js'
@@ -41,6 +41,7 @@ test('fractional bonus multiplier and zero-taker factor compound before rounding
   config.bonus.multiplier[0] = 1.5
   config.bonus.threshold[0] = 100
   const { state } = startEngine(teams, config, env())
+  startRoundEngine(state, env())
   const token = state.current.token
   applyAction(state, 'a', token, { type: 'bonus.take', amount: '0.01' }, env())
   applyAction(state, 'b', token, { type: 'bonus.take', amount: 0 }, env())

@@ -53,6 +53,10 @@ export function useAdminGame(sessionId: string) {
     mutationFn: () => trpc.admin.game.advance.mutate({ sessionId }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'game', sessionId] }),
   })
+  const startRound = useMutation({
+    mutationFn: () => trpc.admin.game.startRound.mutate({ sessionId }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'game', sessionId] }),
+  })
   const reset = useMutation({
     mutationFn: () => trpc.admin.game.reset.mutate({ sessionId }),
     onSuccess: () => Promise.all([
@@ -60,5 +64,5 @@ export function useAdminGame(sessionId: string) {
       queryClient.invalidateQueries({ queryKey: ['admin', 'sessions'] }),
     ]),
   })
-  return { defaults, state, start, advance, reset }
+  return { defaults, state, start, startRound, advance, reset }
 }

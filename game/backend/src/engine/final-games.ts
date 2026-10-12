@@ -81,6 +81,7 @@ function blankTransfer(): Transfer { return { money: '0', stars: 0 } }
 function safeStars(value: number) { ensure(Number.isSafeInteger(value) && value >= 0, 'Star total exceeds the supported range.'); return value }
 
 export function actFinalGame(state: EngineState, teamId: string, action: GameAction, env: EngineEnv): EngineEvent[] {
+  ensure(state.current.phase !== 'ready', 'The host has not started this round.')
   const team = teamById(state, teamId)
   const events: EngineEvent[] = []
   if (state.current.game === 'circle') {

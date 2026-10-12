@@ -4,6 +4,11 @@ import type { GameAction, GameConfig, GameId, PlayerGameView, TeamAssignment } f
 import { queryClient } from '@/lib/query-client'
 import { trpc } from '@/trpc'
 
+export function isDefiniteActionError(error: unknown) {
+  const code = (error as { data?: { code?: string } } | null)?.data?.code
+  return ['BAD_REQUEST', 'UNAUTHORIZED', 'FORBIDDEN', 'NOT_FOUND', 'METHOD_NOT_SUPPORTED', 'CONFLICT', 'PRECONDITION_FAILED'].includes(code ?? '')
+}
+
 export function usePlayerGame() {
   const state = useQuery({
     queryKey: ['game', 'player'],
@@ -18,10 +23,17 @@ export function usePlayerGame() {
       queryClient.setQueryData<PlayerGameView>(['game', 'player'], view)
     },
   })
+  const blockedByUncertainTransfer = Boolean(
+    action.isError
+    && retryCommand.current?.action.type === 'money.transfer'
+    && !isDefiniteActionError(action.error),
+  )
   return {
     state,
     action,
+    blockedByUncertainTransfer,
     submit: (next: GameAction) => {
+      if (blockedByUncertainTransfer) return
       const current = state.data
       if (!current?.token) return
       retryCommand.current = { requestId: crypto.randomUUID(), token: current.token, action: next }

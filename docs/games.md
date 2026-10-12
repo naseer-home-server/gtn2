@@ -2,10 +2,10 @@
 
 ## Shared rules
 - Five games, three rounds each; potential winnings increase across rounds and games. Current order: Will we get bonus this year → High or low → Cave mining → What goes around comes around → Gamble bomb finale.
-- Admins assign two to five teams of two, with one solo team if needed. “Player” means team. The member with the earlier arrival order leads the team; only they can submit game decisions, acknowledge a ranking reveal, or contribute to the reveal pot. Teammates discuss choices in person. A solo player is their own leader.
-- Round winnings enter each team's accumulated balance. Transfers and bombs affect this balance.
+- Admins assign two to five teams of two, with one solo team if needed. “Player” means team. The member with the earlier arrival order leads the team; only they can submit game decisions, make team money transfers, acknowledge a ranking reveal, or contribute to the reveal pot. Teammates discuss choices in person. A solo player is their own leader.
+- Round winnings enter each team's accumulated balance. Any team may split a positive total from its balance among one or more other teams while play is active, including between rounds and after submitting its current game choice. Each recipient gets at least one cent; leftover cents follow the fixed team order. Transfers are immediate and do not change the combined balance. They are paused during ranking reveals. Transfers and bombs affect team balances.
 - Start with each team's balance at 0. Rank teams by balance. Each team sees only its own position; other teams' positions and balances are hidden except during a reveal.
-- Game information is limited to the visibility rules below, in addition to the team's own rank.
+- Game information is limited to the visibility rules below, in addition to the team's own rank. Each team can see only transfer receipts where it was the sender or recipient; other teams' transfers remain private.
 - Teams may spend account money into the public reveal pot at any time. Freeze its target while filling; cap contributions at the remaining amount. Filling it immediately reveals a ranking snapshot, resets the pot to 0, and pauses play. Each team acknowledges once, hiding its snapshot; resume after all acknowledge. Contributions are gone; fill it again to reveal again.
 - Stars and star totals are public. Stars are awarded during the first four games. The team with the most stars gets a significant advantage in the final game; keep the nature of that advantage secret until then. Do not award stars in the finale.
 - Break all ties using a fixed team order based on each team's first member to arrive, frozen when play starts. The host advances completed rounds.

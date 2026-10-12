@@ -28,7 +28,9 @@ export type GameStartCheckpoint = {
   pot: { amount: Money; target: Money }
   potSpent: Record<string, Money>
   reveal: Reveal | null
+  moneyTransfersLength?: number
 }
+export type MoneyTransferReceipt = { id: string; fromTeamId: string; toTeamId: string; amount: Money }
 export type BaseRound = { token: string; phase: 'choices' | 'transfer' | 'return' | 'cave' | 'complete' }
 export type ReadyRound = { token: string; game: GameId; phase: 'ready' }
 export type BonusRound = BaseRound & { game: 'bonus'; choices: Record<string, Money> }
@@ -51,6 +53,7 @@ export type EngineState = {
   history: RoundResult[]; caveTotals: Record<string, Money>; advantagedTeamId: string | null
   pot: { amount: Money; target: Money }; reveal: Reveal | null
   potSpent?: Record<string, Money>
+  moneyTransfers?: MoneyTransferReceipt[]
   gameStart?: GameStartCheckpoint
 }
 export type EngineEvent = { type: string; data: Record<string, unknown> }
@@ -63,6 +66,7 @@ export type GameAction =
   | { type: 'circle.return'; money: MoneyInput; stars: number }
   | { type: 'bomb.allocate'; up: number; down: number; recipients: Record<string, number> }
   | { type: 'pot.contribute'; amount: MoneyInput }
+  | { type: 'money.transfer'; recipientTeamIds: string[]; amount: MoneyInput }
   | { type: 'reveal.acknowledge' }
 export type PlayerCommand = { requestId: string; token: string; action: GameAction }
 export type PublicTeam = { id: string; name: string; stars: number }
@@ -72,6 +76,7 @@ export type PlayerGameView = {
   team: { id: string; name: string; balance: string; stars: number; rank: number } | null
   teams: PublicTeam[]; game: GameId | null; round: number | null; token: string | null
   pot: { amount: string; target: string }; reveal: { id: string; rankings: Ranking[] } | null
+  moneyTransfers: { id: string; fromTeamId: string; toTeamId: string; amount: string }[]
   earnings: { game: GameId; round: number; amount: string }[]
   roundState: {
     phase: string; submitted: boolean; choiceLimit?: string

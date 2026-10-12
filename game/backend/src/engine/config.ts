@@ -33,6 +33,7 @@ export const gameActionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('circle.return'), money: moneyInput, stars: z.number().int().nonnegative() }),
   z.object({ type: z.literal('bomb.allocate'), up: z.number().int().nonnegative(), down: z.number().int().nonnegative(), recipients: z.record(z.string().max(100), z.number().int().nonnegative()) }),
   z.object({ type: z.literal('pot.contribute'), amount: moneyInput }),
+  z.object({ type: z.literal('money.transfer'), recipientTeamIds: z.array(z.uuid()).min(1).max(4).refine((ids) => new Set(ids).size === ids.length, 'Choose each recipient team only once.'), amount: moneyInput }),
   z.object({ type: z.literal('reveal.acknowledge') }),
 ])
 export const playerCommandSchema = z.object({ requestId: z.uuid(), token: z.string().min(1).max(100), action: gameActionSchema })

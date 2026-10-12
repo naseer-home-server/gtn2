@@ -1,7 +1,7 @@
 import { startEarlyGame, actEarlyGame, tickCave } from './early-games.js'
 import { startFinalGame, actFinalGame } from './final-games.js'
 import { gameConfigSchema } from './config.js'
-import { cents, ensure, moneyAdd, moneyCompare, moneyMin, moneyScale, moneySub, teamById } from './helpers.js'
+import { cents, ensure, moneyAdd, moneyCompare, moneyMin, moneyScale, moneySub, safeMoney, teamById } from './helpers.js'
 import { GAME_ORDER, type CurrentRound, type EngineEnv, type EngineEvent, type EngineState, type GameAction, type GameConfig, type GameId, type Ranking, type Team } from './types.js'
 export { DEFAULT_CONFIG, gameConfigSchema } from './config.js'
 export { playerView } from './views.js'
@@ -33,6 +33,7 @@ function captureGameStart(state: EngineState) {
     pot: structuredClone(state.pot),
     potSpent: structuredClone(state.potSpent ?? {}),
     reveal: structuredClone(state.reveal),
+    moneyTransfersLength: (state.moneyTransfers ?? []).length,
   }
 }
 export function startEngine(teams: Team[], config: GameConfig, env: EngineEnv, startingGame: EngineState['current']['game'] = 'bonus'): { state: EngineState; events: EngineEvent[] } {
@@ -43,7 +44,7 @@ export function startEngine(teams: Team[], config: GameConfig, env: EngineEnv, s
     version: 1, revision: 0, status: 'playing', config: structuredClone(config),
     teams: teams.map((team) => ({ ...team, balance: cents(config.initialBalance), stars: 0 })),
     gameIndex: GAME_ORDER.indexOf(startingGame), round: 1, current: { game: startingGame, phase: 'ready', token: env.token() },
-    history: [], caveTotals: {}, advantagedTeamId: null, pot: { amount: '0', target: '0' }, potSpent: {}, reveal: null,
+    history: [], caveTotals: {}, advantagedTeamId: null, pot: { amount: '0', target: '0' }, potSpent: {}, moneyTransfers: [], reveal: null,
   }
   captureGameStart(state)
   const events: EngineEvent[] = [
@@ -74,6 +75,7 @@ export function resetCurrentGame(state: EngineState, env: EngineEnv): EngineEven
   if (!state.gameStart && state.round === 1 && state.status === 'playing'
     && !state.history.some((result) => result.game === state.current.game)
     && state.pot.amount === '0' && Object.keys(state.potSpent ?? {}).length === 0
+    && (state.moneyTransfers ?? []).length === 0
     && (state.current.phase === 'ready' || state.current.game !== 'circle' || (Object.keys(state.current.transfers).length === 0 && Object.keys(state.current.returns).length === 0))) {
     if (state.current.game === 'cave') {
       for (const team of state.teams) team.balance = moneySub(team.balance, state.caveTotals[team.id] ?? '0')
@@ -98,6 +100,7 @@ export function resetCurrentGame(state: EngineState, env: EngineEnv): EngineEven
   state.pot = structuredClone(checkpoint.pot)
   state.potSpent = structuredClone(checkpoint.potSpent)
   state.reveal = structuredClone(checkpoint.reveal)
+  state.moneyTransfers = (state.moneyTransfers ?? []).slice(0, checkpoint.moneyTransfersLength ?? 0)
   state.round = 1
   state.status = 'playing'
   state.current = { game, phase: 'ready', token: env.token() }
@@ -140,6 +143,35 @@ export function applyAction(state: EngineState, teamId: string, token: string, a
     return events
   }
   ensure(state.status === 'playing', 'The playthrough is finished.')
+  if (action.type === 'money.transfer') {
+    ensure(action.recipientTeamIds.length >= 1 && action.recipientTeamIds.length < state.teams.length, 'Choose one or more other teams to receive the transfer.')
+    ensure(new Set(action.recipientTeamIds).size === action.recipientTeamIds.length, 'Choose each recipient team only once.')
+    ensure(!action.recipientTeamIds.includes(teamId), 'Choose a different team to receive the transfer.')
+    const recipients = action.recipientTeamIds.map((recipientTeamId) => teamById(state, recipientTeamId))
+    const amount = cents(action.amount)
+    ensure(moneyCompare(amount, '0') > 0, 'Transfer a positive amount.')
+    ensure(moneyCompare(amount, team.balance) <= 0, 'Transfer exceeds your available balance.')
+    ensure(BigInt(amount) >= BigInt(recipients.length), 'The total must provide at least one cent to each recipient.')
+    const orderedRecipients = recipients.sort((a, b) => a.tieOrder - b.tieOrder || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+    const baseShare = BigInt(amount) / BigInt(orderedRecipients.length)
+    const remainder = BigInt(amount) % BigInt(orderedRecipients.length)
+    const transfers = orderedRecipients.map((recipient, index) => {
+      const share = (baseShare + (BigInt(index) < remainder ? 1n : 0n)).toString()
+      return {
+        receipt: { id: env.token(), fromTeamId: teamId, toTeamId: recipient.id, amount: share },
+        recipientBalance: safeMoney(moneyAdd(recipient.balance, share)),
+      }
+    })
+    const senderBalance = moneySub(team.balance, amount)
+    state.moneyTransfers ??= []
+    const events = transfers.map(({ receipt, recipientBalance }) => {
+      teamById(state, receipt.toTeamId).balance = recipientBalance
+      state.moneyTransfers!.push(receipt)
+      return { type: 'money.transferred', data: { ...receipt } }
+    })
+    team.balance = senderBalance
+    return events
+  }
   ensure(state.current.phase !== 'ready', 'The host has not started this round.')
   if (action.type === 'cave.decide' && state.current.game === 'cave') {
     ensure(state.current.nextTickAt !== null && env.now < state.current.nextTickAt, 'This cave decision window has closed. Refresh your state.')

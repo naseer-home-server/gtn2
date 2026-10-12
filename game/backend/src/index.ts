@@ -5,6 +5,7 @@ import { DbGameSessionsRepository } from './game-sessions.js'
 import { DbSettingsRepository } from './db-settings.js'
 import { initSuperTokens, seedRoles } from './supertokens.js'
 import { DbGameplayRepository } from './gameplay.js'
+import { DbChatsRepository } from './chats.js'
 
 async function main() {
   const db = await initDb()
@@ -12,10 +13,11 @@ async function main() {
   await settings.initialize()
   const sessions = new DbGameSessionsRepository(db)
   const gameplay = new DbGameplayRepository(db)
+  const chats = new DbChatsRepository(db)
   initSuperTokens(sessions)
   await seedRoles()
   const port = Number(process.env.PORT ?? 3000)
-  const server = createApp(settings, sessions, gameplay).listen(port, '0.0.0.0', () => console.log(`Game server listening on port ${port}`))
+  const server = createApp(settings, sessions, gameplay, chats).listen(port, '0.0.0.0', () => console.log(`Game server listening on port ${port}`))
   let ticking = false
   const timer = setInterval(() => {
     if (ticking) return

@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
+const backendUrl = process.env.GAME_BACKEND_URL ?? 'http://localhost:3000'
 const frontendDir = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
@@ -11,9 +12,9 @@ export default defineConfig({
   resolve: { alias: { '@': path.resolve(frontendDir, 'src') } },
   server: {
     proxy: {
-      '/api': 'http://localhost:3000',
-      '/trpc': 'http://localhost:3000',
-      '/auth': 'http://localhost:3000',
+      '/api': backendUrl,
+      '/trpc': backendUrl,
+      '/auth': backendUrl,
     },
   },
   build: {

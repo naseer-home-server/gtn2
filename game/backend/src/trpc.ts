@@ -11,6 +11,7 @@ export type AuthUser = { id: string; email: string | null; isAdmin: boolean; isT
 export type TrpcContext = {
   user: AuthUser | null
   sessions: GameSessionsRepository
+  chats?: import('./chat-types.js').ChatsRepository
   gameplay?: import('./engine/types.js').GameplayRepository
   settings: SettingsRepository
   signInWithTestEmail: (email: string) => Promise<void>

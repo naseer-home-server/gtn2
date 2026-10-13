@@ -10,9 +10,9 @@ import type { SettingsRepository } from './trpc.js'
 import { TRPCError } from '@trpc/server'
 import { getHTTPStatusCodeFromError } from '@trpc/server/http'
 
-export function createApp(settings: SettingsRepository, sessions: import('./session-types.js').GameSessionsRepository, gameplay?: import('./engine/types.js').GameplayRepository) {
+export function createApp(settings: SettingsRepository, sessions: import('./session-types.js').GameSessionsRepository, gameplay?: import('./engine/types.js').GameplayRepository, chats?: import('./chat-types.js').ChatsRepository) {
   const app = express()
-  const context = makeContext(settings, sessions, gameplay)
+  const context = makeContext(settings, sessions, gameplay, chats)
   app.get('/health', (_request, response) => response.json({ status: 'ok' }))
   app.use(middleware())
   app.use(['/trpc', '/api/game'], (_request, response, next) => { response.setHeader('Cache-Control', 'no-store'); next() })

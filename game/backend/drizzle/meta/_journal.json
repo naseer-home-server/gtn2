@@ -29,6 +29,13 @@
       "when": 1791713652308,
       "tag": "0003_silly_crusher_hogan",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791821472289,
+      "tag": "0004_player_chats",
+      "breakpoints": true
     }
   ]
 }

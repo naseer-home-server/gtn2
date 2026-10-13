@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { SuperTokensWrapper } from 'supertokens-auth-react'
 import { SignInAndUpCallback } from 'supertokens-auth-react/recipe/thirdparty/prebuiltui'
 import { useAuth, useSignOut } from './hooks/use-auth'
@@ -10,6 +10,7 @@ import { LoginPage } from './pages/LoginPage'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ErrorMessage, LoadingMessage } from '@/components/page-feedback'
+import { Chats } from '@/components/chats'
 
 function RequireLogin({ children, admin = false }: { children: ReactNode; admin?: boolean }) {
   const auth = useAuth()
@@ -43,6 +44,14 @@ function Navigation() {
     </div>
   </header>
 }
+function GlobalChats() {
+  const auth = useAuth()
+  const location = useLocation()
+  const gameSession = auth.data?.gameSession
+  const onLoginPage = location.pathname === '/login' || location.pathname.startsWith('/login/callback')
+  if (auth.isError || !gameSession || onLoginPage) return null
+  return <Chats key={`${gameSession.sessionId}:${gameSession.playerId}`} sessionId={gameSession.sessionId} playerId={gameSession.playerId} />
+}
 export default function App() {
   return <SuperTokensWrapper><BrowserRouter>
     <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-background focus:p-3">Skip to content</a>
@@ -55,5 +64,6 @@ export default function App() {
       <Route path="/admin" element={<RequireLogin admin><AdminPage /></RequireLogin>} />
       <Route path="*" element={<p>Page not found.</p>} />
     </Routes></main>
+    <GlobalChats />
   </BrowserRouter></SuperTokensWrapper>
 }

@@ -2,9 +2,42 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { DEFAULT_CONFIG, gameConfigSchema, playerCommandSchema } from './engine/config.js'
 import { GAME_ORDER } from './engine/types.js'
-import { adminProcedure, protectedProcedure, publicProcedure, requireMembership, requireTestLoginEnabled, router } from './trpc.js'
+import { adminProcedure, protectedProcedure, publicProcedure, requireMembership, requireTestLoginEnabled, router, type TrpcContext } from './trpc.js'
+
+function chatAccess(ctx: TrpcContext) {
+  if (!ctx.user?.email) throw new TRPCError({ code: 'FORBIDDEN', message: 'A session player account is required for chats.' })
+  if (!ctx.chats) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Chats are unavailable.' })
+  return { email: ctx.user.email, chats: ctx.chats }
+}
 
 export const appRouter = router({
+  chat: router({
+    inbox: protectedProcedure.query(({ ctx }) => {
+      const { email, chats } = chatAccess(ctx)
+      return chats.inbox(email)
+    }),
+    direct: protectedProcedure.input(z.object({ teamId: z.uuid() })).mutation(({ ctx, input }) => {
+      const { email, chats } = chatAccess(ctx)
+      return chats.direct(email, input.teamId)
+    }),
+    createGroup: protectedProcedure.input(z.object({
+      name: z.string().trim().min(1).max(60),
+      playerIds: z.array(z.uuid()).min(2).max(9).refine((ids) => new Set(ids).size === ids.length, 'Select each player once.'),
+    })).mutation(({ ctx, input }) => {
+      const { email, chats } = chatAccess(ctx)
+      return chats.createGroup(email, input.name, input.playerIds)
+    }),
+    messages: protectedProcedure.input(z.object({ conversationId: z.uuid(), beforeSequence: z.number().int().positive().max(Number.MAX_SAFE_INTEGER).optional() })).query(({ ctx, input }) => {
+      const { email, chats } = chatAccess(ctx)
+      return chats.messages(email, input.conversationId, input.beforeSequence)
+    }),
+    send: protectedProcedure.input(z.object({
+      conversationId: z.uuid(), text: z.string().trim().min(1).max(2_000), clientMessageId: z.uuid(),
+    })).mutation(({ ctx, input }) => {
+      const { email, chats } = chatAccess(ctx)
+      return chats.send(email, input.conversationId, input.text, input.clientMessageId)
+    }),
+  }),
   game: router({
     state: protectedProcedure.query(({ ctx }) => {
       if (!ctx.user.email || !ctx.gameplay) throw new TRPCError({ code: 'FORBIDDEN', message: 'A game session player account is required.' })
@@ -21,7 +54,9 @@ export const appRouter = router({
     me: publicProcedure.query(async ({ ctx }) => {
       if (ctx.user?.isTestLogin && !(await ctx.settings.get()).emailLoginEnabled) return null
       if (!ctx.user) return null
-      const gameSession = await requireMembership(ctx.user, ctx.sessions)
+      const gameSession = ctx.user.isAdmin && !ctx.user.isTestLogin
+        ? (ctx.user.email ? await ctx.sessions.membership(ctx.user.email) : null)
+        : await requireMembership(ctx.user, ctx.sessions)
       return { ...ctx.user, gameSession }
     }),
     testEmailLogin: publicProcedure

@@ -1,6 +1,6 @@
 # Browser test cases
 
-Manual browser end-to-end coverage recorded on 2026-10-11. Three fixtures completed all 15 rounds (45 rounds total). The [full report](e2e-browser-report.md) includes final balances, evidence, and the two privacy bugs found under the earlier realtime pot-pricing rule. Those observations are historical; the current regression cases are listed below.
+Manual browser end-to-end coverage recorded on 2026-10-11; this checklist was updated on 2026-10-14 for features merged since then. Three fixtures completed all 15 rounds (45 rounds total). The [full report](e2e-browser-report.md) includes final balances, evidence, and the two privacy bugs found under the earlier realtime pot-pricing rule. Those observations are historical; the current regression cases are listed below.
 
 ## Setup and access
 
@@ -10,8 +10,26 @@ Manual browser end-to-end coverage recorded on 2026-10-11. Three fixtures comple
 - [x] Reject an outsider and a player invited only to an inactive session.
 - [x] Deny a player access to the admin route.
 - [x] Disable email test login: hide passwordless login and deny the existing test login. Re-enable it and restore access.
-- [x] Verify a teammate sees the team's submitted choice and cannot submit a second choice.
+- [x] Verify both teammates see the team's submitted choice and the first submission locks the team choice.
+- [ ] Verify the earlier-arriving teammate is the team leader: only that player can submit game actions, transfer money, contribute to a reveal pot, or acknowledge a reveal; both teammates can see the team's permitted view.
 - [x] Reload a player page and verify balance and game state persist.
+
+## Team money transfers
+
+- [ ] Split a transfer equally among multiple recipients; verify leftover cents follow frozen team arrival order, and verify a custom allocation debits and credits the exact shares.
+- [ ] Verify transfers are available while a round is ready, after the sender has submitted a choice, and between rounds; the game phase, choice, and state token stay unchanged.
+- [ ] Verify only the sender and recipients see each receipt, including for nonleaders; unrelated teams see no transfer details.
+- [ ] Reject zero or negative totals, overspending, self/duplicate/unknown recipients, too many recipients, and allocations that do not exactly match the total; verify rejected transfers change no balances.
+- [ ] Verify transfers are unavailable during a public ranking reveal and become available after all teams acknowledge; a private reveal does not block other teams' transfers.
+- [ ] Retry a committed transfer with the same request ID and verify it is applied only once.
+
+## Player chat
+
+- [x] Send a message from a nonleader in a direct team conversation and in a group conversation; verify a reply appears through polling.
+- [x] Load an older page of messages and verify messages remain in chronological order.
+- [ ] Open a direct conversation from both teams and verify it reuses the same thread; create a group and verify only its selected members can read or send messages.
+- [ ] Verify the inbox lists invited players and team membership without exposing balances, ranks, earnings, or private gameplay state.
+- [ ] Verify chat remains available independently of gameplay progress and that conversations/messages persist for the session lifetime.
 
 ## Shared rules and reveal pots
 

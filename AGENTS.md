@@ -8,6 +8,10 @@ A night for friends inspired by Tom Scott’s **Money**: five games, three round
 
 Use pnpm. Keep the unimplemented folders empty until requested. Read [rules, tuning, and visibility](docs/games.md) before gameplay work. Potential winnings increase across rounds and games. Treat values and star awards as drafts; star counts are tunable for every game except the circle game and finale. Gamble bomb is the finale; most stars grant a significant advantage revealed only then. Share rules/configuration between live play and simulations. Ranks are hidden until a team pays for a private self-rank reveal or all teams pay toward a public reveal. A private reveal shows only that team's rank; a public reveal shows every team's rank to everyone. Ranks hide after acknowledgment, and balances/earnings stay private.
 
+When asked to run an end-to-end test, spawn multiple sub-agents and divide the browser cases in [docs/testcase.md](docs/testcase.md) among them. Have each report the cases attempted, outcomes, and any failures; consolidate the results in the testcase document.
+
+The admin app has five preconfigured preview sessions with names prefixed **UX Preview**. They are checkpoints for previewing each game's player view: set the matching session active, then sign in with one of its invited player accounts to open that game's player view. See [game preview instructions](game/AGENTS.md).
+
 ## Run locally
 
 From the repository root, start the `anton` port forwards and leave that process running:

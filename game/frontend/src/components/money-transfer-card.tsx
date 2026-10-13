@@ -1,5 +1,5 @@
 import type { GameAction, PlayerGameView } from 'backend/game'
-import { useMoneyTransfer, formatCents } from '@/hooks/use-money-transfer'
+import { useMoneyTransfer } from '@/hooks/use-money-transfer'
 import { usePlayerGame } from '@/hooks/use-gameplay'
 import { ErrorMessage } from '@/components/page-feedback'
 import { Button } from '@/components/ui/button'
@@ -32,6 +32,14 @@ export function MoneyTransferCard({
     </CardHeader>
     <CardContent className="space-y-4">
       {transfer.canTransfer && transfer.otherTeams.length > 0 && <div className="space-y-4">
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="w-44 space-y-1">
+            <Label htmlFor="money-transfer-total">Original amount to send</Label>
+            <Input id="money-transfer-total" type="text" inputMode="decimal" placeholder="0.00" value={transfer.total} disabled={transfer.isPending || transfer.isTransferError} onChange={(event) => transfer.changeTotal(event.target.value)} aria-describedby="money-transfer-balance-hint" />
+            <p id="money-transfer-balance-hint" className="text-xs text-muted-foreground">Maximum total: {transfer.team?.balance ?? '0.00'}</p>
+          </div>
+        </div>
+
         <fieldset disabled={transfer.isPending || transfer.isTransferError} className="space-y-2 disabled:opacity-70">
           <legend className="mb-2 text-sm font-medium">Recipient teams</legend>
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -48,22 +56,17 @@ export function MoneyTransferCard({
           </div>
         </fieldset>
 
-        <div className="flex flex-wrap items-end gap-3">
-          <div className="w-44 space-y-1">
-            <Label htmlFor="money-transfer-total">Total to share</Label>
-            <Input id="money-transfer-total" type="text" inputMode="decimal" placeholder="0.00" value={transfer.total} disabled={transfer.isPending || transfer.isTransferError} onChange={(event) => transfer.changeTotal(event.target.value)} aria-describedby="money-transfer-balance-hint" />
-            <p id="money-transfer-balance-hint" className="text-xs text-muted-foreground">Maximum total: {transfer.team?.balance ?? '0.00'}</p>
-          </div>
-          <Button disabled={transfer.isPending || transfer.isTransferError || !transfer.isValidTotal} onClick={transfer.send}>{transfer.isPending ? 'Submitting…' : 'Send money'}</Button>
-        </div>
+        {transfer.preview.length > 0 && <div className="space-y-2">
+          <div><p className="text-sm font-medium">Amount for each team</p><p className="text-xs text-muted-foreground">Shares start as equal as possible. You can edit each amount before sending.</p></div>
+          <div className="grid gap-3 sm:grid-cols-2">{transfer.preview.map(({ recipient, amount }) => <div key={recipient.id} className="space-y-1">
+            <Label htmlFor={`money-transfer-share-${recipient.id}`}>{recipient.name}</Label>
+            <Input id={`money-transfer-share-${recipient.id}`} type="text" inputMode="decimal" value={amount} placeholder="0.00" disabled={transfer.isPending || transfer.isTransferError} onChange={(event) => transfer.changeAllocation(recipient.id, event.target.value)} />
+          </div>)}</div>
+        </div>}
 
         {transfer.validationMessage && <p role="alert" className="text-sm text-destructive">{transfer.validationMessage}</p>}
         {transfer.totalSummary && <p className="text-sm font-medium" aria-live="polite">{transfer.totalSummary}</p>}
-        {transfer.recipients.length > 0 && <p className="text-sm text-muted-foreground">The total is split evenly. Any leftover cents go to teams in fixed arrival order.</p>}
-        {transfer.preview.length > 0 && <div className="rounded-md border px-3 py-2">
-          <p className="mb-2 text-sm font-medium">Share preview</p>
-          <div className="space-y-1 text-sm">{transfer.preview.map(({ recipient, amount }) => <div key={recipient.id} className="flex justify-between gap-3"><span>{recipient.name}</span><span>{formatCents(amount)}</span></div>)}</div>
-        </div>}
+        <Button disabled={transfer.isPending || transfer.isTransferError || !transfer.isValidTotal} onClick={transfer.send}>{transfer.isPending ? 'Submitting…' : 'Send money'}</Button>
       </div>}
 
       {!transfer.canTransfer && view.isTeamLeader && transfer.isClosed && <p className="text-sm text-muted-foreground">Transfers are closed because the game has finished.</p>}

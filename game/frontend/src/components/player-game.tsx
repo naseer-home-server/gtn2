@@ -41,13 +41,14 @@ export function PlayerGame() {
   const view = state.data
   const [amount, setAmount] = useState('0')
   const [potAmount, setPotAmount] = useState('0')
+  const [privatePotAmount, setPrivatePotAmount] = useState('0')
   const [moneyAmount, setMoneyAmount] = useState('0')
   const [starAmount, setStarAmount] = useState('0')
   const [returnMoney, setReturnMoney] = useState('0')
   const [returnStars, setReturnStars] = useState('0')
   const [recipients, setRecipients] = useState<Record<string, string>>({})
   useEffect(() => {
-    setAmount('0'); setPotAmount('0'); setMoneyAmount('0'); setStarAmount('0'); setReturnMoney('0'); setReturnStars('0'); setRecipients({})
+    setAmount('0'); setPotAmount('0'); setPrivatePotAmount('0'); setMoneyAmount('0'); setStarAmount('0'); setReturnMoney('0'); setReturnStars('0'); setRecipients({})
   }, [view?.token])
   const can = (type: GameAction['type']) => Boolean(view?.allowedActions.includes(type))
   const numeric = (value: string) => Number(value || 0)
@@ -59,9 +60,12 @@ export function PlayerGame() {
   const round = view.roundState
   const history = [...view.earnings].reverse()
   const potRemainingMinor = (cents(view.pot.target) ?? 0n) - (cents(view.pot.amount) ?? 0n)
+  const privatePotRemainingMinor = (cents(view.privatePot?.target ?? '0.00') ?? 0n) - (cents(view.privatePot?.amount ?? '0.00') ?? 0n)
   const potRemaining = displayCents(potRemainingMinor > 0n ? potRemainingMinor : 0n)
+  const privatePotRemaining = displayCents(privatePotRemainingMinor > 0n ? privatePotRemainingMinor : 0n)
   const potCap = team ? minMoney(team.balance, potRemaining) : '0.00'
-  const canContribute = can('pot.contribute') && team && (cents(team.balance) ?? 0n) > 0n && potRemainingMinor > 0n
+  const privatePotCap = team ? minMoney(team.balance, privatePotRemaining) : '0.00'
+  const canContribute = can('pot.contribute') && team && (cents(team.balance) ?? 0n) > 0n
   const isSubmitted = Boolean(round?.submitted)
   const submitAction = (payload: GameAction) => submit(payload)
   const submissionDisabled = action.isPending || blockedByUncertainTransfer
@@ -82,13 +86,16 @@ export function PlayerGame() {
       <Card><CardHeader><CardTitle><h2>{view.status === 'waiting' ? 'Waiting for team assignment' : 'No team assigned'}</h2></CardTitle><CardDescription>The game host will assign you to a team before play begins.</CardDescription></CardHeader></Card>
       {view.teams.length > 0 && <Card><CardHeader><CardTitle><h2>Teams and stars</h2></CardTitle><CardDescription>Star totals are public. Balances and ranks are private.</CardDescription></CardHeader><CardContent className="space-y-2">{view.teams.map((item) => <div key={item.id} className="flex justify-between rounded-md border px-3 py-2"><span>{item.name}</span><span>{item.stars} ★</span></div>)}</CardContent></Card>}
     </> : <>
-      <Card><CardHeader><CardTitle><h2>{team.name}</h2></CardTitle><CardDescription>Your balance stays private. Your rank is shared only during a reveal.</CardDescription></CardHeader><CardContent className="grid gap-3 sm:grid-cols-3"><div><p className="text-sm text-muted-foreground">Balance</p><p className="text-xl font-semibold">{money(team.balance)}</p></div><div><p className="text-sm text-muted-foreground">Your rank</p><p className="text-xl font-semibold">{team.rank}{ordinal(team.rank)}</p></div><div><p className="text-sm text-muted-foreground">Stars</p><p className="text-xl font-semibold">{team.stars}</p></div></CardContent></Card>
+      <Card><CardHeader><CardTitle><h2>{team.name}</h2></CardTitle><CardDescription>Your balance and rank stay private unless your team pays for a rank reveal.</CardDescription></CardHeader><CardContent className="grid gap-3 sm:grid-cols-2"><div><p className="text-sm text-muted-foreground">Balance</p><p className="text-xl font-semibold">{money(team.balance)}</p></div><div><p className="text-sm text-muted-foreground">Stars</p><p className="text-xl font-semibold">{team.stars}</p></div></CardContent></Card>
       <Card className={view.isTeamLeader ? 'border-primary/40' : 'border-muted'}><CardContent className="py-4"><p className="text-sm">{view.isTeamLeader
         ? 'You are the team leader based on arrival order. Discuss choices in person before submitting.'
         : 'Your teammate arrived first and leads your team. Discuss game choices with them in person; only their account can submit decisions, money transfers, reveal acknowledgments, or reveal-pot contributions. You can still send messages in Chats.'}</p></CardContent></Card>
-      <Card><CardHeader><CardTitle><h2>Reveal pot</h2></CardTitle><CardDescription>Contribute from your balance to reveal team rankings. The pot resets after a reveal.</CardDescription></CardHeader><CardContent className="space-y-3"><p>{money(view.pot.amount)} / {money(view.pot.target)}</p>{canContribute && <div className="flex flex-wrap items-end gap-3"><div className="w-40"><NumberField id="pot-contribution" label="Contribution" value={potAmount} onChange={setPotAmount} max={potCap} /></div><Button disabled={submissionDisabled || (cents(potAmount) ?? 0n) <= 0n || !lessOrEqualMoney(potAmount, potCap)} onClick={() => submitAction({ type: 'pot.contribute', amount: potAmount })}>{action.isPending ? 'Submitting…' : actionName['pot.contribute']}</Button></div>}</CardContent></Card>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card><CardHeader><CardTitle><h2>Public rank reveal</h2></CardTitle><CardDescription>When funded, every team sees every team’s rank. The reveal pauses play until all teams acknowledge it.</CardDescription></CardHeader><CardContent className="space-y-3"><p>{money(view.pot.amount)} / {money(view.pot.target)}</p>{canContribute && potRemainingMinor > 0n && <div className="flex flex-wrap items-end gap-3"><div className="w-40"><NumberField id="public-pot-contribution" label="Contribution" value={potAmount} onChange={setPotAmount} max={potCap} /></div><Button disabled={submissionDisabled || (cents(potAmount) ?? 0n) <= 0n || !lessOrEqualMoney(potAmount, potCap)} onClick={() => submitAction({ type: 'pot.contribute', scope: 'public', amount: potAmount })}>{action.isPending ? 'Submitting…' : 'Contribute'}</Button></div>}</CardContent></Card>
+        <Card><CardHeader><CardTitle><h2>Private self rank reveal</h2></CardTitle><CardDescription>Only your team sees its own rank. Price is one fifth of the public reveal price.</CardDescription></CardHeader><CardContent className="space-y-3"><p>{money(view.privatePot?.amount ?? '0.00')} / {money(view.privatePot?.target ?? '0.00')}</p>{canContribute && privatePotRemainingMinor > 0n && <div className="flex flex-wrap items-end gap-3"><div className="w-40"><NumberField id="private-pot-contribution" label="Contribution" value={privatePotAmount} onChange={setPrivatePotAmount} max={privatePotCap} /></div><Button disabled={submissionDisabled || (cents(privatePotAmount) ?? 0n) <= 0n || !lessOrEqualMoney(privatePotAmount, privatePotCap)} onClick={() => submitAction({ type: 'pot.contribute', scope: 'self', amount: privatePotAmount })}>{action.isPending ? 'Submitting…' : 'Contribute'}</Button></div>}</CardContent></Card>
+      </div>
       <MoneyTransferCard view={view} action={action} submit={submitAction} retry={retry} blockedByUncertainTransfer={blockedByUncertainTransfer} />
-      {view.reveal && <Card className="border-primary"><CardHeader><CardTitle><h2>Rankings revealed</h2></CardTitle><CardDescription>Rankings will hide again after you acknowledge the reveal.</CardDescription></CardHeader><CardContent className="space-y-3"><ol className="list-inside list-decimal space-y-1">{view.reveal.rankings.map((rank) => <li key={rank.teamId}>{view.teams.find((item) => item.id === rank.teamId)?.name ?? rank.teamId} — rank {rank.rank}</li>)}</ol>{can('reveal.acknowledge') && <Button disabled={submissionDisabled} onClick={() => submitAction({ type: 'reveal.acknowledge' })}>{actionName['reveal.acknowledge']}</Button>}</CardContent></Card>}
+      {view.reveal && <Card className="border-primary"><CardHeader><CardTitle><h2>{view.reveal.scope === 'public' ? 'Public rankings revealed' : 'Your rank revealed'}</h2></CardTitle><CardDescription>{view.reveal.scope === 'public' ? 'Every team can see these ranks. They hide again after each team acknowledges.' : 'Only your team can see this rank. It hides after you acknowledge.'}</CardDescription></CardHeader><CardContent className="space-y-3"><ol className="list-inside list-decimal space-y-1">{view.reveal.rankings.map((rank) => <li key={rank.teamId}>{view.teams.find((item) => item.id === rank.teamId)?.name ?? rank.teamId} — rank {rank.rank}</li>)}</ol>{can('reveal.acknowledge') && <Button disabled={submissionDisabled} onClick={() => submitAction({ type: 'reveal.acknowledge' })}>{actionName['reveal.acknowledge']}</Button>}</CardContent></Card>}
       {view.teams.length > 0 && <Card><CardHeader><CardTitle><h2>Teams and stars</h2></CardTitle><CardDescription>Star totals are public. Other teams’ balances and ranks stay private.</CardDescription></CardHeader><CardContent className="space-y-2">{view.teams.map((item) => <div key={item.id} className="flex justify-between rounded-md border px-3 py-2"><span>{item.name}{item.id === team.id ? ' (you)' : ''}</span><span>{item.stars} ★</span></div>)}</CardContent></Card>}
       {view.status === 'playing' && round && view.game && <>
         {view.rules && <RoundSettings game={view.game} rules={view.rules} />}
@@ -113,7 +120,6 @@ export function PlayerGame() {
   </div>
 }
 
-function ordinal(n: number) { return n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th' }
 function CaveTickCountdown({ nextTickAt }: { nextTickAt: number }) {
   const [now, setNow] = useState(Date.now())
   useEffect(() => {

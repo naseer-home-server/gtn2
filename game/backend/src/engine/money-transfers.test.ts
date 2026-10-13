@@ -158,8 +158,8 @@ test('only own incoming and outgoing receipts appear in either teammate view', (
   state.teams[1]!.balance = '1900'
   state.teams[2]!.balance = '3000'
   action(state, 'a', ['b'], '1.25')
-  assert.equal(playerView('s', 'night', state, 'alice').team?.rank, 3)
-  assert.equal(playerView('s', 'night', state, 'bob').team?.rank, 2)
+  assert.ok(!('rank' in playerView('s', 'night', state, 'alice').team!))
+  assert.ok(!('rank' in playerView('s', 'night', state, 'bob').team!))
   action(state, 'b', ['a'], '2.50')
   const alice = playerView('s', 'night', state, 'alice')
   const alexa = playerView('s', 'night', state, 'alexa')
@@ -180,8 +180,8 @@ test('only own incoming and outgoing receipts appear in either teammate view', (
     assert.ok(!('balance' in view.teams[0]!))
     assert.ok(!('rank' in view.teams[1]!))
   }
-  assert.equal(alice.team?.rank, 2)
-  assert.equal(bob.team?.rank, 3)
+  assert.ok(!('rank' in alice.team!))
+  assert.ok(!('rank' in bob.team!))
   assert.equal(alice.earnings.length, 0)
 })
 

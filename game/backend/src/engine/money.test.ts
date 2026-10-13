@@ -50,20 +50,21 @@ test('fractional bonus multiplier and zero-taker factor compound before rounding
   assert.equal(state.teams[0].balance, '3')
 })
 
-test('reveal pot target rounds exact average earnings times its multiplier once', () => {
+test('reveal pot targets round the public price to hundreds and keep the private price at one fifth', () => {
   const { teams, config } = fixture(2)
   config.revealPotMultiplier = 1.5
   const { state } = startEngine(teams, config, env())
   state.teams[0].balance = '1'
   state.teams[1].balance = '2'
   refreshPotTarget(state)
-  // Three cents across two teams, scaled by 1.5, is 2.25 cents and rounds to 2.
-  assert.equal(state.pot.target, moneyScale('3', 1.5, 2))
-  assert.equal(state.pot.target, '2')
+  // Three cents across two teams, scaled by 1.5, is 2.25 cents; after rounding to hundreds the positive-earnings minimum is $100.
+  assert.equal(moneyScale('3', 1.5, 2), '2')
+  assert.equal(state.pot.target, '10000')
+  assert.equal(state.privatePots?.a?.target, '2000')
   applyAction(state, 'a', state.current.token, { type: 'pot.contribute', amount: '0.01' }, env())
   assert.equal(state.pot.amount, '1')
-  assert.equal(state.pot.target, '2')
+  assert.equal(state.pot.target, '10000')
   // Pot spending is excluded from balances but restored into the earnings basis.
   refreshPotTarget(state)
-  assert.equal(state.pot.target, '2')
+  assert.equal(state.pot.target, '10000')
 })

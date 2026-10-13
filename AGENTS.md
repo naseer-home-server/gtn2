@@ -6,7 +6,7 @@ A night for friends inspired by Tom Scott’s **Money**: five games, three round
 - `game/`: Vite + React + TypeScript app for player login and gameplay.
 - `ai-simulation/`: future multi-agent chat interface for playtesting and balance.
 
-Use pnpm. Keep the unimplemented folders empty until requested. Read [rules, tuning, and visibility](docs/games.md) before gameplay work. Potential winnings increase across rounds and games. Treat values and star awards as drafts; star counts are tunable for every game except the circle game and finale. Gamble bomb is the finale; most stars grant a significant advantage revealed only then. Share rules/configuration between live play and simulations. Teams see only their own rank except during a reveal; rankings hide again afterward, and balances/earnings stay private.
+Use pnpm. Keep the unimplemented folders empty until requested. Read [rules, tuning, and visibility](docs/games.md) before gameplay work. Potential winnings increase across rounds and games. Treat values and star awards as drafts; star counts are tunable for every game except the circle game and finale. Gamble bomb is the finale; most stars grant a significant advantage revealed only then. Share rules/configuration between live play and simulations. Ranks are hidden until a team pays for a private self-rank reveal or all teams pay toward a public reveal. A private reveal shows only that team's rank; a public reveal shows every team's rank to everyone. Ranks hide after acknowledgment, and balances/earnings stay private.
 
 ## Run locally
 

@@ -101,7 +101,7 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
       assert.equal(revealView.team?.balance, '0.00')
       assert.equal(revealView.pot.amount, '0.00')
       assert.equal(revealView.reveal?.rankings.length, 3)
-      assert.deepEqual(Object.keys(revealView.reveal ?? {}).sort(), ['id', 'rankings'])
+      assert.deepEqual(Object.keys(revealView.reveal ?? {}).sort(), ['id', 'rankings', 'scope'])
       assert.ok(revealView.reveal?.rankings.every((rank) => !('balance' in rank)))
       const revisionAtReveal = (await admin.admin.game.state({ sessionId: session.id })).state!.revision
       await gameplay.action(emails[1], {

@@ -8,10 +8,10 @@ Add a global `money.transfer` gameplay action that splits a positive total amoun
 
 - A transfer is valid only while the session status is `playing`, including round-ready and round-complete phases.
 - The sending team's leader may transfer after submitting its game choice. The current game phase and choice remain unchanged.
-- A transfer requires a list of one to four distinct, known recipient teams that excludes the sender. The total must provide at least one cent to each recipient, and the sender must have enough balance.
-- The total amount is parsed as arbitrary-precision integer cents, divided evenly among recipients, and any leftover cents go one at a time in frozen team tie order (team ID breaks ties). The action is all-or-nothing. The sender's debit equals the sum of recipient credits, preserving total funds.
+- A transfer requires a list of one to four distinct, known recipient teams that excludes the sender. Each recipient's positive allocation and all allocations together must exactly match the sender's stated total. The sender must have enough balance.
+- Fill allocations with an equal split by default, distributing leftover cents one at a time in frozen team tie order (team ID breaks ties). The sender may edit each allocation before sending. The action is all-or-nothing: reject it if allocations do not sum to the total, and debit exactly the sum credited to recipients.
 - The action must use the current state token. Each per-recipient receipt gets an ID through the injected token function, but the current token remains unchanged. No star count or multiplier is read.
-- Transfers are blocked for the duration of a ranking reveal. Existing reveal acknowledgment and stale-token behavior remains in force.
+- Transfers are blocked for the duration of a public ranking reveal. A private self-rank reveal does not pause other teams. Existing public-reveal acknowledgment and stale-token behavior remains in force.
 
 ## State, reset, and audit
 
@@ -21,9 +21,9 @@ Each recipient share emits `money.transferred` with the receipt data. The existi
 
 ## Player visibility and availability
 
-Player views always include `moneyTransfers`. The list is filtered to receipts where the viewer's assigned team is sender or recipient, including for nonleaders. Amounts use decimal currency strings. The public team list is returned in frozen tie order so clients can preview leftover-cent allocation without exposing tie-order fields. Waiting or unassigned players receive an empty receipt list. No other team's balance or rank is added to the view. A team leader with positive balance sees `money.transfer` in `allowedActions` during every playing phase with no reveal, including the ready phase and after the team's game choice is submitted. Reveals suppress the action.
+Player views always include `moneyTransfers`. The list is filtered to receipts where the viewer's assigned team is sender or recipient, including for nonleaders. Amounts use decimal currency strings. The public team list is returned in frozen tie order so clients can preview leftover-cent allocation without exposing tie-order fields. Waiting or unassigned players receive an empty receipt list. No rank is included by default: a paid self-rank reveal is visible only to that team, while a paid public reveal exposes every rank to everyone. A team leader with positive balance sees `money.transfer` in `allowedActions` during every playing phase with no public reveal, including the ready phase and after the team's game choice is submitted. A public reveal suppresses the action.
 
-At the API boundary, `recipientTeamIds` is validated as a unique array of one to four UUIDs, matching actual team IDs. Pure engine calls accept simple IDs for deterministic engine use and validate recipient count, uniqueness, membership, and sender exclusion.
+At the API boundary, `recipientTeamIds` is validated as a unique array of one to four UUIDs, matching actual team IDs. Optional `allocations` must contain one unique `{teamId, amount}` per recipient, with positive shares summing exactly to the transfer total. Omitting allocations preserves equal-split behavior for existing API clients. Pure engine calls accept simple IDs for deterministic engine use and validate recipient count, uniqueness, membership, sender exclusion, and balance conservation.
 
 ## Validation
 

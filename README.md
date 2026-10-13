@@ -40,7 +40,7 @@ On `/admin`, create a named session with up to ten individual attendee emails, t
 
 Open a session's **Arrival order** page to mark attendees as they arrive and correct their order. Assign arrived attendees to two to five teams, edit the draft configuration, and start the playthrough. Team arrival order then freezes. Admins see every command, outcome, balance, and private choice, and advance completed rounds. Players use the home page for their team's actions and private results. Cave ticks run automatically; other games resolve when all teams submit.
 
-All five games, public stars, the finale advantage, and repeatable ranking reveals run in a pure backend engine. PostgreSQL persists each action and outcome atomically with session state. [The state/action API](docs/game-api.md) supports future AI players directly, with the same authentication and visibility rules as the UI. The `ai-simulation/` folder remains empty.
+All five games, public stars, the finale advantage, and repeatable paid ranking reveals run in a pure backend engine. A private reveal shows only the team's own rank; a public reveal shows every team's rank to everyone. PostgreSQL persists each action and outcome atomically with session state. [The state/action API](docs/game-api.md) supports future AI players directly, with the same authentication and visibility rules as the UI. The `ai-simulation/` folder remains empty.
 
 Run `pnpm --filter backend test` for engine, visibility, authentication, and API tests, including a deterministic 15-round playthrough. With PostgreSQL configured, `RUN_DB_TESTS=1 pnpm --filter backend test` also tests real persistence and a full playthrough inside transactions that roll back their fixtures.
 

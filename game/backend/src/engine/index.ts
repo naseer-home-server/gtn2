@@ -12,16 +12,20 @@ export function rankings(state: EngineState): Ranking[] {
     .map((team, index) => ({ teamId: team.id, rank: index + 1 }))
 }
 export function refreshPotTarget(state: EngineState) {
-  if (state.pot.amount !== '0') return
   const earned = moneyAdd(...state.teams.map((team) => moneyAdd(team.balance, state.potSpent?.[team.id] ?? '0')))
-  state.pot.target = moneyScale(earned, state.config.revealPotMultiplier, state.teams.length)
-  if (moneyCompare(earned, '0') > 0 && state.pot.target === '0') state.pot.target = '1'
+  const exact = BigInt(moneyScale(earned, state.config.revealPotMultiplier, state.teams.length))
+  let target = ((exact + 5_000n) / 10_000n) * 10_000n
+  if (moneyCompare(earned, '0') > 0 && target === 0n) target = 10_000n
+  state.pot.target = target.toString()
+  state.privatePots ??= Object.fromEntries(state.teams.map((team) => [team.id, { amount: '0', target: '0' }]))
+  for (const team of state.teams) {
+    const pot = state.privatePots[team.id] ?? { amount: '0', target: '0' }
+    state.privatePots[team.id] = { ...pot, target: (target / 5n).toString() }
+  }
 }
 function startRound(state: EngineState, env: EngineEnv): EngineEvent[] {
   state.current = { ...state.current, game: GAME_ORDER[state.gameIndex] } as CurrentRound
-  const events = state.gameIndex < 3 ? startEarlyGame(state, env) : startFinalGame(state, env)
-  refreshPotTarget(state)
-  return events
+  return state.gameIndex < 3 ? startEarlyGame(state, env) : startFinalGame(state, env)
 }
 function captureGameStart(state: EngineState) {
   state.gameStart = {
@@ -31,6 +35,8 @@ function captureGameStart(state: EngineState) {
     caveTotals: structuredClone(state.caveTotals),
     advantagedTeamId: state.advantagedTeamId,
     pot: structuredClone(state.pot),
+    privatePots: structuredClone(state.privatePots ?? {}),
+    privateReveals: structuredClone(state.privateReveals ?? {}),
     potSpent: structuredClone(state.potSpent ?? {}),
     reveal: structuredClone(state.reveal),
     moneyTransfersLength: (state.moneyTransfers ?? []).length,
@@ -44,7 +50,9 @@ export function startEngine(teams: Team[], config: GameConfig, env: EngineEnv, s
     version: 1, revision: 0, status: 'playing', config: structuredClone(config),
     teams: teams.map((team) => ({ ...team, balance: cents(config.initialBalance), stars: 0 })),
     gameIndex: GAME_ORDER.indexOf(startingGame), round: 1, current: { game: startingGame, phase: 'ready', token: env.token() },
-    history: [], caveTotals: {}, advantagedTeamId: null, pot: { amount: '0', target: '0' }, potSpent: {}, moneyTransfers: [], reveal: null,
+    history: [], caveTotals: {}, advantagedTeamId: null, pot: { amount: '0', target: '10000' },
+    privatePots: Object.fromEntries(teams.map((team) => [team.id, { amount: '0', target: '2000' }])), privateReveals: {},
+    potSpent: {}, moneyTransfers: [], reveal: null,
   }
   captureGameStart(state)
   const events: EngineEvent[] = [
@@ -68,7 +76,10 @@ export function advanceEngine(state: EngineState, env: EngineEnv): EngineEvent[]
     state.status = 'finished'; state.gameIndex = GAME_ORDER.length - 1; state.round = 3; state.current.token = env.token()
     return [{ type: 'playthrough.finished', data: { rankings: rankings(state) } }]
   }
-  if (startsNewGame) captureGameStart(state)
+  if (startsNewGame) {
+    refreshPotTarget(state)
+    captureGameStart(state)
+  }
   return startRound(state, env)
 }
 export function resetCurrentGame(state: EngineState, env: EngineEnv): EngineEvent[] {
@@ -98,6 +109,8 @@ export function resetCurrentGame(state: EngineState, env: EngineEnv): EngineEven
   state.caveTotals = structuredClone(checkpoint.caveTotals)
   state.advantagedTeamId = checkpoint.advantagedTeamId
   state.pot = structuredClone(checkpoint.pot)
+  state.privatePots = structuredClone(checkpoint.privatePots ?? {})
+  state.privateReveals = structuredClone(checkpoint.privateReveals ?? {})
   state.potSpent = structuredClone(checkpoint.potSpent)
   state.reveal = structuredClone(checkpoint.reveal)
   state.moneyTransfers = (state.moneyTransfers ?? []).slice(0, checkpoint.moneyTransfersLength ?? 0)
@@ -113,32 +126,43 @@ export function applyAction(state: EngineState, teamId: string, token: string, a
   const team = teamById(state, teamId)
   ensure(token === state.current.token, 'This action belongs to an earlier round or tick. Refresh your state.')
   if (action.type === 'reveal.acknowledge') {
-    ensure(state.reveal, 'There is no rankings reveal to acknowledge.')
-    ensure(!state.reveal.acknowledged.includes(teamId), 'Your team already acknowledged this reveal.')
-    state.reveal.acknowledged.push(teamId)
-    const events: EngineEvent[] = [{ type: 'reveal.acknowledged', data: { teamId, revealId: state.reveal.id } }]
-    if (state.reveal.acknowledged.length === state.teams.length) {
-      events.push({ type: 'reveal.closed', data: { revealId: state.reveal.id } })
-      state.reveal = null; state.current.token = env.token()
-      if (state.current.game === 'cave' && state.current.phase === 'cave') state.current.nextTickAt = env.now + state.config.cave.tickSeconds * 1000
+    if (state.reveal && !state.reveal.acknowledged.includes(teamId)) {
+      state.reveal.acknowledged.push(teamId)
+      const events: EngineEvent[] = [{ type: 'reveal.acknowledged', data: { teamId, revealId: state.reveal.id } }]
+      if (state.reveal.acknowledged.length === state.teams.length) {
+        events.push({ type: 'reveal.closed', data: { revealId: state.reveal.id } })
+        state.reveal = null; state.current.token = env.token()
+        if (state.current.game === 'cave' && state.current.phase === 'cave') state.current.nextTickAt = env.now + state.config.cave.tickSeconds * 1000
+      }
+      return events
     }
-    return events
+    const privateReveal = state.privateReveals?.[teamId]
+    ensure(privateReveal, 'There is no rankings reveal to acknowledge.')
+    delete state.privateReveals![teamId]
+    return [{ type: 'private-reveal.acknowledged', data: { teamId, revealId: privateReveal.id } }]
   }
   ensure(!state.reveal, 'All teams must acknowledge the rankings reveal before play resumes.')
   if (action.type === 'pot.contribute') {
-    refreshPotTarget(state)
-    ensure(moneyCompare(state.pot.target, '0') > 0, 'The reveal pot opens once teams have earnings.')
+    const scope = action.scope ?? 'public'
+    state.privatePots ??= Object.fromEntries(state.teams.map((item) => [item.id, { amount: '0', target: (BigInt(state.pot.target) / 5n).toString() }]))
+    const pot = scope === 'public' ? state.pot : (state.privatePots[teamId] ??= { amount: '0', target: (BigInt(state.pot.target) / 5n).toString() })
+    ensure(moneyCompare(pot.target, '0') > 0, 'The reveal pot is not available yet.')
     const requested = cents(action.amount)
     ensure(moneyCompare(requested, '0') > 0, 'Contribute a positive amount.')
-    const amount = moneyMin(requested, moneySub(state.pot.target, state.pot.amount))
+    const amount = moneyMin(requested, moneySub(pot.target, pot.amount))
     ensure(moneyCompare(amount, team.balance) <= 0, 'Contribution exceeds your available balance.')
-    team.balance = moneySub(team.balance, amount); state.pot.amount = moneyAdd(state.pot.amount, amount)
+    team.balance = moneySub(team.balance, amount); pot.amount = moneyAdd(pot.amount, amount)
     state.potSpent ??= {}; state.potSpent[teamId] = moneyAdd(state.potSpent[teamId] ?? '0', amount)
-    const events: EngineEvent[] = [{ type: 'pot.contributed', data: { teamId, amount, total: state.pot.amount, target: state.pot.target } }]
-    if (moneyCompare(state.pot.amount, state.pot.target) === 0) {
+    const events: EngineEvent[] = [{ type: 'pot.contributed', data: { teamId, scope, amount, total: pot.amount, target: pot.target } }]
+    if (moneyCompare(pot.amount, pot.target) === 0 && scope === 'public') {
       state.reveal = { id: env.token(), rankings: rankings(state), acknowledged: [] }
-      state.pot.amount = '0'; state.current.token = env.token(); refreshPotTarget(state)
+      state.pot.amount = '0'; state.current.token = env.token()
       events.push({ type: 'rankings.revealed', data: { revealId: state.reveal.id, rankings: state.reveal.rankings } })
+    } else if (moneyCompare(pot.amount, pot.target) === 0) {
+      state.privateReveals ??= {}
+      state.privateReveals[teamId] = { id: env.token(), rank: rankings(state).find((item) => item.teamId === teamId)!.rank }
+      pot.amount = '0'
+      events.push({ type: 'private-rank.revealed', data: { teamId, revealId: state.privateReveals[teamId].id, rank: state.privateReveals[teamId].rank } })
     }
     return events
   }
@@ -153,15 +177,28 @@ export function applyAction(state: EngineState, teamId: string, token: string, a
     ensure(moneyCompare(amount, team.balance) <= 0, 'Transfer exceeds your available balance.')
     ensure(BigInt(amount) >= BigInt(recipients.length), 'The total must provide at least one cent to each recipient.')
     const orderedRecipients = recipients.sort((a, b) => a.tieOrder - b.tieOrder || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+    if (action.allocations) {
+      ensure(action.allocations.length === recipients.length
+        && action.allocations.every((allocation) => action.recipientTeamIds.includes(allocation.teamId)),
+      'Provide exactly one amount for each selected recipient.')
+    }
     const baseShare = BigInt(amount) / BigInt(orderedRecipients.length)
     const remainder = BigInt(amount) % BigInt(orderedRecipients.length)
-    const transfers = orderedRecipients.map((recipient, index) => {
-      const share = (baseShare + (BigInt(index) < remainder ? 1n : 0n)).toString()
-      return {
-        receipt: { id: env.token(), fromTeamId: teamId, toTeamId: recipient.id, amount: share },
-        recipientBalance: safeMoney(moneyAdd(recipient.balance, share)),
-      }
+    let allocated = 0n
+    const shares = orderedRecipients.map((recipient, index) => {
+      const requested = action.allocations?.find((allocation) => allocation.teamId === recipient.id)?.amount
+      const share = requested === undefined
+        ? (baseShare + (BigInt(index) < remainder ? 1n : 0n)).toString()
+        : cents(requested)
+      ensure(moneyCompare(share, '0') > 0, 'Each recipient must receive a positive amount.')
+      allocated += BigInt(share)
+      return { recipient, share, recipientBalance: safeMoney(moneyAdd(recipient.balance, share)) }
     })
+    ensure(allocated === BigInt(amount), 'Recipient amounts must add up to the total amount.')
+    const transfers = shares.map(({ recipient, share, recipientBalance }) => ({
+      receipt: { id: env.token(), fromTeamId: teamId, toTeamId: recipient.id, amount: share },
+      recipientBalance,
+    }))
     const senderBalance = moneySub(team.balance, amount)
     state.moneyTransfers ??= []
     const events = transfers.map(({ receipt, recipientBalance }) => {
@@ -177,12 +214,10 @@ export function applyAction(state: EngineState, teamId: string, token: string, a
     ensure(state.current.nextTickAt !== null && env.now < state.current.nextTickAt, 'This cave decision window has closed. Refresh your state.')
   }
   const events = state.gameIndex < 3 ? actEarlyGame(state, teamId, action, env) : actFinalGame(state, teamId, action, env)
-  refreshPotTarget(state)
   return events
 }
 export function tickEngine(state: EngineState, env: EngineEnv): EngineEvent[] {
   if (state.status !== 'playing' || state.current.game !== 'cave' || state.current.phase !== 'cave' || state.reveal) return []
   const events = tickCave(state, env)
-  refreshPotTarget(state)
   return events
 }

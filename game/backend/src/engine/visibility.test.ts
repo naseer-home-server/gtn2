@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { advanceEngine, applyAction, refreshPotTarget, startEngine, tickEngine } from './index.js'
+import { advanceEngine, applyAction, startEngine, tickEngine } from './index.js'
 import { DEFAULT_CONFIG } from './config.js'
 import { playerView } from './views.js'
 import type { CaveRound, EngineEnv, EngineState, Team } from './types.js'
@@ -15,7 +15,7 @@ const env = (now = 1_000): EngineEnv => ({ now, random: () => 0.5, token: () => 
 const start = () => startEngine(teams(), structuredClone(DEFAULT_CONFIG), env()).state
 const view = (state: EngineState, playerId: string) => playerView('session', 'Test night', state, playerId)
 
-test('players see their own balance and rank, public stars, and own earnings without other balances or ranks', () => {
+test('players see their own balance and public stars, with ranks hidden until a paid reveal', () => {
   const state = start()
   state.teams[0].balance = '12345'
   state.teams[1].balance = '98765'
@@ -25,7 +25,7 @@ test('players see their own balance and rank, public stars, and own earnings wit
   state.history.push({ game: 'bonus', round: 1, payouts: { a: '100', b: '2000', c: '3000' }, details: { choices: { a: '10', b: '20', c: '30' } } })
 
   const alice = view(state, 'alice')
-  assert.deepEqual(alice.team, { id: 'a', name: 'Amber', balance: '123.45', stars: 2, rank: 3 })
+  assert.deepEqual(alice.team, { id: 'a', name: 'Amber', balance: '123.45', stars: 2 })
   assert.deepEqual(alice.earnings, [{ game: 'bonus', round: 1, amount: '1.00' }])
   assert.deepEqual(alice.teams.map((team) => team.stars), [2, 4, 0])
   assert.ok(alice.teams.every((team) => !('balance' in team) && !('rank' in team)))
@@ -120,7 +120,8 @@ test('rank reveal is a snapshot, each team acknowledges once, then ranks hide an
     game: 'cave', token: 'cave-before-reveal', phase: 'cave', tick: 2, stage: 'waiting', nextTickAt: 50_000,
     inside: ['a', 'b', 'c'], unbanked: '4000', decisions: {}, banked: { a: '0', b: '0', c: '0' }, collapsed: false,
   }
-  refreshPotTarget(state)
+  state.pot.target = '1000'
+  state.privatePots = Object.fromEntries(state.teams.map((team) => [team.id, { amount: '0', target: '200' }]))
   const events = applyAction(state, 'a', state.current.token, { type: 'pot.contribute', amount: 10 }, env(5_000))
   assert.ok(events.some((event) => event.type === 'rankings.revealed'))
   assert.deepEqual(view(state, 'alice').reveal?.rankings.map((rank) => [rank.teamId, rank.rank]), [['b', 1], ['c', 2], ['a', 3]])

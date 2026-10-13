@@ -8,12 +8,16 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
   const base: PlayerGameView = {
     sessionId, sessionName, status: state?.status ?? 'waiting', isTeamLeader: false, team: null,
     teams: state ? [...state.teams].sort((a, b) => a.tieOrder - b.tieOrder || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)).map(publicTeam) : [], game: state?.current.game ?? null, round: state?.round ?? null,
-    token: null, pot: { amount: state ? units(state.pot.amount) : '0.00', target: state ? units(state.pot.target) : '0.00' },
+    token: null, pot: { amount: state ? units(state.pot.amount) : '0.00', target: state ? units(state.pot.target) : '0.00' }, privatePot: null,
     reveal: null, moneyTransfers: [], earnings: [], roundState: null, allowedActions: [],
   }
   if (!state || !team) return base
   base.isTeamLeader = (team.leaderPlayerId ?? team.playerIds[0]) === playerId
-  base.team = { id: team.id, name: team.name, balance: units(team.balance), stars: team.stars, rank: rankings(state).find((item) => item.teamId === team.id)!.rank }
+  base.team = { id: team.id, name: team.name, balance: units(team.balance), stars: team.stars }
+  const privatePot = state.privatePots?.[team.id]
+  base.privatePot = privatePot
+    ? { amount: units(privatePot.amount), target: units(privatePot.target) }
+    : { amount: '0.00', target: units((BigInt(state.pot.target) / 5n).toString()) }
   base.moneyTransfers = (state.moneyTransfers ?? [])
     .filter((receipt) => receipt.fromTeamId === team.id || receipt.toTeamId === team.id)
     .map((receipt) => ({ ...receipt, amount: units(receipt.amount) }))
@@ -68,14 +72,18 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
     }
   }
   if (state.status === 'playing' && !state.reveal && team.balance !== '0') base.allowedActions.push('money.transfer')
-  if (state.pot.target !== '0' && team.balance !== '0') base.allowedActions.push('pot.contribute')
+  if ((state.pot.target !== '0' || (base.privatePot && base.privatePot.target !== '0.00')) && team.balance !== '0') base.allowedActions.push('pot.contribute')
   if (state.status === 'finished') base.allowedActions = base.allowedActions.filter((type) => type === 'pot.contribute')
   if (state.reveal) {
     base.allowedActions = []
     if (!state.reveal.acknowledged.includes(team.id)) {
-      base.reveal = { id: state.reveal.id, rankings: state.reveal.rankings }
+      base.reveal = { id: state.reveal.id, rankings: state.reveal.rankings, scope: 'public' }
       base.allowedActions = ['reveal.acknowledge']
     }
+  } else if (state.privateReveals?.[team.id]) {
+    const ownReveal = state.privateReveals[team.id]
+    base.reveal = { id: ownReveal.id, rankings: [{ teamId: team.id, rank: ownReveal.rank }], scope: 'self' }
+    base.allowedActions.push('reveal.acknowledge')
   }
   if (!base.isTeamLeader) base.allowedActions = []
   return base

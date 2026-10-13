@@ -19,6 +19,8 @@ export type TeamAssignment = { name: string; playerIds: string[] }
 export type RoundResult = { game: GameId; round: number; payouts: Record<string, Money>; details: Record<string, unknown> }
 export type Ranking = { teamId: string; rank: number }
 export type Reveal = { id: string; rankings: Ranking[]; acknowledged: string[] }
+export type PrivateRevealPot = { amount: Money; target: Money }
+export type PrivateRankReveal = { id: string; rank: number }
 export type GameStartCheckpoint = {
   gameIndex: number
   accounts: Record<string, { balance: Money; stars: number }>
@@ -26,6 +28,8 @@ export type GameStartCheckpoint = {
   caveTotals: Record<string, Money>
   advantagedTeamId: string | null
   pot: { amount: Money; target: Money }
+  privatePots: Record<string, PrivateRevealPot>
+  privateReveals: Record<string, PrivateRankReveal>
   potSpent: Record<string, Money>
   reveal: Reveal | null
   moneyTransfersLength?: number
@@ -52,6 +56,8 @@ export type EngineState = {
   teams: Team[]; gameIndex: number; round: number; current: CurrentRound
   history: RoundResult[]; caveTotals: Record<string, Money>; advantagedTeamId: string | null
   pot: { amount: Money; target: Money }; reveal: Reveal | null
+  privatePots?: Record<string, PrivateRevealPot>
+  privateReveals?: Record<string, PrivateRankReveal>
   potSpent?: Record<string, Money>
   moneyTransfers?: MoneyTransferReceipt[]
   gameStart?: GameStartCheckpoint
@@ -65,17 +71,18 @@ export type GameAction =
   | { type: 'circle.send'; money: MoneyInput; stars: number }
   | { type: 'circle.return'; money: MoneyInput; stars: number }
   | { type: 'bomb.allocate'; up: number; down: number; recipients: Record<string, number> }
-  | { type: 'pot.contribute'; amount: MoneyInput }
-  | { type: 'money.transfer'; recipientTeamIds: string[]; amount: MoneyInput }
+  | { type: 'pot.contribute'; amount: MoneyInput; scope?: 'self' | 'public' }
+  | { type: 'money.transfer'; recipientTeamIds: string[]; amount: MoneyInput; allocations?: { teamId: string; amount: MoneyInput }[] }
   | { type: 'reveal.acknowledge' }
 export type PlayerCommand = { requestId: string; token: string; action: GameAction }
 export type PublicTeam = { id: string; name: string; stars: number }
 export type PlayerGameView = {
   sessionId: string; sessionName: string; status: 'waiting' | 'playing' | 'finished'
   isTeamLeader: boolean
-  team: { id: string; name: string; balance: string; stars: number; rank: number } | null
+  team: { id: string; name: string; balance: string; stars: number } | null
   teams: PublicTeam[]; game: GameId | null; round: number | null; token: string | null
-  pot: { amount: string; target: string }; reveal: { id: string; rankings: Ranking[] } | null
+  pot: { amount: string; target: string }; privatePot: { amount: string; target: string } | null
+  reveal: { id: string; rankings: Ranking[]; scope: 'self' | 'public' } | null
   moneyTransfers: { id: string; fromTeamId: string; toTeamId: string; amount: string }[]
   earnings: { game: GameId; round: number; amount: string }[]
   roundState: {

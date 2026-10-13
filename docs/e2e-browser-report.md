@@ -7,13 +7,15 @@
 
 All three browser fixtures reached the finished state. No application code was changed.
 
-## Confirmed privacy bugs
+## Historical privacy findings
+
+These findings describe the realtime pot-pricing behavior observed on 2026-10-11. The feature work now locks pot prices for each game and recalculates only when a new game starts; these records remain as historical evidence, not current rules.
 
 **P1 — Bomb resolution leaks the hidden direction and recipient balance through the public reveal-pot target.** Reproduction: note Beta's target at 523.60 before resolving bomb round 1; all teams allocate Up and Alpha is selected as the public recipient. Beta then sees the target rise to 642.48. The 118.88 increase, multiplied by five teams, is $594.40: exactly Alpha's balance change from $594.40 to $1,188.80. With the public recipient and 2× factor, Beta can infer “up” and Alpha's prior and resulting balance. Beta's UI omitted “Your direction,” but the target exposed it anyway. Evidence: [Beta accessibility capture](e2e-evidence/bomb-r1-beta.txt) and [Beta screenshot](e2e-evidence/bomb-r1-beta.jpg).
 
 **P2 — Cave departures are exposed through the public reveal-pot target.** Reproduction: during Cave round 1, note Beta's target at $480.60, then have Alpha alone leave and bank $10 while the other teams remain inside. Beta sees the target change to $482.60. That change reveals that a team left and permits inferring the number still in the cave, which Cave's visibility rules hide. The paused-round evidence is in [saved Cave state](e2e-evidence/cave-paused-state.json).
 
-**Shared cause:** The pot target is derived from average accumulated balances plus past pot spending. `game/backend/src/engine/index.ts` refreshes it after actions and ticks, and player views expose it. As balances change during Cave departures or bomb resolution, the target becomes a side channel for private game state. The bomb case additionally reveals an exact balance change and direction. These findings expose a conflict between the pot-target rule and game-specific visibility rules that needs design review. Neither issue was fixed during this run.
+**Shared cause at the time:** The pot target was derived from average accumulated balances plus past pot spending, and the engine refreshed it after actions and ticks. As balances changed during Cave departures or bomb resolution, the target became a side channel for private game state. The bomb case additionally revealed an exact balance change and direction. The updated rule keeps the target fixed through each game, removing those within-game target changes.
 
 ## Main five-team fixture
 

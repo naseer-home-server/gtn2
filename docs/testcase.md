@@ -1,6 +1,6 @@
 # Browser test cases
 
-Manual browser end-to-end coverage recorded on 2026-10-11. Three fixtures completed all 15 rounds (45 rounds total). The [full report](e2e-browser-report.md) includes final balances, evidence, and the two confirmed privacy bugs.
+Manual browser end-to-end coverage recorded on 2026-10-11. Three fixtures completed all 15 rounds (45 rounds total). The [full report](e2e-browser-report.md) includes final balances, evidence, and the two privacy bugs found under the earlier realtime pot-pricing rule. Those observations are historical; the current regression cases are listed below.
 
 ## Setup and access
 
@@ -13,15 +13,17 @@ Manual browser end-to-end coverage recorded on 2026-10-11. Three fixtures comple
 - [x] Verify a teammate sees the team's submitted choice and cannot submit a second choice.
 - [x] Reload a player page and verify balance and game state persist.
 
-## Shared rules and reveal pot
+## Shared rules and reveal pots
 
-- [x] Verify teams see their own balance and rank, public team names and stars, and no other team's displayed balance or rank outside a reveal.
-- [x] Partially fund the pot; verify its target stays fixed while filling.
-- [x] Complete the pot; verify contributions debit balances, the pot resets, and only rankings are revealed.
-- [x] Verify the host cannot advance while a reveal is unacknowledged.
+- [ ] Verify teams see their own balance, public team names and stars, but no rank before a paid reveal.
+- [ ] Verify public and private pot prices start at 100 and 20, stay fixed during game 1, then recalculate only at the start of games 2–5 using the documented formula and rounding.
+- [ ] Partially fund both pots; verify their targets stay fixed within a game and private-pot progress is visible only to that team.
+- [ ] Complete the public pot; verify every team sees every rank, contributions debit balances, the pot resets, and play waits for all acknowledgments.
+- [ ] Complete a private pot; verify only the contributing team sees its rank, other teams continue playing, and its snapshot hides after acknowledgment.
+- [ ] Verify the host cannot advance while a public reveal is unacknowledged.
 - [x] Acknowledge from each team; verify each team's snapshot hides on its own acknowledgement and play resumes after all acknowledge.
 - [x] Start a reveal during Cave and wait more than one tick interval; verify Cave remains paused and resumes after all acknowledgements.
-- [x] Confirm pot-target changes expose Cave departures and Bomb outcomes. See [confirmed privacy findings](e2e-browser-report.md#confirmed-privacy-bugs).
+- [x] Historical run: pot-target changes exposed Cave departures and Bomb outcomes. See [historical privacy findings](e2e-browser-report.md#historical-privacy-findings).
 
 ## Will we get bonus this year
 
@@ -51,7 +53,7 @@ Manual browser end-to-end coverage recorded on 2026-10-11. Three fixtures comple
 - [x] Set 100% collapse risk; verify collapse occurs at tick zero, before growth or decisions, and balances stay unchanged.
 - [x] Verify the round-three star goes to the team with the most cumulatively banked Cave money.
 - [x] Submit a stale-tick decision and retry; verify both are rejected, then refresh and submit a current decision.
-- [x] Observe the reveal-pot target disclose departures; see the privacy finding above.
+- [x] Historical run: the reveal-pot target disclosed departures; current regression case is that targets remain fixed for a game.
 
 ## What goes around comes around
 
@@ -71,7 +73,7 @@ Manual browser end-to-end coverage recorded on 2026-10-11. Three fixtures comple
 - [x] Accept individual zero recipient options and valid allocations where direction and recipient pile totals differ.
 - [x] Resolve up and down outcomes at factors 2, 5, and 10; verify two-decimal division rounding.
 - [x] Verify the public recipient is shown, direction is shown only to the recipient, and nonrecipients' balances do not appear in their UI.
-- [x] Observe the public pot target nevertheless expose direction and recipient balance; see the P1 privacy finding above.
+- [x] Historical run: the public pot target exposed direction and recipient balance; current regression case is that targets remain fixed for a game.
 - [x] Verify no stars are awarded in the finale and the host cannot advance beyond the finished game.
 
 ## Coverage not completed

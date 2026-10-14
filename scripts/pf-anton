@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Forwarding local ports 1233 and 5433 to anton..."
-exec ssh \
-  -L "1233:localhost:1233" \
-  -L "5433:localhost:5433" \
-  anton \
-  -N
+forwards=(-L "127.0.0.1:1233:localhost:1233")
+case "${1:-}" in
+  "") echo "Forwarding SuperTokens on local port 1233 to anton..." ;;
+  --with-db)
+    forwards+=(-L "127.0.0.1:5433:localhost:5433")
+    echo "Forwarding SuperTokens (1233) and the remote database (5433) to anton..."
+    ;;
+  --help)
+    echo "Usage: ./scripts/pf-anton [--with-db]"
+    echo "Local development uses Docker PostgreSQL; --with-db is for explicit remote DB access."
+    exit 0
+    ;;
+  *) echo "Unknown option: $1" >&2; exit 1 ;;
+esac
+if (( $# > 1 )); then echo "Usage: ./scripts/pf-anton [--with-db]" >&2; exit 1; fi
+exec ssh -o ExitOnForwardFailure=yes "${forwards[@]}" anton -N

@@ -13,7 +13,8 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tailwindcss()],
     resolve: { alias: { '@': path.resolve(frontendDir, 'src') } },
     server: {
-      port: Number(env.FRONTEND_PORT ?? 5173),
+      port: Number(process.env.FRONTEND_PORT ?? env.FRONTEND_PORT ?? 5173),
+      strictPort: true,
       proxy: {
         '/api': backendTarget,
         '/trpc': backendTarget,

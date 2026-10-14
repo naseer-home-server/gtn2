@@ -1,4 +1,22 @@
 services:
+  # Started explicitly by pnpm setup:local/db:up; deployment still uses DATABASE_URL.
+  postgres:
+    image: postgres:17-alpine
+    profiles: [local]
+    environment:
+      POSTGRES_USER: gtn2
+      POSTGRES_PASSWORD: gtn2
+      POSTGRES_DB: gtn2
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-55432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gtn2 -d gtn2"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
   game:
     build:
       context: .
@@ -50,5 +68,7 @@ services:
       retries: 3
       start_period: 10s
 
+# Compose prefixes this volume with the checkout-specific project name.
 volumes:
+  postgres-data:
   simulation-data:

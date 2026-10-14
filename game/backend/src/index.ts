@@ -6,6 +6,7 @@ import { DbSettingsRepository } from './db-settings.js'
 import { initSuperTokens, seedRoles } from './supertokens.js'
 import { DbGameplayRepository } from './gameplay.js'
 import { DbChatsRepository } from './chats.js'
+import { SimulationBridge } from './simulation.js'
 
 async function main() {
   const db = await initDb()
@@ -17,7 +18,8 @@ async function main() {
   initSuperTokens(sessions)
   await seedRoles()
   const port = Number(process.env.PORT ?? 3000)
-  const server = createApp(settings, sessions, gameplay, chats).listen(port, '0.0.0.0', () => console.log(`Game server listening on port ${port}`))
+  const simulation = new SimulationBridge(db, sessions, gameplay, chats)
+  const server = createApp(settings, sessions, gameplay, chats, simulation).listen(port, '0.0.0.0', () => console.log(`Game server listening on port ${port}`))
   let ticking = false
   const timer = setInterval(() => {
     if (ticking) return

@@ -4,6 +4,7 @@ Manual browser end-to-end coverage recorded on 2026-10-11; this checklist was up
 
 ## Setup and access
 
+- [x] With **UX Preview — cave** active, log in with an invited player account and verify the player view opens the matching game.
 - [x] Create a session with nine invitees; mark arrivals, reorder them, then restore and freeze the arrival order.
 - [x] Assign four pairs and one solo team; start with valid configuration.
 - [x] Reject malformed configuration, `tickSeconds: 0`, duplicate emails differing by case, and an eleventh invite.
@@ -11,7 +12,8 @@ Manual browser end-to-end coverage recorded on 2026-10-11; this checklist was up
 - [x] Deny a player access to the admin route.
 - [x] Disable email test login: hide passwordless login and deny the existing test login. Re-enable it and restore access.
 - [x] Verify both teammates see the team's submitted choice and the first submission locks the team choice.
-- [ ] Verify the earlier-arriving teammate is the team leader: only that player can submit game actions, transfer money, contribute to a reveal pot, or acknowledge a reveal; both teammates can see the team's permitted view.
+- [x] Verify the earlier-arriving teammate is identified as team leader, a nonleader sees the leader-only explanation and no Cave decision controls, and the leader sees the Stay/Leave controls.
+- [ ] Verify nonleader game actions, transfers, reveal contributions, and acknowledgments are rejected by the server; both teammates can still see the team's permitted view.
 - [x] Reload a player page and verify balance and game state persist.
 
 ## Team money transfers
@@ -25,9 +27,10 @@ Manual browser end-to-end coverage recorded on 2026-10-11; this checklist was up
 
 ## Player chat
 
-- [x] Send a message from a nonleader in a direct team conversation and in a group conversation; verify a reply appears through polling.
-- [x] Load an older page of messages and verify messages remain in chronological order.
-- [ ] Open a direct conversation from both teams and verify it reuses the same thread; create a group and verify only its selected members can read or send messages.
+- [x] Open a direct conversation from both teams and verify it reuses the same thread and message history.
+- [x] Create a group conversation and send messages as its creator and as a nonleader member.
+- [ ] Verify only selected group members can read or send messages; verify a new reply appears through polling.
+- [ ] Load an older page of messages and verify messages remain in chronological order.
 - [ ] Verify the inbox lists invited players and team membership without exposing balances, ranks, earnings, or private gameplay state.
 - [ ] Verify chat remains available independently of gameplay progress and that conversations/messages persist for the session lifetime.
 
@@ -102,3 +105,30 @@ Manual browser end-to-end coverage recorded on 2026-10-11; this checklist was up
 - [ ] Negative High-or-low input (the over-limit case was tested).
 
 Browser test evidence and fixture IDs are listed in [the full report](e2e-browser-report.md).
+
+## Latest run: 2026-10-14
+
+The browser pass used the active **UX Preview — cave** session. Invited player login, private balance/rank presentation, leader and nonleader Cave controls, direct-chat reuse between teams, and group-chat creation and messages passed. The Cave round auto-completed during inspection and was reset to round 1 ready; the Cave session remains active. Chat is session-lifetime data, so these smoke-test messages remain in that preview session: `E2E smoke check — direct chat`, `E2E smoke reply from Team 2`, `E2E smoke group`, `E2E smoke check — group chat`, and `E2E smoke check — nonleader chat`.
+
+Supplementary backend checks run in parallel: chat tests had 3 passed and 1 PostgreSQL test skipped; money-transfer tests had 8 passed and 1 PostgreSQL test skipped. The full backend suite had 58 passed, 2 failed, and 4 PostgreSQL tests skipped. The failures are in `engine/visibility.test.ts`: the rank-privacy assertion rejects the visible private-pot target value `20.00`, and the duplicate-acknowledgment assertion expects “already acknowledged” while the engine returns “There is no rankings reveal to acknowledge.” The database tests were skipped because `RUN_DB_TESTS=1` and `DATABASE_URL` were not configured. The environment runs Node 22.6.0, below the project's required 22.12.0 minimum.
+
+## AI simulation implementation verification: 2026-10-14
+
+The simulation implementation used three GPT-6 Luna workstreams for backend APIs, orchestration, and web UI. See [the verification report](ai-simulation-verification.md) for API/full-night evidence and testing limits. Existing entries above are retained as historical game-app results.
+
+- [x] Configure every shared game tuning area and capture the submitted configuration in a run.
+- [x] Complete all 15 rounds through the actual backend with scripted agents.
+- [x] Complete all 15 rounds through the Chat Completions adapter using a local provider stub.
+- [x] Exercise host discussion caps, private chat, side operations, public rank reveal acknowledgment, virtual cave windows, circle return, and finale completion.
+- [x] Reject overlapping active simulation runs and unauthenticated/cross-origin operator requests.
+- [x] Retry an action whose successful response was deliberately dropped after commit, without applying it twice.
+- [x] Filter public/team detail and exports on the server; omit runner/player credentials.
+- [x] Verify operator login, config editing/reset/range validation/export, and pause/step/resume/stop in the browser.
+- [x] Restart the built server with an interrupted run; verify paused recovery, original configuration/history, step/resume/stop, and cached older team views.
+- [x] Recover initial setup after backend creation commits before its response is saved; reuse the session, team IDs, and setup request without duplicate creation events.
+- [x] Verify built production team views hide observer metrics and have distinct permitted histories.
+- [x] Import valid configuration through paste JSON, reject invalid collapse risk while retaining the previous configuration, reset, and export.
+- [x] Build both web apps and the runner, run simulation/backend suites, validate Compose, and verify production dependency packaging.
+- [ ] Real OpenAI provider run with an operator-supplied API key.
+- [ ] Docker container image build/run (local daemon unavailable).
+- [ ] Native file-picker import and narrow-viewport visual checks (browser-control limitations; further results may follow).

@@ -1,6 +1,6 @@
 # Gameplay API
 
-The UI and future AI players use the same server rules. `ai-simulation/` is not implemented yet.
+The UI and AI simulation use the same server rules and filtered player views. The simulation console runs through an opt-in machine API described below.
 
 ## Player loop
 
@@ -50,3 +50,17 @@ The first game's public and private reveal prices are fixed at 100 and 20. At th
 Admin-only tRPC procedures: `admin.game.defaults`, `state({sessionId})`, `start({sessionId, teams, config})`, `startRound({sessionId})`, and `advance({sessionId})`. Teams use invited **player IDs**, with one or two arrived members each and at most one solo team. `start` freezes configuration and tie order and prepares round 1 without starting play; `startRound` launches that prepared first round. After each later round completes, `advance` starts the next round only when the host chooses it. Admin state includes the complete chronological event audit, including submitted commands and random outcomes.
 
 The `backend/engine` export provides `startEngine`, `applyAction`, `tickEngine`, `advanceEngine`, `playerView`, and shared types/defaults. It has no auth, database, or UI dependency. Inject time, random draws, and tokens for deterministic simulations. Engine/admin-state money uses arbitrary-precision **integer-cent strings**, distinct from player API currency strings. PostgreSQL serializes mutations with row locks, persists state/events together, and deduplicates commands. A committed transfer emits `money.transferred` in the admin audit; retries use the same request ID, token, and action and do not transfer twice. Current-game reset removes transfers made since that game's checkpoint while retaining earlier receipts; old checkpoints without a transfer count reset the receipt ledger to empty. Only the active session's cave timer runs; reactivation processes one overdue tick, rather than replaying elapsed ticks.
+
+## Simulation bridge
+
+Configure a `SIMULATION_SERVICE_KEY` of at least 32 characters to enable `/api/simulation`. Every bridge request requires that secret in `x-simulation-service-key`; player routes additionally require a scoped bearer capability. The trusted simulation runner owns these credentials and exposes named operations to models. Normal human authentication remains through SuperTokens.
+
+- `POST /api/simulation/sessions` accepts a UUID `requestId`, `name`, `teamCount` (2–5), `seed`, and shared `config`. It creates invited account records and arrived pairs, randomizes roster/tie priority, prepares the first round, and activates the session. It returns `sessionId` and agent records with scoped credentials. Retrying identical setup returns the same session and capabilities; changing the payload under the same ID fails.
+- `GET /api/simulation/sessions/:sessionId` is a trusted runner view of engine state, audit, revision, and logical time. Models never receive this raw response.
+- `POST /api/simulation/sessions/:sessionId/control` accepts UUID `requestId`, `operation` (`start`, `advance`, or `tick`), and optional `expectedToken`. Commands are deduplicated and guarded against stale tokens. A tick advances virtual time to one pending cave deadline and processes exactly one check.
+- `GET /api/simulation/sessions/:sessionId/players/:agentId/state` and `POST .../actions` use the existing player-view/action repositories, including leader restrictions, allowed actions, command tokens, and idempotency. The bearer capability is bound to the invited player, session, and agent; changing the route cannot impersonate another team.
+- Player-scoped `chat/inbox`, `chat/direct`, `chat/groups`, `chat/messages`, and `chat/send` use the existing chat repository and membership checks.
+
+Simulation-owned sessions persist their clock and seeded random state atomically with accepted gameplay mutations. The automatic wall-clock timer skips them; ordinary human sessions retain existing timing. Starting a simulation changes the shared active session, so human play and simulations must run at different times. Old saved sessions are retained.
+
+See [the simulation README](../ai-simulation/README.md) for console setup, environment variables, run controls, and Docker Compose.

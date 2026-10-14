@@ -36,6 +36,13 @@
       "when": 1791821472289,
       "tag": "0004_player_chats",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791909527870,
+      "tag": "0005_simulation_sessions",
+      "breakpoints": true
     }
   ]
 }

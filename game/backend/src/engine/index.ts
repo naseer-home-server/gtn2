@@ -3,7 +3,7 @@ import { startFinalGame, actFinalGame } from './final-games.js'
 import { gameConfigSchema } from './config.js'
 import { cents, ensure, moneyAdd, moneyCompare, moneyMin, moneyScale, moneySub, safeMoney, teamById } from './helpers.js'
 import { GAME_ORDER, type CurrentRound, type EngineEnv, type EngineEvent, type EngineState, type GameAction, type GameConfig, type GameId, type Ranking, type Team } from './types.js'
-export { DEFAULT_CONFIG, gameConfigSchema } from './config.js'
+export { DEFAULT_CONFIG, gameActionSchema, gameConfigSchema } from './config.js'
 export { playerView } from './views.js'
 export type * from './types.js'
 

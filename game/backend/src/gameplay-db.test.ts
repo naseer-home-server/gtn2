@@ -82,8 +82,19 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
       const alexView = await pairOne.game.state()
       assert.equal(aliceView.team?.id, alexView.team?.id)
       assert.equal(aliceView.team?.balance, alexView.team?.balance)
-      assert.ok(aliceView.allowedActions.includes('bonus.take'))
-      assert.ok(alexView.allowedActions.includes('bonus.take'))
+      assert.notEqual(aliceView.isTeamLeader, alexView.isTeamLeader)
+      const leaderEmailByTeamId = new Map(started.teams.map((team) => [
+        team.id,
+        arrived.players.find((player) => player.id === team.leaderPlayerId)!.email,
+      ]))
+      const teamOneLeaderEmail = leaderEmailByTeamId.get(aliceView.team!.id)!
+      const teamOnePartnerEmail = started.teams[0].playerIds
+        .map((playerId) => arrived.players.find((player) => player.id === playerId)!.email)
+        .find((email) => email !== teamOneLeaderEmail)!
+      const leaderView = aliceView.isTeamLeader ? aliceView : alexView
+      const partnerView = aliceView.isTeamLeader ? alexView : aliceView
+      assert.ok(leaderView.allowedActions.includes('bonus.take'))
+      assert.ok(!partnerView.allowedActions.includes('bonus.take'))
       assert.equal(aliceView.teams.length, 3)
       assert.ok(aliceView.teams.every((team) => !('balance' in team)))
 
@@ -95,30 +106,34 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
       // Oversized contributions are capped at the remaining target and spent exactly once.
       const contributionRequestId = randomUUID()
       const contributionToken = started.current.token
-      const revealView = await gameplay.action(emails[0], {
+      const revealView = await gameplay.action(teamOneLeaderEmail, {
         requestId: contributionRequestId, token: contributionToken, action: { type: 'pot.contribute', amount: 200 },
-      }, `actor:${emails[0]}`)
+      }, `actor:${teamOneLeaderEmail}`)
       assert.equal(revealView.team?.balance, '0.00')
       assert.equal(revealView.pot.amount, '0.00')
       assert.equal(revealView.reveal?.rankings.length, 3)
       assert.deepEqual(Object.keys(revealView.reveal ?? {}).sort(), ['id', 'rankings', 'scope'])
       assert.ok(revealView.reveal?.rankings.every((rank) => !('balance' in rank)))
       const revisionAtReveal = (await admin.admin.game.state({ sessionId: session.id })).state!.revision
-      await gameplay.action(emails[1], {
+      await assert.rejects(gameplay.action(teamOnePartnerEmail, {
         requestId: contributionRequestId, token: contributionToken, action: { type: 'pot.contribute', amount: 200 },
-      }, `actor:${emails[1]}`)
+      }, `actor:${teamOnePartnerEmail}`), { code: 'BAD_REQUEST' })
+      await gameplay.action(teamOneLeaderEmail, {
+        requestId: contributionRequestId, token: contributionToken, action: { type: 'pot.contribute', amount: 200 },
+      }, `actor:${teamOneLeaderEmail}`)
       assert.equal((await admin.admin.game.state({ sessionId: session.id })).state!.revision, revisionAtReveal)
-      await assert.rejects(gameplay.action(emails[1], {
+      await assert.rejects(gameplay.action(teamOneLeaderEmail, {
         requestId: contributionRequestId, token: contributionToken, action: { type: 'pot.contribute', amount: 201 },
-      }, `actor:${emails[1]}`), { code: 'BAD_REQUEST' })
+      }, `actor:${teamOneLeaderEmail}`), { code: 'BAD_REQUEST' })
 
       const ackToken = (await admin.admin.game.state({ sessionId: session.id })).state!.current.token
-      await actionLog(emails[0], { type: 'reveal.acknowledge' }, randomUUID(), ackToken)
-      assert.equal((await gameplay.playerView(emails[1])).reveal, null) // the pair shares one team acknowledgment
-      await assert.rejects(actionLog(emails[1], { type: 'reveal.acknowledge' }, randomUUID(), ackToken), { code: 'BAD_REQUEST' })
-      await actionLog(emails[2], { type: 'reveal.acknowledge' }, randomUUID(), ackToken)
-      await actionLog(emails[4], { type: 'reveal.acknowledge' }, randomUUID(), ackToken)
-      assert.equal((await gameplay.playerView(emails[0])).reveal, null)
+      await actionLog(teamOneLeaderEmail, { type: 'reveal.acknowledge' }, randomUUID(), ackToken)
+      assert.equal((await gameplay.playerView(teamOnePartnerEmail)).reveal, null) // the pair shares one team acknowledgment
+      await assert.rejects(actionLog(teamOnePartnerEmail, { type: 'reveal.acknowledge' }, randomUUID(), ackToken), { code: 'BAD_REQUEST' }) // only the team leader may acknowledge
+      for (const email of [...leaderEmailByTeamId.values()].filter((email) => email !== teamOneLeaderEmail)) {
+        await actionLog(email, { type: 'reveal.acknowledge' }, randomUUID(), ackToken)
+      }
+      assert.equal((await gameplay.playerView(teamOneLeaderEmail)).reveal, null)
       const afterReveal = (await admin.admin.game.state({ sessionId: session.id })).state!
       assert.notEqual(afterReveal.current.token, ackToken)
       assert.equal(afterReveal.reveal, null)
@@ -126,22 +141,24 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
       const firstTeamId = afterReveal.teams[0].id
       const firstChoiceRequest = randomUUID()
       const currentToken = afterReveal.current.token
-      await gameplay.action(emails[0], { requestId: firstChoiceRequest, token: currentToken, action: { type: 'bonus.take', amount: 0 } }, `actor:${emails[0]}`)
+      await gameplay.action(teamOneLeaderEmail, { requestId: firstChoiceRequest, token: currentToken, action: { type: 'bonus.take', amount: 0 } }, `actor:${teamOneLeaderEmail}`)
       const revisionAfterChoice = (await admin.admin.game.state({ sessionId: session.id })).state!.revision
-      await gameplay.action(emails[1], { requestId: firstChoiceRequest, token: currentToken, action: { type: 'bonus.take', amount: 0 } }, `actor:${emails[1]}`)
+      await gameplay.action(teamOneLeaderEmail, { requestId: firstChoiceRequest, token: currentToken, action: { type: 'bonus.take', amount: 0 } }, `actor:${teamOneLeaderEmail}`)
       assert.equal((await admin.admin.game.state({ sessionId: session.id })).state!.revision, revisionAfterChoice)
-      await assert.rejects(gameplay.action(emails[1], { requestId: randomUUID(), token: currentToken, action: { type: 'bonus.take', amount: 1 } }, `actor:${emails[1]}`), { code: 'BAD_REQUEST' })
-      await actionLog(emails[2], { type: 'bonus.take', amount: 0 })
-      await actionLog(emails[4], { type: 'bonus.take', amount: 0 })
+      await assert.rejects(gameplay.action(teamOnePartnerEmail, { requestId: firstChoiceRequest, token: currentToken, action: { type: 'bonus.take', amount: 0 } }, `actor:${teamOnePartnerEmail}`), { code: 'BAD_REQUEST' })
+      await assert.rejects(gameplay.action(teamOneLeaderEmail, { requestId: firstChoiceRequest, token: currentToken, action: { type: 'bonus.take', amount: 1 } }, `actor:${teamOneLeaderEmail}`), { code: 'BAD_REQUEST' })
+      for (const email of [...leaderEmailByTeamId.values()].filter((email) => email !== teamOneLeaderEmail)) {
+        await actionLog(email, { type: 'bonus.take', amount: 0 })
+      }
       assert.equal((await admin.admin.game.state({ sessionId: session.id })).state?.current.phase, 'complete')
-      await assert.rejects(gameplay.action(emails[0], { requestId: randomUUID(), token: currentToken, action: { type: 'bonus.take', amount: 0 } }, `actor:${emails[0]}`), { code: 'BAD_REQUEST' })
+      await assert.rejects(gameplay.action(teamOneLeaderEmail, { requestId: randomUUID(), token: currentToken, action: { type: 'bonus.take', amount: 0 } }, `actor:${teamOneLeaderEmail}`), { code: 'BAD_REQUEST' })
       await admin.admin.game.advance({ sessionId: session.id })
-      await assert.rejects(gameplay.action(emails[0], { requestId: randomUUID(), token: currentToken, action: { type: 'bonus.take', amount: 0 } }, `actor:${emails[0]}`), { code: 'BAD_REQUEST' })
+      await assert.rejects(gameplay.action(teamOneLeaderEmail, { requestId: randomUUID(), token: currentToken, action: { type: 'bonus.take', amount: 0 } }, `actor:${teamOneLeaderEmail}`), { code: 'BAD_REQUEST' })
 
       const playAllRounds = async () => {
         const state = (await admin.admin.game.state({ sessionId: session.id })).state!
         if (state.current.phase === 'ready') throw new Error('The test must start a prepared round before playing it.')
-        const repEmails = [emails[0], emails[2], emails[4]]
+        const repEmails = [...leaderEmailByTeamId.values()]
         if (state.current.game === 'bonus' || state.current.game === 'high-low') {
           for (const email of repEmails) await actionLog(email, { type: state.current.game === 'bonus' ? 'bonus.take' : 'high-low.choose', amount: 0 })
         } else if (state.current.game === 'cave') {
@@ -149,8 +166,8 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
           if (caveState.game === 'cave' && caveState.stage === 'waiting') {
             if (state.round === 1 && !state.history.some((item) => item.game === 'cave')) {
               now = (caveState.nextTickAt ?? now) + 1_000
-              const target = (await gameplay.playerView(emails[2])).pot.target
-              const paused = await gameplay.action(emails[2], { requestId: randomUUID(), token: caveState.token, action: { type: 'pot.contribute', amount: target } }, `actor:${emails[2]}`)
+              const target = (await gameplay.playerView(repEmails[1])).pot.target
+              const paused = await gameplay.action(repEmails[1], { requestId: randomUUID(), token: caveState.token, action: { type: 'pot.contribute', amount: target } }, `actor:${repEmails[1]}`)
               assert.ok(paused.reveal)
               await gameplay.tick()
               const stillPaused = (await admin.admin.game.state({ sessionId: session.id })).state!
@@ -159,9 +176,7 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
               assert.equal(stillPaused.current.nextTickAt, caveState.nextTickAt)
               assert.equal(stillPaused.current.tick, 0)
               const revealToken = stillPaused.current.token
-              await actionLog(emails[0], { type: 'reveal.acknowledge' }, randomUUID(), revealToken)
-              await actionLog(emails[2], { type: 'reveal.acknowledge' }, randomUUID(), revealToken)
-              await actionLog(emails[4], { type: 'reveal.acknowledge' }, randomUUID(), revealToken)
+              for (const email of repEmails) await actionLog(email, { type: 'reveal.acknowledge' }, randomUUID(), revealToken)
               const resumed = (await admin.admin.game.state({ sessionId: session.id })).state!
               assert.equal(resumed.current.game, 'cave')
               if (resumed.current.phase === 'ready' || resumed.current.game !== 'cave') throw new Error('Expected resumed cave round.')
@@ -211,17 +226,17 @@ test('PostgreSQL gameplay repository and API enforce playthrough rules and persi
       const commands = audit.events.filter((event) => event.type === 'player.command')
       assert.ok(commands.length >= 40)
       const contributionCommand = commands.find((event) => event.data.requestId === contributionRequestId)!
-      assert.equal(contributionCommand.actorId, `actor:${emails[0]}`)
+      assert.equal(contributionCommand.actorId, `actor:${teamOneLeaderEmail}`)
       assert.deepEqual(contributionCommand.data.action, { type: 'pot.contribute', amount: 200 })
       const choiceCommand = commands.find((event) => event.data.requestId === firstChoiceRequest)!
-      assert.equal(choiceCommand.actorId, `actor:${emails[0]}`)
+      assert.equal(choiceCommand.actorId, `actor:${teamOneLeaderEmail}`)
       assert.deepEqual(choiceCommand.data.action, { type: 'bonus.take', amount: 0 })
       assert.equal(commands.filter((event) => event.data.requestId === contributionRequestId).length, 1)
       assert.equal(commands.filter((event) => event.data.requestId === firstChoiceRequest).length, 1)
 
       const persistedEvents = await tx.select().from(sessionEvents).where(eq(sessionEvents.sessionId, session.id))
       assert.ok(persistedEvents.some((event) => event.type === 'rankings.revealed'))
-      assert.ok(persistedEvents.some((event) => event.type === 'player.command' && event.actorId === `actor:${emails[0]}`))
+      assert.ok(persistedEvents.some((event) => event.type === 'player.command' && event.actorId === `actor:${teamOneLeaderEmail}`))
       throw rollback
     })
   } catch (error) {

@@ -15,6 +15,7 @@
     "test": "node --import tsx --test src/*.test.ts src/engine/*.test.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx src/seed-test-data.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {

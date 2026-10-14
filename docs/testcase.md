@@ -2,6 +2,20 @@
 
 Manual browser end-to-end coverage recorded on 2026-10-11; this checklist was updated on 2026-10-14 for features merged since then. Three fixtures completed all 15 rounds (45 rounds total). The [full report](e2e-browser-report.md) includes final balances, evidence, and the two privacy bugs found under the earlier realtime pot-pricing rule. Those observations are historical; the current regression cases are listed below.
 
+## Local fixtures
+
+Run `pnpm setup:local` in each worktree to create its isolated PostgreSQL database and test sessions. **E2E Playthrough** has ten invited people assigned to five pairs and waits at game 1, round 1 for a complete 15-round browser run. Five **UX Preview** sessions each contain three people in a pair and a solo team, and wait at the start of their respective games for focused player/admin checks. Activate the desired session and start its prepared round. [Local development and test fixtures](local-development.md) lists player accounts, ports, seeding, and reset commands.
+
+## Local setup verification — 2026-10-14
+
+- `pnpm test:db`: 65 passed, zero failures, zero skipped, using this worktree's Docker PostgreSQL. Includes the 15-round gameplay persistence test, transfers, chat, and fixture seeding/reset. The gameplay database test was corrected to derive actual team leaders and reject nonleader actions/retries.
+- `pnpm test:local`: two passed, covering distinct Compose projects for checkouts with the same basename, auth inheritance, repeat setup, and occupied-port/production rejection.
+- `pnpm build`: frontend and backend passed.
+- Database stop/start and repeat setup preserved all six fixture IDs and created zero duplicate sessions.
+- Browser smoke passed: admin lists all six fixtures; E2E leader logs in at Bonus round 1; Circle preview activation/start shows useful funds, public stars, and the leader's game controls; current-game reset restores its ready checkpoint. E2E is active afterward, and all UX checkpoints are ready at round 1.
+
+This run covers local setup and the browser smoke above. A fresh run of the full browser checklist remains pending; historical checkmarks below retain their recorded coverage.
+
 ## Setup and access
 
 - [x] Create a session with nine invitees; mark arrivals, reorder them, then restore and freeze the arrival order.

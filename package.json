@@ -6,9 +6,16 @@
     "node": ">=22.12.0 <23"
   },
   "scripts": {
-    "dev": "pnpm --filter game dev",
+    "dev": "node scripts/local.mjs dev",
     "build": "pnpm --filter game build",
     "docker:dev": "docker compose up --build",
-    "docker:prod": "docker compose up -d --build"
+    "docker:prod": "docker compose up -d --build",
+    "setup:local": "node scripts/local.mjs setup",
+    "db:up": "node scripts/local.mjs db:up",
+    "db:down": "node scripts/local.mjs db:down",
+    "db:seed": "node scripts/local.mjs db:seed",
+    "test:db": "node scripts/local.mjs test:db",
+    "local:info": "node scripts/local.mjs info",
+    "test:local": "node --test scripts/local.test.mjs"
   }
 }

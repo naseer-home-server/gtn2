@@ -10,20 +10,19 @@ Use pnpm. Keep the unimplemented folders empty until requested. Read [rules, tun
 
 When asked to run an end-to-end test, spawn multiple sub-agents and divide the browser cases in [docs/testcase.md](docs/testcase.md) among them. Have each report the cases attempted, outcomes, and any failures; consolidate the results in the testcase document.
 
-The admin app has five preconfigured preview sessions with names prefixed **UX Preview**. They are checkpoints for previewing each game's player view: set the matching session active, then sign in with one of its invited player accounts to open that game's player view. See [game preview instructions](game/AGENTS.md).
+`pnpm setup:local` creates one 10-player **E2E Playthrough** and five minimal preview sessions with names prefixed **UX Preview**. They are checkpoints for previewing each game's player view: set the matching session active, start its prepared round in the admin view, then sign in with one of its invited player accounts to open that game's player view. See [game preview instructions](game/AGENTS.md).
 
 ## Run locally
 
-From the repository root, start the `anton` port forwards and leave that process running:
+From the repository root, start `./scripts/pf-anton` once for the shared SuperTokens Core and leave it running. Local PostgreSQL comes from Docker Compose, with a persistent named volume and explicit unique project name for each checkout/worktree. Use:
 
 ```sh
-./scripts/pf-anton
+nvm use
+pnpm install
+pnpm setup:local
+pnpm dev
 ```
 
-Then, in another terminal at the repository root, start the game app:
-
-```sh
-pnpm --filter game dev
-```
+Run `pnpm setup:local` first in every new worktree. It generates ignored environment files and available app/database ports, starts PostgreSQL, applies migrations, and creates the six local test fixtures. Regular `pnpm db:seed` preserves fixture progress; `pnpm db:seed --reset` resets only seed-owned fixtures. Use `pnpm db:up`, `pnpm db:down`, and `pnpm test:db` so commands target this checkout's database. See [local development](docs/local-development.md). Never use the forwarded PostgreSQL database for local regression tests.
 
 Project-wide phases: functionality first with a simple, neat shadcn/ui interface; final UI later using the frontend-design skill and a user-provided theme. Keep functional code separate from presentation.

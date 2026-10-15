@@ -12,16 +12,20 @@ import type { RunOptions, RunRecord } from './types.js'
 test('discussion cadence respects zero, consensus, shared round boundaries, and hard limits', async t => {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'gtn2-discussion-cadence-'))
   const teams = [
-    { id: 'one', name: 'One', playerIds: ['one-player'], tieOrder: 0, balance: '0', stars: 0 },
-    { id: 'two', name: 'Two', playerIds: ['two-player'], tieOrder: 1, balance: '0', stars: 0 },
+    { id: '00000000-0000-4000-8000-000000000001', name: 'One', playerIds: ['one-player'], tieOrder: 0, balance: '0', stars: 0 },
+    { id: '00000000-0000-4000-8000-000000000002', name: 'Two', playerIds: ['two-player'], tieOrder: 1, balance: '0', stars: 0 },
   ]
   let token = 0
   const env = { now: 1000, random: () => 0.5, token: () => 'token-' + ++token }
   let state: EngineState = startEngine(teams, DEFAULT_CONFIG, env).state
   const prompts: any[] = []
   const reviews: any[] = []
+  const orderRequests: any[] = []
+  let orderResponse: ((prompt: any) => unknown) | undefined
   let keepDiscussing = false
   let contribute = false
+  let discussionAction: ((prompt: any) => unknown) | undefined
+  let rejectTransferOnce = false
   let counter = 0
   const server = createServer((request, response) => {
     void (async () => {
@@ -32,6 +36,14 @@ test('discussion cadence respects zero, consensus, shared round boundaries, and 
       if (request.url === '/v1/chat/completions') {
         const prompt = JSON.parse(input.messages[1].content)
         prompts.push(prompt)
+        if (input.tool_choice.function.name === 'submit_discussion_swaps') {
+          orderRequests.push(prompt)
+          const result = orderResponse?.(prompt) ?? { swaps: [] }
+          response.end(JSON.stringify({ usage: { total_tokens: 10 }, choices: [{ message: { tool_calls: [{
+            id: 'order-' + orderRequests.length, type: 'function', function: { name: 'submit_discussion_swaps', arguments: JSON.stringify(result) },
+          }] } }] }))
+          return
+        }
         let action: unknown = null
         let message: string | null = null
         if (prompt.reviewRequired) {
@@ -40,6 +52,8 @@ test('discussion cadence respects zero, consensus, shared round boundaries, and 
         } else if (!prompt.playerView) message = 'The next round rules are ready.'
         else if (['pre-round', 'post-round', 'cave-discussion'].includes(prompt.turnPhase)) {
           message = 'I agree to the proposed plan, including its stated conditions.'
+          assert.ok(prompt.playerView.allowedActions.every((type: string) => ['money.transfer', 'pot.contribute'].includes(type)))
+          action = discussionAction?.(prompt) ?? null
         } else {
           assert.equal(input.tools[0].function.parameters.properties.message.type, 'null')
           assert.equal(input.tools[0].function.parameters.properties.privateMessageJson.type, 'null')
@@ -61,7 +75,13 @@ test('discussion cadence respects zero, consensus, shared round boundaries, and 
       const match = request.url?.match(/players\/(team-[12])\/(state|actions)$/)
       if (match) {
         const team = teams[match[1] === 'team-1' ? 0 : 1]!
-        if (match[2] === 'actions') applyAction(state, team.id, input.token, input.action, env)
+        if (match[2] === 'actions') {
+          if (rejectTransferOnce && input.action.type === 'money.transfer') {
+            rejectTransferOnce = false
+            response.statusCode = 400; response.end(JSON.stringify({ error: 'Simulated stale financial action' })); return
+          }
+          applyAction(state, team.id, input.token, input.action, env)
+        }
         response.end(JSON.stringify(playerView('session', 'Discussion cadence', state, team.playerIds[0]!)))
         return
       }
@@ -90,7 +110,7 @@ test('discussion cadence respects zero, consensus, shared round boundaries, and 
   async function fresh(game: GameId = 'bonus', overrides: Partial<RunOptions> = {}) {
     state = startEngine(teams, DEFAULT_CONFIG, env, game).state
     state.teams.forEach(team => { team.balance = '10000' })
-    prompts.length = 0; reviews.length = 0; keepDiscussing = false; contribute = false
+    prompts.length = 0; reviews.length = 0; orderRequests.length = 0; orderResponse = undefined; keepDiscussing = false; contribute = false; discussionAction = undefined; rejectTransferOnce = false
     const run: RunRecord = {
       id: 'cadence-' + ++counter, name: 'Discussion cadence', status: 'paused', createdAt: '', updatedAt: '',
       options: { teamCount: 2, seed: 41, mode: 'openai', hostModel: 'mock-host', playerModel: 'mock-player',
@@ -115,7 +135,8 @@ test('discussion cadence respects zero, consensus, shared round boundaries, and 
       startRoundEngine(state, env)
       await until(run, () => state.current.phase === 'complete')
       assert.equal(beats(run).length, 0)
-      assert.ok(!run.events.some(event => ['discussion.opened', 'discussion.closed', 'player.message'].includes(event.type)))
+      assert.equal(orderRequests.length, 0)
+      assert.ok(!run.events.some(event => ['discussion.opened' , 'discussion.closed', 'player.message'].includes(event.type)))
       assert.ok(!prompts.some(prompt => prompt.turnPhase === 'cave-discussion' || prompt.reviewRequired))
       assert.equal(run.events.filter(event => event.type === 'action.accepted').length, 2)
     })
@@ -125,6 +146,10 @@ test('discussion cadence respects zero, consensus, shared round boundaries, and 
       await until(run, () => state.current.phase === 'choices')
       assert.equal(beats(run).length, 1)
       assert.equal(reviews.length, 1)
+      assert.equal(orderRequests.length, 1)
+      const order = run.events.find(event => event.type === 'discussion.order-reviewed')!
+      assert.deepEqual(order.data?.schedulerOrder, order.data?.initialOrder)
+      assert.deepEqual(order.data?.swaps, [])
       assert.equal(reviews[0].completedSweeps, 1)
       assert.equal(reviews[0].minimumSweeps, 1)
       assert.equal(reviews[0].maximumSweeps, 4)
@@ -154,6 +179,7 @@ test('discussion cadence respects zero, consensus, shared round boundaries, and 
       const run = await fresh('bonus', { minDiscussionBeats: 2 })
       await until(run, () => state.current.phase === 'choices')
       assert.equal(beats(run).length, 2)
+      assert.equal(orderRequests.length, 2, 'the host reviews each sweep before players speak')
     })
     await t.test('host requests cannot exceed the maximum', async () => {
       const run = await fresh('bonus', { maxDiscussionBeats: 2 })
@@ -191,7 +217,7 @@ test('discussion cadence respects zero, consensus, shared round boundaries, and 
       state.round = 3
       startRoundEngine(state, env)
       for (const team of teams) applyAction(state, team.id, state.current.token,
-        { type: 'bomb.allocate', up: 1, down: 0, recipients: { one: 1 } }, env)
+        { type: 'bomb.allocate', up: 1, down: 0, recipients: { [teams[0]!.id]: 1 } }, env)
       await until(run, () => run.status === 'finished')
       assert.equal(beats(run).length, 1)
       assert.equal(beats(run)[0]!.data?.discussionStage, 'post-round')
@@ -200,6 +226,190 @@ test('discussion cadence respects zero, consensus, shared round boundaries, and 
       const settlement = run.events.find(event => event.type === 'operation.batch.completed' && event.data?.window === 'post-settlement:bomb:3')!
       assert.ok(settlement.sequence < run.events.find(event => event.type === 'final.standings')!.sequence)
       assert.ok(!run.events.some(event => event.type === 'discussion.opened' && event.data?.discussionStage === 'pre-round'))
+    })
+    await t.test('a discussion transfer executes before the next speaker and refreshes their private receipts', async () => {
+      const run = await fresh()
+      let payer = ''
+      discussionAction = prompt => {
+        if (payer) return null
+        payer = prompt.playerView.team.id
+        const recipient = teams.find(team => team.id !== payer)!.id
+        return { type: 'money.transfer', recipientTeamIds: [recipient], amount: '25.00' }
+      }
+      await until(run, () => state.current.phase === 'choices')
+      const speakers = prompts.filter(prompt => prompt.turnPhase === 'pre-round')
+      assert.equal(speakers.length, 2)
+      assert.equal(speakers[0].playerView.team.id, payer)
+      assert.equal(speakers[1].playerView.team.balance, '125.00')
+      assert.ok(speakers[1].playerView.moneyTransfers.some((receipt: any) => receipt.fromTeamId === payer && receipt.amount === '25.00'))
+      const accepted = run.events.filter(event => event.type === 'action.accepted' && (event.data?.action as any)?.type === 'money.transfer')
+      assert.equal(accepted.length, 1)
+      const nextMessage = run.events.filter(event => event.type === 'player.message')[1]!
+      assert.ok(accepted[0]!.sequence < nextMessage.sequence)
+      assert.equal(state.current.phase, 'choices', 'financial actions must not start the game round')
+    })
+    for (const scope of ['self', 'public'] as const) {
+      await t.test(scope + ' pot completion during discussion is acknowledged before the next speaker', async () => {
+        const run = await fresh()
+        let payer = ''
+        discussionAction = prompt => {
+          if (payer) return null
+          payer = prompt.playerView.team.id
+          return { type: 'pot.contribute', scope, amount: scope === 'self' ? '20.00' : '100.00' }
+        }
+        await until(run, () => state.current.phase === 'choices')
+        const observed = run.events.filter(event => event.type === 'reveal.observed')
+        assert.equal(observed.length, scope === 'self' ? 1 : 2)
+        assert.ok(observed.every(event => event.data?.scope === scope))
+        const nextMessage = run.events.filter(event => event.type === 'player.message')[1]!
+        const acknowledged = run.events.filter(event => event.type === 'reveal.acknowledged')
+        assert.equal(acknowledged.length, observed.length)
+        assert.ok(acknowledged.every(event => event.sequence < nextMessage.sequence))
+        assert.equal(state.reveal, null)
+        const speakers = prompts.filter(prompt => prompt.turnPhase === 'pre-round')
+        if (scope === 'self') {
+          assert.ok(!speakers[1].gameHistory.some((event: any) => event.type === 'reveal.observed'))
+          assert.ok(observed.every(event => event.audience === run.agents.find(agent => agent.teamId === payer)!.id))
+        } else {
+          assert.ok(speakers[1].gameHistory.some((event: any) => event.type === 'reveal.observed' && event.scope === 'public'))
+          assert.notEqual(speakers[1].playerView.token, speakers[0].playerView.token)
+          assert.ok(reviews[0].gameHistory.some((event: any) => event.type === 'game.public-state' && event.state?.publicReveal?.rankings?.length === 2), 'public rank snapshots must also reach the host public history')
+        }
+        assert.equal(beats(run).length, 1, 'reveals resume the existing sweep instead of creating another')
+        assert.equal(run.events.filter(event => event.type === 'action.accepted' && (event.data?.action as any)?.type === 'pot.contribute').length, 1)
+      })
+    }
+    await t.test('resuming an interrupted sweep does not repeat an accepted financial action', async () => {
+      const run = await fresh()
+      let payer = '', failOnce = true
+      discussionAction = prompt => {
+        if (!payer) {
+          payer = prompt.playerView.team.id
+          return { type: 'money.transfer', recipientTeamIds: [teams.find(team => team.id !== payer)!.id], amount: '25.00' }
+        }
+        if (failOnce) { failOnce = false; throw new Error('Simulated next-speaker failure') }
+        return null
+      }
+      await stepPausedRun(run) // Announce the round before beginning discussion.
+      await assert.rejects(stepPausedRun(run), /Model API 500/)
+      assert.equal(run.events.filter(event => event.type === 'action.accepted' && (event.data?.action as any)?.type === 'money.transfer').length, 1)
+      await until(run, () => state.current.phase === 'choices')
+      assert.equal(run.events.filter(event => event.type === 'action.accepted' && (event.data?.action as any)?.type === 'money.transfer').length, 1)
+      assert.equal(prompts.filter(prompt => prompt.turnPhase === 'pre-round' && prompt.playerView.team.id === payer).length, 1)
+      assert.equal(orderRequests.length, 1, 'resuming a started sweep must not ask the host to reorder it')
+      assert.equal(state.teams.find(team => team.id === payer)!.balance, '7500')
+    })
+    await t.test('a rejected discussion payment is recollected without repeating the public reply', async () => {
+      const run = await fresh()
+      let payer = ''
+      rejectTransferOnce = true
+      discussionAction = prompt => {
+        payer ||= prompt.playerView.team.id
+        if (prompt.playerView.team.id !== payer || prompt.playerView.team.balance !== '100.00') return null
+        return { type: 'money.transfer', recipientTeamIds: [teams.find(team => team.id !== payer)!.id], amount: '25.00' }
+      }
+      await until(run, () => state.current.phase === 'choices')
+      assert.equal(run.events.filter(event => event.type === 'command.rejected').length, 1)
+      assert.equal(run.events.filter(event => event.type === 'action.accepted' && (event.data?.action as any)?.type === 'money.transfer').length, 1)
+      assert.equal(run.events.filter(event => event.type === 'player.message').length, 2)
+      assert.equal(beats(run).length, 1)
+      assert.equal(state.teams.find(team => team.id === payer)!.balance, '7500')
+    })
+    await t.test('cave discussion exposes financial tools while retaining separate cave decisions', async () => {
+      const run = await fresh('cave', { caveDiscussionBeats: 1 })
+      startRoundEngine(state, env)
+      let paid = false
+      discussionAction = prompt => {
+        if (paid) return null
+        paid = true
+        return { type: 'money.transfer', recipientTeamIds: [teams.find(team => team.id !== prompt.playerView.team.id)!.id], amount: '5.00' }
+      }
+      await until(run, () => state.current.phase === 'complete')
+      assert.equal(beats(run).length, 1)
+      assert.equal(run.events.filter(event => event.type === 'action.accepted' && (event.data?.action as any)?.type === 'money.transfer').length, 1)
+      assert.equal(run.events.filter(event => event.type === 'action.accepted' && (event.data?.action as any)?.type === 'cave.decide').length, 2)
+      assert.equal(env.now, 1000)
+    })
+    await t.test('host swaps can move an awaited team first without losing another team', async () => {
+      const run = await fresh()
+      const { appendEvent, detail } = await import('./store.js')
+      await appendEvent(run, { audience: 'public', type: 'player.message', game: 'bonus', round: 1,
+        text: 'We are waiting for Two to clarify its earlier promise.', data: { speakerName: 'One' } })
+      // Start at the saved-shuffle checkpoint with the awaited team second.
+      await appendEvent(run, { audience: 'observer', type: 'discussion.order-proposed', game: 'bonus', round: 1,
+        data: { discussionStage: 'pre-round', beat: 1, initialOrder: run.agents.map(agent => agent.id) } })
+      orderResponse = prompt => {
+        assert.ok(prompt.gameHistory.some((event: any) => event.text?.includes('waiting for Two')))
+        const index = prompt.initialOrder.findIndex((team: any) => team.name === 'Two')
+        return { swaps: index === 0 ? [] : [{ firstPosition: 1, secondPosition: index + 1 }] }
+      }
+      await until(run, () => state.current.phase === 'choices')
+      const speakers = prompts.filter(prompt => prompt.turnPhase === 'pre-round')
+      assert.equal(speakers[0].playerView.team.name, 'Two')
+      assert.deepEqual(new Set(speakers.map(prompt => prompt.playerView.team.name)), new Set(['One', 'Two']))
+      const reviewed = run.events.find(event => event.type === 'discussion.order-reviewed')!
+      assert.equal(reviewed.audience, 'observer')
+      assert.equal((reviewed.data?.swaps as unknown[]).length, 1)
+      const firstPlayerCall = run.events.find(event => event.type === 'model.request' && event.data?.turnPhase === 'pre-round')!
+      assert.ok(reviewed.sequence < firstPlayerCall.sequence)
+      assert.ok(!detail(run, 'public').events.some(event => event.type.startsWith('discussion.order-')))
+    })
+    await t.test('invalid host swaps pause before any team speaks and retry the same saved random order', async () => {
+      const run = await fresh()
+      let invalid = true
+      orderResponse = () => ({ swaps: invalid ? [{ firstPosition: 0, secondPosition: 2 }] : [] })
+      await stepPausedRun(run)
+      await assert.rejects(stepPausedRun(run), /Tool call failed validation after 2/)
+      assert.equal(prompts.filter(prompt => prompt.playerView).length, 0)
+      assert.equal(run.events.filter(event => event.type === 'discussion.order-proposed').length, 1)
+      assert.equal(run.events.filter(event => event.type === 'discussion.sweep-started').length, 0)
+      const initial = orderRequests[0].initialOrder
+      invalid = false
+      await until(run, () => state.current.phase === 'choices')
+      assert.ok(orderRequests.every(prompt => JSON.stringify(prompt.initialOrder) === JSON.stringify(initial)))
+      assert.equal(run.events.filter(event => event.type === 'discussion.order-proposed').length, 1)
+      assert.equal(run.events.filter(event => event.type === 'discussion.order-reviewed').length, 1)
+      assert.equal(beats(run).length, 1)
+    })
+    await t.test('a saved review survives restart before the sweep starts without another host request', async () => {
+      const run = await fresh()
+      const { appendEvent } = await import('./store.js')
+      const initialOrder = run.agents.map(agent => agent.id)
+      const schedulerOrder = [...initialOrder].reverse()
+      const proposal = await appendEvent(run, { audience: 'observer', type: 'discussion.order-proposed', game: 'bonus', round: 1,
+        data: { discussionStage: 'pre-round', beat: 1, initialOrder } })
+      await appendEvent(run, { audience: 'observer', type: 'discussion.order-reviewed', game: 'bonus', round: 1,
+        data: { discussionStage: 'pre-round', proposalId: proposal.id, initialOrder,
+          swaps: [{ firstPosition: 1, secondPosition: 2 }], schedulerOrder } })
+      await until(run, () => state.current.phase === 'choices')
+      assert.equal(orderRequests.length, 0)
+      assert.deepEqual(run.events.find(event => event.type === 'discussion.sweep-started')!.data?.schedulerOrder, schedulerOrder)
+      assert.equal(prompts.filter(prompt => prompt.turnPhase === 'pre-round')[0].playerView.team.name, run.agents[1]!.name)
+    })
+    await t.test('an existing legacy sweep keeps its speaking order and completed speakers on resume', async () => {
+      const run = await fresh()
+      const { appendEvent } = await import('./store.js')
+      const order = run.agents.map(agent => agent.id)
+      const sweep = await appendEvent(run, { audience: 'observer', type: 'discussion.sweep-started', game: 'bonus', round: 1,
+        data: { discussionStage: 'pre-round', beat: 1, schedulerOrder: order } })
+      await appendEvent(run, { audience: 'observer', type: 'barrier.proposed', game: 'bonus', round: 1,
+        data: { kind: 'discussion-turn', barrierId: 'old-speaker', sweepId: sweep.id, speakerId: order[0], proposals: [] } })
+      await appendEvent(run, { audience: 'observer', type: 'barrier.completed', game: 'bonus', round: 1,
+        data: { barrierId: 'old-speaker' } })
+      await until(run, () => state.current.phase === 'choices')
+      assert.equal(orderRequests.length, 0)
+      const speakers = prompts.filter(prompt => prompt.turnPhase === 'pre-round')
+      assert.equal(speakers.length, 1)
+      assert.equal(speakers[0].playerView.team.name, run.agents[1]!.name)
+      assert.deepEqual(beats(run)[0]!.data?.schedulerOrder, order)
+    })
+    await t.test('scripted runs retain the randomized order without model calls', async () => {
+      const run = await fresh('bonus', { mode: 'scripted' })
+      await until(run, () => state.current.phase === 'choices')
+      assert.equal(orderRequests.length, 0)
+      const review = run.events.find(event => event.type === 'discussion.order-reviewed')!
+      assert.equal(review.data?.source, 'scripted')
+      assert.deepEqual(review.data?.schedulerOrder, review.data?.initialOrder)
     })
     await t.test('zero normal limits skip notices and discussion before play', async () => {
       const run = await fresh('bonus', { minDiscussionBeats: 0, maxDiscussionBeats: 0 })

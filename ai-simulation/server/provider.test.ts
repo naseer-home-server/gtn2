@@ -5,7 +5,7 @@ import { test } from 'node:test'
 import { DEFAULT_CONFIG, playerView, startEngine } from 'backend/engine'
 import type { EngineEnv, EngineState, PlayerGameView, Team } from 'backend/engine'
 import { providerConfig } from './config.js'
-import { hostLine, playerTurn, scriptedTurn, ModelTurnError, ModelRequestError, ModelOutputError } from './provider.js'
+import { hostLine, hostDiscussionSwaps, playerTurn, scriptedTurn, ModelTurnError, ModelRequestError, ModelOutputError } from './provider.js'
 import type { RunEvent, RunOptions } from './types.js'
 import type { ValidationFailure } from './provider.js'
 import { validateOptions } from './config.js'
@@ -150,7 +150,7 @@ test('player prompt receives only its projected view, public room transcript, an
     assert.deepEqual(history.find((item: any) => item.type === 'reveal.observed').rankings, [{ teamId: 'team-amber', rank: 2 }])
     assert.equal(user.includes('991'), false, 'global private-event sequence must not reveal other private activity')
     for (const secret of ['observer-secret-balances-and-bomb-direction', 'message addressed only to Blue', '987.65', 'hidden-blue-choice']) assert.ok(!user.includes(secret), `prompt leaked ${secret}`)
-    assert.match(prompt.instruction, /discussion-only/)
+    assert.match(prompt.instruction, /ordered discussion turn/)
   })
 })
 
@@ -303,7 +303,7 @@ test('attempt exhaustion reports the last reason and every failed completion cou
   })
 })
 
-test('discussion-only and host submissions can repair invalid actions without executing them', async () => {
+test('discussion and host submissions can repair disallowed game actions without executing them', async () => {
   for (const host of [false, true]) {
     await withMockProvider((_request, response, mock) => mock.respond(payload(args({
       message: 'Public response.',
@@ -316,7 +316,7 @@ test('discussion-only and host submissions can repair invalid actions without ex
       assert.equal(result.tokens, 20)
       assert.equal(mock.requests.length, 2)
       const feedback = JSON.parse(mock.requests[1]!.body.messages[3].content)
-      assert.match(feedback.error.issues.join(' '), host ? /Host/ : /discussion-only/)
+      assert.match(feedback.error.issues.join(' '), host ? /Host/ : /Discussion permits only money.transfer and pot.contribute/)
     })
   }
 })
@@ -702,4 +702,102 @@ test('action turns reject public and private chat instead of creating unschedule
       })
     }
   }
+})
+
+
+test('every discussion phase permits chat plus financial actions and hides game choices', async () => {
+  const { view, config } = fixture()
+  view.team!.id = '00000000-0000-4000-8000-000000000001'
+  view.teams[0]!.id = view.team!.id
+  view.teams[1]!.id = '00000000-0000-4000-8000-000000000002'
+  for (const turnPhase of ['discussion', 'pre-round', 'post-round', 'cave-discussion'] as const) {
+    for (const action of [
+      { type: 'money.transfer', recipientTeamIds: [view.teams[1]!.id], amount: '5.00' },
+      { type: 'pot.contribute', scope: 'self', amount: '1.00' },
+      { type: 'pot.contribute', scope: 'public', amount: '1.00' },
+    ]) {
+      await withMockProvider((_request, response, mock) => mock.respond(payload(args({ message: 'Settling our agreement.', actionJson: JSON.stringify(action) })), response), async mock => {
+        const result = await playerTurn(view, [], options(), config, false, [], undefined, { turnPhase })
+        assert.equal(result.message, 'Settling our agreement.')
+        assert.equal(result.action?.type, action.type)
+        const prompt = JSON.parse(mock.requests[0]!.body.messages[1].content)
+        assert.deepEqual(new Set(prompt.playerView.allowedActions), new Set(['money.transfer', 'pot.contribute']))
+        assert.deepEqual(new Set(prompt.actionSchemas.map((schema: any) => schema.properties.type.const)), new Set(['money.transfer', 'pot.contribute']))
+        assert.ok(!prompt.instruction.includes('actionJson must be null'))
+        assert.ok(Array.isArray(mock.requests[0]!.body.tools[0].function.parameters.properties.message.type))
+      })
+    }
+  }
+})
+
+
+const orderPayload = (value: unknown, name = 'submit_discussion_swaps') => ({
+  choices: [{ message: { content: 'This assistant text must never become a public host message.', tool_calls: [{
+    id: 'order-call', type: 'function', function: { name, arguments: JSON.stringify(value) },
+  }] } }], usage: { total_tokens: 37 },
+})
+
+test('the scheduling host receives numbered teams and public history and can output only swaps', async () => {
+  const teams = [{ id: 'a', name: 'Amber' }, { id: 'b', name: 'Blue' }, { id: 'c', name: 'Coral' }]
+  const swaps = [{ firstPosition: 1, secondPosition: 3 }]
+  await withMockProvider((_request, response, mock) => mock.respond(orderPayload({ swaps }), response), async mock => {
+    const transcript = [
+      event('public-dependency', 'public', 'We are waiting for Coral to clarify its own proposal.', { speakerName: 'Blue' }),
+      event('observer-secret', 'observer', 'hidden-balances-98765-and-cave-attendance'),
+      { ...event('private-secret', 'a', 'private-deal-and-transfer-receipt'), type: 'chat.private-message' },
+    ]
+    const result = await hostDiscussionSwaps(teams, { game: 'bonus', round: 2, discussionStage: 'pre-round' }, options(), undefined, undefined, transcript)
+    assert.deepEqual(result, { swaps, tokens: 37 })
+    const request = mock.requests[0]!.body
+    assert.equal(request.model, 'mock-host')
+    assert.deepEqual(request.tool_choice, { type: 'function', function: { name: 'submit_discussion_swaps' } })
+    assert.equal(request.tools[0].function.strict, true)
+    assert.equal(request.tools[0].function.parameters.additionalProperties, false)
+    assert.deepEqual(request.tools[0].function.parameters.required, ['swaps'])
+    assert.deepEqual(Object.keys(request.tools[0].function.parameters.properties), ['swaps'])
+    assert.equal(request.tools[0].function.parameters.properties.swaps.maxItems, 2)
+    assert.equal(request.tools[0].function.parameters.properties.swaps.items.properties.secondPosition.maximum, 3)
+    const user = request.messages[1].content
+    const prompt = JSON.parse(user)
+    assert.deepEqual(prompt.initialOrder, teams.map((team, index) => ({ position: index + 1, teamId: team.id, name: team.name })))
+    assert.equal(prompt.gameHistory.length, 1)
+    assert.ok(user.includes('waiting for Coral'))
+    assert.ok(!user.includes('hidden-balances') && !user.includes('private-deal'))
+    assert.equal('playerView' in prompt, false)
+    assert.equal('message' in result, false)
+    assert.equal('action' in result, false)
+  })
+})
+
+test('scheduling corrections use their own tool pairing and keep the original roster unchanged', async () => {
+  await withMockProvider((_request, response, mock) => mock.respond(orderPayload({
+    swaps: mock.requests.length === 1 ? [{ firstPosition: 1, secondPosition: 99 }] : [],
+  }), response), async mock => {
+    const failures: ValidationFailure[] = []
+    const teams = [{ id: 'one', name: 'One' }, { id: 'two', name: 'Two' }]
+    const result = await hostDiscussionSwaps(teams, {}, { ...options(), maxToolAttempts: 2 }, undefined,
+      { onValidationError: failure => { failures.push(failure) } })
+    assert.deepEqual(result.swaps, [])
+    assert.equal(result.tokens, 74)
+    assert.equal(failures.length, 1)
+    assert.deepEqual(failures[0]!.proposedAction, [{ firstPosition: 1, secondPosition: 99 }])
+    assert.deepEqual(mock.requests[1]!.body.messages.slice(0, 2), mock.requests[0]!.body.messages)
+    assert.equal(mock.requests[1]!.body.messages[2].tool_calls[0].function.name, 'submit_discussion_swaps')
+    assert.equal(mock.requests[1]!.body.messages[3].tool_call_id, 'order-call')
+    assert.match(JSON.parse(mock.requests[1]!.body.messages[3].content).instruction, /submit_discussion_swaps/)
+  })
+})
+
+test('scheduling rejects attempts to replace the roster or submit player advice and actions', async () => {
+  for (const value of [
+    { swaps: [], schedulerOrder: ['ghost-team'] },
+    { swaps: [], message: 'Team One should transfer 20.' },
+    { swaps: [], actionJson: '{"type":"bonus.take","amount":100}' },
+    { swaps: [{ firstPosition: 1, secondPosition: 1 }] },
+  ]) await withMockProvider((_request, response, mock) => mock.respond(orderPayload(value), response), async () => {
+    await assert.rejects(hostDiscussionSwaps([{ id: 'one', name: 'One' }, { id: 'two', name: 'Two' }], {}, options()), ModelTurnError)
+  })
+  await withMockProvider((_request, response, mock) => mock.respond(orderPayload({ swaps: [] }, 'submit_turn'), response), async () => {
+    await assert.rejects(hostDiscussionSwaps([{ id: 'one', name: 'One' }, { id: 'two', name: 'Two' }], {}, options()), /Return exactly one submit_discussion_swaps/)
+  })
 })

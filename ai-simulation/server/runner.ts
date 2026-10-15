@@ -2,12 +2,14 @@ import { randomUUID } from 'node:crypto'
 import { gameConfigSchema, gameActionSchema } from 'backend/engine'
 import { appendEvent, getRun, saveRun } from './store.js'
 import { createSession, getPlayerView, getServiceView, controlSession, playerAction, createDirectChat, sendPrivateChat, type ServiceView } from './game-client.js'
-import { hostLine, playerTurn, scriptedTurn, type ModelTurnHooks, type PlayerTurnPhase } from './provider.js'
+import { hostLine, hostDiscussionSwaps, playerTurn, scriptedTurn, type AgentResponse, type ModelTurnHooks, type PlayerTurnPhase } from './provider.js'
 import type { AgentRecord, RunRecord, RunEvent } from './types.js'
 import type { PlayerGameView } from 'backend/game'
 import { gameRuleCard, globalRuleCard, gameTheoryBriefing } from './rules.js'
 import { recordRequest, recordUsage } from './usage.js'
 import { providerConfig } from './config.js'
+import { isFinancialAction } from './validation.js'
+import { applyDiscussionSwaps, assertDiscussionRoster, type DiscussionSwap } from './discussion-order.js'
 
 const running = new Set<string>()
 const controllers = new Map<string, AbortController>()
@@ -38,11 +40,11 @@ async function mapLimit<T, U>(items: T[], limit: number, fn: (item: T, index: nu
   if (failure !== undefined) throw failure
   return result
 }
-function modelTurnHooks(run: RunRecord, actor: { id: string; name: string }, game?: RunEvent['game'], round?: number, signal?: AbortSignal, turnPhase?: PlayerTurnPhase): ModelTurnHooks {
+function modelTurnHooks(run: RunRecord, actor: { id: string; name: string }, game?: RunEvent['game'], round?: number, signal?: AbortSignal, turnPhase?: PlayerTurnPhase | 'discussion-order'): ModelTurnHooks {
   const stats = run.modelUsage?.[actor.id]
   return {
     actorId: actor.id,
-    turnPhase,
+    turnPhase: turnPhase === 'discussion-order' ? undefined : turnPhase,
     tokenCalibration: { promptTokens: stats?.calibrationPromptTokens, requestBytes: stats?.calibrationRequestBytes },
     async onRequest(request, attempt) {
       recordRequest(run, actor.id, request)
@@ -262,37 +264,86 @@ function discussionNextStep(stage: DiscussionStage) {
       : 'Financial actions and simultaneous cave decisions follow; the clock stays frozen until decisions are collected.'
 }
 
-async function discussionBeat(run: RunRecord, service: ServiceView, views: PlayerGameView[], stage: DiscussionStage, window: number | undefined, epoch: number, signal: AbortSignal) {
+async function discussionBeat(run: RunRecord, service: ServiceView, stage: DiscussionStage, window: number | undefined, epoch: number, signal: AbortSignal) {
   const location = currentLocation(service)
   const phaseEvents = discussionEvents(run, service, stage, window)
   let sweep = phaseEvents.findLast(event => event.type === 'discussion.sweep-started'
     && !phaseEvents.some(done => done.type === 'discussion.beat' && done.data?.sweepId === event.id))
   if (!sweep) {
     if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
-    const beat = run.stepCount + 1
+    let proposal = phaseEvents.findLast(event => event.type === 'discussion.order-proposed'
+      && !phaseEvents.some(started => started.type === 'discussion.sweep-started' && started.data?.orderProposalId === event.id))
+    if (!proposal) {
+      const beat = run.stepCount + 1
+      proposal = await appendEvent(run, { audience: 'observer', type: 'discussion.order-proposed', game: location.game, round: location.round,
+        data: { discussionStage: stage, window, beat,
+          initialOrder: discussionOrder(run.agents.length, run.options.seed ^ Math.imul(beat, 997)).map(index => run.agents[index]!.id) } })
+    }
+    const initialOrder = proposal.data?.initialOrder
+    assertDiscussionRoster(initialOrder, run.agents.map(agent => agent.id))
+    let reviewed = run.events.find(event => event.type === 'discussion.order-reviewed' && event.data?.proposalId === proposal!.id)
+    if (!reviewed) {
+      const teams = initialOrder.map(id => {
+        const agent = run.agents.find(team => team.id === id)
+        if (!agent) throw new Error('Discussion order references an unknown team')
+        return { id: agent.id, name: agent.name }
+      })
+      const result = run.options.mode === 'scripted' ? { swaps: [] as DiscussionSwap[] }
+        : await hostDiscussionSwaps(teams, { game: location.game, round: location.round, discussionStage: stage,
+          window, sweep: phaseEvents.filter(event => event.type === 'discussion.beat').length + 1 }, run.options, signal,
+        modelTurnHooks(run, { id: 'host', name: 'Host' }, location.game, location.round, signal, 'discussion-order'), run.events)
+      if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
+      const schedulerOrder = applyDiscussionSwaps(initialOrder, result.swaps)
+      reviewed = await appendEvent(run, { audience: 'observer', type: 'discussion.order-reviewed', game: location.game, round: location.round,
+        text: 'Speaking order: ' + schedulerOrder.map(id => run.agents.find(agent => agent.id === id)!.name).join(' → ')
+          + (result.swaps.length ? '. Host applied ' + result.swaps.length + ' swap(s).' : '. Random order retained.'),
+        data: { discussionStage: stage, window, speakerName: 'Host', source: run.options.mode === 'scripted' ? 'scripted' : 'host',
+          proposalId: proposal.id, initialOrder, swaps: result.swaps, schedulerOrder } })
+    }
+    if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
     sweep = await appendEvent(run, { audience: 'observer', type: 'discussion.sweep-started', game: location.game, round: location.round,
-      data: { discussionStage: stage, window, beat,
-        schedulerOrder: discussionOrder(run.agents.length, run.options.seed ^ Math.imul(beat, 997)).map(index => run.agents[index]!.id) } })
+      data: { discussionStage: stage, window, beat: proposal.data?.beat, orderProposalId: proposal.id, orderReviewId: reviewed.id,
+        schedulerOrder: applyDiscussionSwaps(initialOrder, reviewed.data!.swaps as DiscussionSwap[]) } })
   }
   const sweepId = sweep.id
-  const order = sweep.data?.schedulerOrder as string[]
+  const order = sweep.data?.schedulerOrder
+  assertDiscussionRoster(order, run.agents.map(agent => agent.id))
   for (const agentId of order) {
     if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
     const agent = run.agents.find(item => item.id === agentId)
     if (!agent) throw new Error('Discussion order references an unknown team')
-    let barrier = run.events.findLast(event => event.type === 'barrier.proposed' && event.data?.sweepId === sweepId && event.data?.speakerId === agentId)
-    if (barrier && run.events.some(event => event.type === 'barrier.completed' && event.data?.barrierId === barrier!.data?.barrierId)) continue
+    const previous = run.events.findLast(event => event.type === 'barrier.proposed' && event.data?.sweepId === sweepId && event.data?.speakerId === agentId)
+    if (previous && run.events.some(event => event.type === 'barrier.completed' && event.data?.barrierId === previous.data?.barrierId)) continue
+    const recollected = previous && run.events.some(event => event.type === 'barrier.recollected'
+      && event.sequence > previous.sequence && event.data?.barrierId === previous.data?.barrierId)
+    let barrier = recollected ? undefined : previous
     if (!barrier) {
-      const view = views[run.agents.indexOf(agent)]!
-      // Dispatch this reply before requesting the next one: its history includes all earlier speakers.
-      const answer = run.options.mode === 'scripted' ? scriptedTurn({ ...view, allowedActions: [] }, run.options.seed ^ run.stepCount)
-        : await modelPlayerTurn(run, agent, { ...view, allowedActions: [] }, false, signal, stage)
+      // A previous speaker may have paid this team or filled a reveal pot.
+      // Refresh every private view and acknowledge reveals before continuing the saved order.
+      const freshViews = await getViews(run, signal)
       if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
-      if (answer.action) throw new Error(agent.name + ': game actions are not allowed during discussion')
+      if (freshViews.some(view => view.reveal?.scope === 'public')) {
+        // Publish the public snapshot before automatic acknowledgments hide it.
+        await observePublicState(run, await getServiceView(run.sessionId!, signal))
+      }
+      if (await acknowledgeReveals(run, freshViews, epoch, signal)) return
+      const fresh = freshViews[run.agents.indexOf(agent)]!
+      const view = { ...fresh, allowedActions: fresh.allowedActions.filter(isFinancialAction) }
+      // Deliver speech and execute optional financial actions before calling the next speaker.
+      const answer = run.options.mode === 'scripted' ? scriptedTurn(view, run.options.seed ^ run.stepCount)
+        : await modelPlayerTurn(run, agent, view, false, signal, stage)
+      if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
+      if (answer.action && !isFinancialAction(answer.action.type)) throw new Error(agent.name + ': game actions are not allowed during discussion')
+      // Keep the speaker's delivered chat stable if an uncommitted financial action needs a fresh decision.
+      const earlier = (previous?.data?.proposals as Array<{ message?: string; privateMessage?: AgentResponse['privateMessage']; privateMessageId?: string }> | undefined)?.[0]
+      const message = earlier?.message ?? answer.message?.slice(0, 1000)
+      const privateMessage = earlier?.privateMessage ?? answer.privateMessage
       barrier = await appendEvent(run, { audience: 'observer', type: 'barrier.proposed', game: location.game, round: location.round,
-        data: { barrierId: randomUUID(), kind: 'discussion-turn', sweepId, speakerId: agent.id, discussionStage: stage, window,
-          proposals: [{ agentId: agent.id, message: answer.message?.slice(0, 1000), privateMessage: answer.privateMessage,
-            privateMessageId: answer.privateMessage ? randomUUID() : undefined }] } })
+        data: { barrierId: previous?.data?.barrierId || randomUUID(), kind: 'discussion-turn', sweepId, speakerId: agent.id, discussionStage: stage, window,
+          proposals: [{ agentId: agent.id, token: view.token, action: answer.action,
+            actionRequestId: answer.action ? randomUUID() : undefined,
+            message, privateMessage,
+            privateMessageId: earlier?.privateMessageId ?? (privateMessage ? randomUUID() : undefined) }] } })
     }
     if (await dispatchBarrier(run, barrier, epoch, signal) !== 'done') return
   }
@@ -338,7 +389,7 @@ async function hostReview(run: RunRecord, service: ServiceView, sweep: RunEvent,
     data: { discussionStage: stage, window, sweepId, beat: sweep.data?.beat, continueDiscussion } })
 }
 
-async function discussionPhase(run: RunRecord, service: ServiceView, views: PlayerGameView[], stage: DiscussionStage, window: number | undefined, epoch: number, signal: AbortSignal) {
+async function discussionPhase(run: RunRecord, service: ServiceView, stage: DiscussionStage, window: number | undefined, epoch: number, signal: AbortSignal) {
   if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return false
   const max = stage === 'cave-discussion' ? run.options.caveDiscussionBeats : run.options.maxDiscussionBeats
   // Disabled discussion has no speakers, host reviews, or public open/close notices.
@@ -347,9 +398,9 @@ async function discussionPhase(run: RunRecord, service: ServiceView, views: Play
   if (phaseEvents.some(event => event.type === 'discussion.closed')) return true
   const location = currentLocation(service)
   if (!phaseEvents.some(event => event.type === 'discussion.opened')) {
-    const text = stage === 'pre-round' ? 'Between-round discussion: review your own previous results and agree on a plan using the upcoming round rules. Actions are separate; financial settlement follows each discussion sweep.'
-      : stage === 'post-round' ? 'Post-round discussion: every team has received its own private round feedback. Review promises and negotiate payments; a financial-action window follows each discussion sweep.'
-        : 'Cave window discussion: take turns and respond to earlier speakers. The clock is frozen; financial actions and cave decisions follow separately.'
+    const text = stage === 'pre-round' ? 'Between-round discussion: review your own previous results and agree on a plan using the upcoming round rules. Transfers and reveal contributions are available during each turn; game choices wait for the host to start the round.'
+      : stage === 'post-round' ? 'Post-round discussion: every team has received its own private round feedback. Review promises, negotiate, and make transfers or reveal contributions during your turn.'
+        : 'Cave window discussion: take turns and respond to earlier speakers. The clock is frozen; transfers and reveal contributions are available, while cave decisions follow separately.'
     await appendEvent(run, { audience: 'public', type: 'discussion.opened', game: location.game, round: location.round,
       text, data: { discussionStage: stage, window, speakerName: 'Host' } })
   }
@@ -360,7 +411,7 @@ async function discussionPhase(run: RunRecord, service: ServiceView, views: Play
   const lastReview = phaseEvents.findLast(event => event.type === 'host.discussion-decision')
   const pendingSweep = phaseEvents.some(event => event.type === 'discussion.sweep-started' && !sweeps.some(done => done.data?.sweepId === event.id))
   if (pendingSweep || sweeps.length < min || sweeps.length < max && lastReview?.data?.continueDiscussion === true) {
-    await discussionBeat(run, service, views, stage, window, epoch, signal)
+    await discussionBeat(run, service, stage, window, epoch, signal)
     return false
   }
   if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return false
@@ -459,7 +510,7 @@ async function operationBarrier(run: RunRecord, service: ServiceView, views: Pla
     .filter(proposal => proposal.actionRequestId && accepted.has(proposal.actionRequestId)).map(proposal => proposal.agentId))
   const proposals = await mapLimit(run.agents, providerConfig.concurrency, async (agent, i) => {
     const view = views[i]!
-    const sideActions = view.allowedActions.filter((action) => action === 'money.transfer' || action === 'pot.contribute')
+    const sideActions = view.allowedActions.filter(isFinancialAction)
     if (!sideActions.length || committed.has(agent.id)) return { agent, view, answer: { tokens: 0 } as { tokens: number; action?: any; message?: string; privateMessage?: { teamId: string; text: string } } }
     const limitedView = { ...view, allowedActions: sideActions }
     const answer = run.options.mode === 'scripted' ? scriptedTurn(limitedView, run.options.seed ^ (run.stepCount * 31) ^ i)
@@ -665,9 +716,9 @@ async function stepRun(run: RunRecord, epoch: number, signal: AbortSignal) {
     await finishRun(run, service); return
   }
   const loc = currentLocation(service)
-  if (!run.events.some(event => event.type === 'host.briefing' && event.data?.version === 'shared-discussions-v2')) {
+  if (!run.events.some(event => event.type === 'host.briefing' && event.data?.version === 'discussion-finances-v3')) {
     await appendEvent(run, { audience: 'public', type: 'host.briefing', game: loc.game, round: loc.round,
-      text: gameTheoryBriefing(), data: { version: 'shared-discussions-v2', speakerName: 'Host' } })
+      text: gameTheoryBriefing(), data: { version: 'discussion-finances-v3', speakerName: 'Host' } })
   }
   if (loc.game === 'bomb' && run.events.some(event => event.type === 'rules.card' && event.game === 'bomb' && event.round === loc.round && event.text?.includes('each up/down pile')) &&
     !run.events.some(event => event.type === 'rules.correction' && event.game === 'bomb' && event.round === loc.round && event.data?.version === 'bomb-pile-totals-v1')) {
@@ -699,7 +750,7 @@ async function stepRun(run: RunRecord, epoch: number, signal: AbortSignal) {
         await operationBarrier(run, service, views, epoch, signal, 'pre-round:' + loc.game + ':' + loc.round + ':' + unsettled.data?.sweepId)
         return
       }
-      if (!await discussionPhase(run, service, views, 'pre-round', undefined, epoch, signal)) return
+      if (!await discussionPhase(run, service, 'pre-round', undefined, epoch, signal)) return
       const finalWindow = 'pre-settlement:' + loc.game + ':' + loc.round
       if (!operationDone(finalWindow)) {
         await operationBarrier(run, service, views, epoch, signal, finalWindow)
@@ -739,7 +790,7 @@ async function stepRun(run: RunRecord, epoch: number, signal: AbortSignal) {
         await operationBarrier(run, service, views, epoch, signal, 'post-round:' + loc.game + ':' + loc.round + ':' + unsettled.data?.sweepId)
         return
       }
-      if (!await discussionPhase(run, service, views, 'post-round', undefined, epoch, signal)) return
+      if (!await discussionPhase(run, service, 'post-round', undefined, epoch, signal)) return
       const finalWindow = 'post-settlement:' + loc.game + ':' + loc.round
       if (!operationDone(finalWindow)) {
         await operationBarrier(run, service, views, epoch, signal, finalWindow)
@@ -770,7 +821,7 @@ async function stepRun(run: RunRecord, epoch: number, signal: AbortSignal) {
   if (!active() || await acknowledgeReveals(run, views, epoch, signal)) return
   const inCave = service.state?.current?.game === 'cave'
   const caveWindow = inCave ? Number(service.state.current.tick) : undefined
-  if (inCave && !await discussionPhase(run, service, views, 'cave-discussion', caveWindow, epoch, signal)) return
+  if (inCave && !await discussionPhase(run, service, 'cave-discussion', caveWindow, epoch, signal)) return
 
   const window = operationWindow(service)
   if (!operationDone(window)) {

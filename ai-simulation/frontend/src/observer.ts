@@ -50,9 +50,9 @@ export function observerTranscript(detail: RunDetail, teams = observerAccounts(d
       if (seenChats.has(key)) return []
       seenChats.add(key)
     } else if (!['player.message', 'host.announcement', 'host.review', 'host.briefing', 'host.round-started', 'discussion.opened', 'rules.card', 'rules.correction',
-      'model.validation-error', 'model.context-limit', 'model.request-error', 'model.output-limit'].includes(event.type)) return []
+      'model.validation-error', 'model.context-limit', 'model.request-error', 'model.output-limit', 'discussion.order-reviewed'].includes(event.type)) return []
     // Only public conversation, observer diagnostics, and delivered private messages enter this feed.
-    if (event.audience !== 'public' && !event.type.startsWith('model.') && event.type !== 'chat.private-message') return []
+    if (event.audience !== 'public' && !event.type.startsWith('model.') && event.type !== 'chat.private-message' && event.type !== 'discussion.order-reviewed') return []
     const recipient = detail.summary.agents.find(agent => agent.id === event.data?.recipientId)
     return [{ id: event.id, time: event.wallTime, event: { ...event, game: event.game ?? game, round: event.round ?? round,
       data: event.type === 'chat.private-message' ? { ...event.data, recipientName: recipient?.name } : event.data } }]

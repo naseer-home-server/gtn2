@@ -24,14 +24,14 @@ The simulation uses the existing game backend/database and activates its generat
 
 Use one ordered discussion between rounds, plus an initial discussion and a final debrief. The upcoming round is ready, so its exact rules and the previous private feedback are available together. A sweep gives every team one turn in a newly shuffled, seeded order. The saved order survives pause/resume.
 
-1. Hold the round in its ready state for pre-round discussion, with all actions removed from the model’s current view. Brief teams on the repeated game-theory structure and the exact round rules.
-2. Save a shuffled speaking order, then request one player completion at a time using its filtered view and complete permitted history.
-3. Persist and deliver each public/private reply before requesting the next speaker. Later speakers can answer earlier proposals within the same sweep.
-4. The host reviews each sweep and may extend discussion within the configured cap. A completed speaker is skipped on recovery; an unfinished speaker keeps its original position.
+1. Hold the round in its ready state for pre-round discussion, with only money.transfer and pot.contribute exposed in the model’s current action list. Brief teams on the repeated game-theory structure and the exact round rules.
+2. Save a seeded shuffled speaking order, then ask the host to keep it or propose position swaps using only public history and the numbered roster. Validate swaps and persist the effective order before requesting any player completion. The host may prioritize a team blocking the public conversation but cannot suggest player actions. Request one player completion at a time using its filtered view and complete permitted history.
+3. Persist and deliver each public/private reply and execute any optional transfer or reveal contribution before requesting the next speaker. Refresh player views so later speakers receive their own new receipts. Observe and acknowledge any triggered rank reveal before continuing the saved order. Discussion never permits main game choices.
+4. The host reviews each sweep and may extend discussion within the configured cap. A completed speaker is skipped on recovery; an unfinished speaker keeps its reviewed position. Saved random proposals and host reviews survive restart; an already reviewed or started sweep is never sent for another ordering review.
 5. Offer a financial batch after each discussion sweep and a final settlement window before starting the upcoming round. Start only after discussion closes. Collect financial and main-game actions in separate, independent proposal batches. Only scheduled discussion turns may send public or private chat.
 6. When a round completes, deliver every team’s own private payout, balance, stars, and visible receipts, then prepare the upcoming round for the single between-round discussion. After the finale, retain a closing discussion and financial settlement before recording final standings.
 
-Discussion turns deliberately see earlier replies in the same sweep. Game-decision and financial proposals retain a shared cutoff and are collected before any dispatch; model completion speed does not determine their execution order. The cave clock stays frozen throughout discussion and action collection.
+Discussion turns deliberately see earlier replies in the same sweep. Game-decision and standalone financial proposals retain a shared cutoff and are collected before any dispatch; model completion speed does not determine their execution order. The cave clock stays frozen throughout discussion and action collection.
 
 Defaults are two guaranteed sweeps and a maximum of four, applied once between rounds. The host closes an agreed current plan once the minimum is met; it must not extend for redundant confirmation, hidden-proof demands, or optional later-round plans. Cave decision-window discussion has its own exact sweep count; zero suppresses the phase entirely, including notices. A sweep is one scheduled simulation step even though its player API calls are sequential. These are scheduling parameters, not payout rules.
 
@@ -41,9 +41,17 @@ During a decision barrier, eligible agents independently choose their game actio
 
 Circle sending and returning require separate barriers, with private receipts delivered between them. Do not request a return before the sender/received information is available to that team.
 
+### Host speaking-order review
+
+Before each new sweep, persist `discussion.order-proposed` with the random order. The host receives only that numbered roster, public game history, and coarse discussion location. Its dedicated `submit_discussion_swaps` tool accepts only `swaps`, each containing two distinct one-based current positions. Apply swaps sequentially; an empty list retains the shuffle. Allow at most N - 1 swaps, which can express any permutation of N teams. Range/integer checks, strict object schemas, and a final exact-roster check prevent invented, duplicated, or omitted teams.
+
+Persist `discussion.order-reviewed` before `discussion.sweep-started`, including the original order, swaps, and resulting order. The observer feed shows this audit; players do not receive internal scheduling records. Reuse a saved review on resume, retain the same random proposal if a host request fails, and preserve an already-started legacy sweep. Invalid submissions use the normal correction limit and pause before any player turn when exhausted. Scripted runs record an empty swap list without a model call.
+
+The host should keep the shuffle unless public dependencies justify an adjustment, such as moving a team whose answer or publicly promised action is awaited earlier. Scheduling output cannot contain a message, player action, or replacement roster. It influences speaking sequence only; gameplay decisions and fixed game tie order continue through the existing engine. Each new AI sweep adds one metered host call with the normal context and runtime guards.
+
 ### Private operations and ordering
 
-Transfers and reveal contributions can affect the next choice. Execute these in bounded operation batches between decision barriers, return receipts only to participants, then refresh affected views. Agents can use these opportunities before or after their main game choice whenever the game API permits them. A quiet public agent can still have private activity.
+Transfers and reveal contributions can affect the next choice. Expose them during every discussion turn and in bounded standalone operation batches between decision barriers. A discussion speaker may attach a financial action to its message; execute it immediately before the next speaker. Return receipts only to participants, then refresh private views. Agents can use these opportunities before or after their main game choice whenever the game API permits them. A quiet public agent can still have private activity.
 
 Treat decisions as sealed only after these preparatory operations finish. For a public reveal, suspend the pending batch, deliver each team's permitted snapshot, wait for acknowledgments, and refetch state/tokens. Revalidate or recollect uncommitted decisions affected by the reveal or changed balances; do not blindly retoken an old strategic decision. Already accepted game choices remain final.
 

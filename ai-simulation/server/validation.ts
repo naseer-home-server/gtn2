@@ -20,9 +20,14 @@ export function bombAllocationGuide(view: PlayerGameView) {
   }
 }
 
-export function actionSchemas(view: PlayerGameView, decision: boolean) {
+export function isFinancialAction(type: string) {
+  return type === 'money.transfer' || type === 'pot.contribute'
+}
+
+export function actionSchemas(view: PlayerGameView, gameActionsAllowed: boolean) {
   return gameActionSchema.options
-    .filter(schema => decision && schema.shape.type.value !== 'reveal.acknowledge' && view.allowedActions.includes(schema.shape.type.value))
+    .filter(schema => schema.shape.type.value !== 'reveal.acknowledge' && view.allowedActions.includes(schema.shape.type.value)
+      && (gameActionsAllowed || isFinancialAction(schema.shape.type.value)))
     .map(schema => {
       const json = z.toJSONSchema(schema)
       if (schema.shape.type.value !== 'bomb.allocate') return json
@@ -42,11 +47,13 @@ export function actionSchemas(view: PlayerGameView, decision: boolean) {
 }
 
 // Validate only information already available to this player. The game API remains authoritative.
-export function validatePlayerAction(value: unknown, view: PlayerGameView, decision: boolean): GameAction {
+export function validatePlayerAction(value: unknown, view: PlayerGameView, gameActionsAllowed: boolean): GameAction {
   const parsed = gameActionSchema.safeParse(value)
   if (!parsed.success) throw new TurnValidationError(parsed.error.issues.map(issue => `actionJson.${issue.path.join('.') || 'type'}: ${issue.message}`))
   const action = parsed.data
-  if (!decision) throw new TurnValidationError(['This is a discussion-only beat. actionJson must be null.'])
+  if (!gameActionsAllowed && !isFinancialAction(action.type)) {
+    throw new TurnValidationError(['Discussion permits only money.transfer and pot.contribute. Game actions are reserved for game-decision turns after the host starts the round.'])
+  }
   if (action.type === 'reveal.acknowledge' || !view.allowedActions.includes(action.type)) {
     throw new TurnValidationError([`Action ${action.type} is unavailable. Allowed actions: ${view.allowedActions.filter(type => type !== 'reveal.acknowledge').join(', ') || 'none'}.`])
   }

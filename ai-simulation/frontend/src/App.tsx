@@ -343,7 +343,7 @@ function App() {
                 <div className="two-fields"><NumberSetting label="Teams" value={options.teamCount} min={2} max={5} step={1} onChange={value => setOptions({ ...options, teamCount: value })} /><NumberSetting label="Setup seed" value={options.seed} min={0} max={2147483647} step={1} onChange={value => setOptions({ ...options, seed: value })} /></div>
                 <div className="form-subheading"><span>Discussion and cave cadence</span><CircleHelp size={14} aria-label="One sweep gives every team a turn in a fresh shuffled order. Limits apply once between rounds; the host closes after agreement once the minimum is met." /></div>
                 <div className="two-fields"><NumberSetting label="Minimum sweeps" value={options.minDiscussionBeats} min={0} max={20} step={1} onChange={value => setOptions({ ...options, minDiscussionBeats: value })} /><NumberSetting label="Maximum sweeps" value={options.maxDiscussionBeats} min={0} max={20} step={1} onChange={value => setOptions({ ...options, maxDiscussionBeats: value })} /></div>
-                <p className="discussion-help">One discussion between rounds reviews results and plans the next round. The host may close after the minimum; financial settlement follows each sweep.</p>
+                <p className="discussion-help">One discussion between rounds reviews results and plans the next round. Transfers and reveal contributions are available during discussion. The host may close after the minimum; game choices wait for the round to start.</p>
                 <NumberSetting label="Cave sweeps / window" value={options.caveDiscussionBeats} min={0} max={5} step={1} onChange={value => setOptions({ ...options, caveDiscussionBeats: value })} />
                 <small>0 disables discussion inside cave decision windows. The normal discussion before a cave round still uses the limits above.</small>
                 <div className="form-subheading"><span>Run budgets</span><Clock3 size={14} /></div>
@@ -405,7 +405,7 @@ function EventRow({ event, compact = false }: { event: RunEvent; compact?: boole
     <div className="event-body"><div className="event-meta"><strong>{speaker}</strong>{isPrivate && <span className="private-recipient">→ {String(event.data?.recipientName || event.data?.recipientId || 'Private room')}</span>}{event.game && <GameContext game={event.game} round={event.round} />}<time>{prettyTime(event.wallTime)}</time></div>
       {stageLabel && <span className="discussion-phase">{stageLabel}</span>}
       {isRules ? <details className="message-rules"><summary>{event.type === 'host.briefing' ? 'Game theory & cooperation briefing' : 'Game rules'}</summary><p>{eventText(event)}</p></details> : <p>{eventText(event)}</p>}
-      {event.type.startsWith('model.') && event.data && <details className="event-details"><summary>Diagnostic details</summary><pre>{displayValue(event.data)}</pre></details>}
+      {(event.type.startsWith('model.') || event.type === 'discussion.order-reviewed') && event.data && <details className="event-details"><summary>{event.type === 'discussion.order-reviewed' ? 'Order and swaps' : 'Diagnostic details'}</summary><pre>{displayValue(event.data)}</pre></details>}
     </div>
   </article>
 }

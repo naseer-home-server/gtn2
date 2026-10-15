@@ -30,9 +30,43 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       SUPERTOKENS_DASHBOARD_ADMINS: ${SUPERTOKENS_DASHBOARD_ADMINS:-}
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL to your PostgreSQL connection string}
+      SIMULATION_SERVICE_KEY: ${SIMULATION_SERVICE_KEY:-}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+  ai-simulation:
+    build:
+      context: .
+      dockerfile: ai-simulation/Dockerfile
+    environment:
+      PORT: 3010
+      GAME_API_BASE_URL: http://game:3000
+      SIMULATION_SERVICE_KEY: ${SIMULATION_SERVICE_KEY:-}
+      SIMULATION_OPERATOR_TOKEN: ${SIMULATION_OPERATOR_TOKEN:-}
+      SIMULATION_DATA_DIR: /data
+      SIMULATION_PUBLIC_DIR: /app/public
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      SIM_HOST_MODEL: ${SIM_HOST_MODEL:-}
+      SIM_PLAYER_MODEL: ${SIM_PLAYER_MODEL:-}
+      SIM_HOST_CONTEXT_TOKENS: ${SIM_HOST_CONTEXT_TOKENS:-0}
+      SIM_PLAYER_CONTEXT_TOKENS: ${SIM_PLAYER_CONTEXT_TOKENS:-0}
+      SIM_HOST_MAX_OUTPUT_TOKENS: ${SIM_HOST_MAX_OUTPUT_TOKENS:-0}
+      SIM_PLAYER_MAX_OUTPUT_TOKENS: ${SIM_PLAYER_MAX_OUTPUT_TOKENS:-0}
+    ports:
+      - "127.0.0.1:${SIMULATION_PORT:-3010}:3010"
+    volumes:
+      - simulation-data:/data
+    depends_on:
+      game:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3010/health"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -41,3 +75,4 @@ services:
 # Compose prefixes this volume with the checkout-specific project name.
 volumes:
   postgres-data:
+  simulation-data:

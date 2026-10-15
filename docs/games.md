@@ -78,7 +78,7 @@ Randomly reshuffle teams into one or more circles every round. Circles must have
 | Bomb factor | Round 1: 2; round 2: 5; round 3: 10 |
 | Most-starred team advantage | 60 chits per pile instead of 20 (proposed; revealed in finale) |
 
-The team with the most stars may allocate 1–60 chits per pile; every other team may allocate 1–20. Reveal this advantage when the finale begins. Each team allocates chits to both piles: direction (up/down) and recipient (team names). Draw one chit from each pile. Multiply the recipient's accumulated balance by the bomb factor for up, or divide by it for down. No stars are awarded in the finale.
+The team with the most stars may allocate 1–60 chits per pile; every other team may allocate 1–20. Reveal this advantage when the finale begins. Each team allocates chits to both piles: direction (up/down) and recipient (team names). Up and down share one direction-pile limit: for a standard team, their sum must be between 1 and 20, and either count may be zero. Independently, the sum across all recipient teams must be between 1 and 20; the two pile totals need not match. Draw one chit from each pile. Multiply the recipient's accumulated balance by the bomb factor for up, or divide by it for down. No stars are awarded in the finale.
 
 **Visible:** everyone knows the recipient; only that team knows up/down. Chit allocations and pile totals are hidden.
 

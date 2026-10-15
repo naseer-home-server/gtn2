@@ -2,7 +2,7 @@ import { and, asc, desc, eq, inArray, lt } from 'drizzle-orm'
 import { TRPCError } from '@trpc/server'
 import type { AppDb } from './db/index.js'
 import { appSettings, chatConversationMembers, chatConversations, chatMessages, gameSessions, sessionPlayers } from './db/schema.js'
-import type { ChatConversation, ChatInbox, ChatMessage, ChatMessagePage, ChatPlayer, ChatTeam, ChatsRepository } from './chat-types.js'
+import type { AdminChatAudit, ChatConversation, ChatInbox, ChatMessage, ChatMessagePage, ChatPlayer, ChatTeam, ChatsRepository } from './chat-types.js'
 
 type Tx = Parameters<Parameters<AppDb['transaction']>[0]>[0]
 type SessionRow = typeof gameSessions.$inferSelect
@@ -108,6 +108,46 @@ export class DbChatsRepository implements ChatsRepository {
         lastMessage: messageByConversation.get(conversation.id) ?? null,
       }))
       return { sessionId: row.id, selfPlayerId: player.id, players: chatPlayers, teams: chatTeams, conversations }
+    })
+  }
+
+  async adminAudit(sessionId: string): Promise<AdminChatAudit> {
+    return this.db.transaction(async (tx) => {
+      const [session] = await tx.select().from(gameSessions).where(eq(gameSessions.id, sessionId))
+      if (!session) throw new TRPCError({ code: 'NOT_FOUND', message: 'Game session not found.' })
+      const players = await tx.select({ id: sessionPlayers.id, email: sessionPlayers.email }).from(sessionPlayers)
+        .where(eq(sessionPlayers.sessionId, sessionId)).orderBy(asc(sessionPlayers.email))
+      const teamsByPlayer = new Map(teamsFromState(session.state).flatMap((team) => team.playerIds.map((id) => [id, team.id] as const)))
+      const conversations = await tx.select({ id: chatConversations.id, kind: chatConversations.kind,
+        name: chatConversations.name, createdAt: chatConversations.createdAt }).from(chatConversations)
+        .where(eq(chatConversations.sessionId, sessionId)).orderBy(desc(chatConversations.createdAt))
+      const ids = conversations.map(({ id }) => id)
+      const [members, messages] = ids.length ? await Promise.all([
+        tx.select({ conversationId: chatConversationMembers.conversationId, playerId: chatConversationMembers.playerId })
+          .from(chatConversationMembers).where(inArray(chatConversationMembers.conversationId, ids))
+          .orderBy(asc(chatConversationMembers.createdAt), asc(chatConversationMembers.playerId)),
+        tx.select().from(chatMessages).where(inArray(chatMessages.conversationId, ids))
+          .orderBy(asc(chatMessages.sequence)),
+      ]) : [[], []]
+      const membersByConversation = new Map<string, string[]>()
+      for (const member of members) membersByConversation.set(member.conversationId,
+        [...(membersByConversation.get(member.conversationId) ?? []), member.playerId])
+      const messagesByConversation = new Map<string, ChatMessage[]>()
+      for (const row of messages) messagesByConversation.set(row.conversationId,
+        [...(messagesByConversation.get(row.conversationId) ?? []), toMessage(row)])
+      return {
+        sessionId,
+        players: players.map((player) => ({ ...player, teamId: teamsByPlayer.get(player.id) ?? null })),
+        conversations: conversations.map((row) => {
+          const conversationMessages = messagesByConversation.get(row.id) ?? []
+          return {
+            conversation: { id: row.id, kind: row.kind, name: row.name,
+              playerIds: membersByConversation.get(row.id) ?? [], createdAt: row.createdAt.toISOString(),
+              lastMessage: conversationMessages.at(-1) ?? null },
+            messages: conversationMessages,
+          }
+        }),
+      }
     })
   }
 

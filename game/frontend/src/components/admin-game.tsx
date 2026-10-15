@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import type { GameConfig, GameId, TeamAssignment } from 'backend/game'
 import { useAdminGame } from '@/hooks/use-gameplay'
 import { Button } from '@/components/ui/button'
@@ -7,16 +8,14 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ErrorMessage, LoadingMessage } from '@/components/page-feedback'
+import { trpc } from '@/trpc'
+import { ActivityCard, TeamAccounts } from '@/components/game-activity/ActivityCard'
+import { gameActivities } from '@/components/game-activity/model'
 
 type DraftTeam = { name: string; first: string; second: string }
 const GAME_ORDER: GameId[] = ['bonus', 'high-low', 'cave', 'circle', 'bomb']
 const GAME_NAMES: Record<GameId, string> = { bonus: 'Will we get bonus this year', 'high-low': 'High or low', cave: 'Cave mining', circle: 'What goes around comes around', bomb: 'Gamble bomb' }
 const freshTeam = (): DraftTeam => ({ name: '', first: '', second: '' })
-const money = (cents: string) => {
-  const value = BigInt(cents)
-  const absolute = value < 0n ? -value : value
-  return `${value < 0n ? '-' : ''}${absolute / 100n}.${String(absolute % 100n).padStart(2, '0')}`
-}
 
 type SessionPlayer = { id: string; email: string; arrivalOrder: number | null }
 export function AdminGame({ sessionId, players }: { sessionId: string; players: SessionPlayer[] }) {
@@ -26,6 +25,13 @@ export function AdminGame({ sessionId, players }: { sessionId: string; players: 
   const [configTouched, setConfigTouched] = useState(false)
   const [configParseError, setConfigParseError] = useState('')
   const [startingGame, setStartingGame] = useState<GameId>('bonus')
+  const [reviewTab, setReviewTab] = useState<'events' | 'chats'>('events')
+  const chats = useQuery({
+    queryKey: ['admin', 'chats', sessionId],
+    queryFn: () => trpc.admin.chats.audit.query({ sessionId }),
+    enabled: Boolean(sessionId && state.data?.state),
+    refetchInterval: 2_000,
+  })
   const arrived = useMemo(() => players.filter((p) => p.arrivalOrder !== null).sort((a, b) => a.arrivalOrder! - b.arrivalOrder!), [players])
   useEffect(() => {
     if (defaults.data && !configTouched) setConfigText(JSON.stringify(defaults.data, null, 2))
@@ -44,7 +50,7 @@ export function AdminGame({ sessionId, players }: { sessionId: string; players: 
   const soloMatchesAttendance = allIds.length % 2 === soloCount
   const validPeople = allIds.length >= 2 && allIds.length <= 10 && new Set(allIds).size === allIds.length
   const canStart = Boolean(validTeams && soloMatchesAttendance && validPeople && !start.isPending)
-  const playerName = (id: string) => arrived.find((player) => player.id === id)?.email ?? id
+  const activities = engine ? gameActivities(view.events, engine.teams) : []
   function updateTeam(index: number, key: keyof DraftTeam, value: string) {
     setTeams((items) => items.map((team, i) => i === index ? { ...team, [key]: value } : team))
   }
@@ -94,15 +100,14 @@ export function AdminGame({ sessionId, players }: { sessionId: string; players: 
         <p className="text-sm text-muted-foreground">Each completed round waits for the host to start the next round.</p>
         <div className="flex flex-wrap items-center gap-2"><Badge>{engine.status}</Badge><span className="font-medium">{engine.current.game} · Round {engine.round}</span><span className="text-sm text-muted-foreground">Phase: {engine.current.phase}</span></div>
         <div className="flex flex-wrap items-center gap-2">{engine.status === 'playing' && engine.current.phase === 'ready' && <Button disabled={startRound.isPending || reset.isPending} onClick={() => startRound.mutate()}>{startRound.isPending ? 'Starting…' : `Start ${GAME_NAMES[engine.current.game]} · round ${engine.round}`}</Button>}{engine.status === 'playing' && engine.current.phase === 'complete' && nextGame && nextRound && <Button disabled={advance.isPending || reset.isPending} onClick={() => advance.mutate()}>{advance.isPending ? 'Starting…' : `Start ${GAME_NAMES[nextGame]} · round ${nextRound}`}</Button>}{engine.status === 'finished' && <p className="text-sm text-muted-foreground">Game finished.</p>}<Button variant="destructive" disabled={reset.isPending || advance.isPending || startRound.isPending} onClick={resetPlaythrough}>{reset.isPending ? 'Resetting…' : 'Reset current game'}</Button>{startRound.error && <ErrorMessage message={startRound.error.message} />}{advance.error && <ErrorMessage message={advance.error.message} />}{reset.error && <ErrorMessage message={reset.error.message} />}</div>
-        <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b text-muted-foreground"><th className="p-2">Team</th><th className="p-2">Balance</th><th className="p-2">Stars</th><th className="p-2">Players</th></tr></thead><tbody>{engine.teams.map((team) => <tr key={team.id} className="border-b"><td className="p-2 font-medium">{team.name}</td><td className="p-2">{money(team.balance)}</td><td className="p-2">{team.stars}</td><td className="p-2">{team.playerIds.map(playerName).join(', ')}</td></tr>)}</tbody></table></div>
-        <section className="space-y-2"><h3 className="font-medium">Engine state</h3><pre className="max-h-72 overflow-auto rounded-lg bg-muted p-3 text-xs">{JSON.stringify(engine, null, 2)}</pre></section>
-        <section className="space-y-2"><h3 className="font-medium">Event log</h3><div className="max-h-96 space-y-2 overflow-auto rounded-lg border p-3">{view.events.length === 0 ? <p className="text-sm text-muted-foreground">No events yet.</p> : view.events.map((event) => {
-          const teamId = typeof event.data.teamId === 'string' ? event.data.teamId : null
-          const teamName = teamId ? engine.teams.find((team) => team.id === teamId)?.name ?? teamId : null
-          const playerId = typeof event.data.playerId === 'string' ? event.data.playerId : null
-          const playerEmail = playerId ? players.find((player) => player.id === playerId)?.email ?? playerId : null
-          return <div key={event.id} className="border-b pb-2 last:border-0"><div className="flex flex-wrap justify-between gap-2 text-xs text-muted-foreground"><span>{event.type}{teamName && ` · ${teamName}`}{playerEmail && ` · ${playerEmail}`} · actor {event.actorId}</span><time>{new Date(event.createdAt).toLocaleString()}</time></div><pre className="mt-1 whitespace-pre-wrap break-words text-xs">{JSON.stringify(event.data)}</pre></div>
-        })}</div></section>
+        <TeamAccounts teams={engine.teams} finished={engine.status === 'finished'} />
+        <section className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="font-medium">Game review</h3><p className="text-sm text-muted-foreground">Choices, outcomes, reveal contributions, and every chat room.</p></div><div className="inline-flex rounded-lg border p-1"><Button size="sm" variant={reviewTab === 'events' ? 'secondary' : 'ghost'} onClick={() => setReviewTab('events')}>Game events</Button><Button size="sm" variant={reviewTab === 'chats' ? 'secondary' : 'ghost'} onClick={() => setReviewTab('chats')}>Chat rooms ({chats.data?.conversations.length ?? 0})</Button></div></div>
+          {reviewTab === 'events' ? <div className="max-h-[32rem] overflow-auto rounded-lg border p-3">{activities.length === 0 ? <p className="text-sm text-muted-foreground">No game activity yet.</p> : [...activities].reverse().map((activity) => <ActivityCard key={activity.id} activity={activity} teams={engine.teams} />)}</div> : <div className="max-h-[32rem] space-y-3 overflow-auto rounded-lg border p-3">{chats.isPending ? <p className="text-sm text-muted-foreground">Loading chat rooms…</p> : chats.error ? <ErrorMessage message={chats.error.message} /> : !chats.data?.conversations.length ? <p className="text-sm text-muted-foreground">No chat rooms yet.</p> : chats.data.conversations.map(({ conversation, messages }) => {
+            const members = conversation.playerIds.map((id) => chats.data!.players.find((player) => player.id === id)?.email ?? id)
+            return <article key={conversation.id} className="overflow-hidden rounded-lg border"><div className="flex items-center justify-between gap-3 border-b bg-muted/40 px-3 py-2"><div><p className="text-sm font-medium">{conversation.kind === 'group' ? conversation.name : 'Private team chat'}</p><p className="text-xs text-muted-foreground">{conversation.kind === 'direct' ? 'Private' : 'Group'} · {members.join(', ')}</p></div><Badge variant="outline">{messages.length} messages</Badge></div><div className="max-h-72 space-y-2 overflow-auto p-3">{messages.length ? messages.map((message) => <div key={message.id} className="rounded-md bg-muted/50 px-3 py-2"><div className="flex justify-between gap-3 text-xs text-muted-foreground"><span className="font-medium text-foreground">{chats.data!.players.find((player) => player.id === message.senderPlayerId)?.email ?? 'Unknown player'}</span><time>{new Date(message.createdAt).toLocaleString()}</time></div><p className="mt-1 whitespace-pre-wrap break-words text-sm">{message.text}</p></div>) : <p className="text-sm text-muted-foreground">No messages yet.</p>}</div></article>
+          })}</div>}
+        </section>
       </>}
     </CardContent>
   </Card>

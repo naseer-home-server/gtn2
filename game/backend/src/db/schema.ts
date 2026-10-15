@@ -9,7 +9,12 @@ export const gameSessions = pgTable('game_sessions', {
   currentGame: text('current_game'),
   currentRound: integer('current_round'),
   state: jsonb('state').$type<Record<string, unknown>>().notNull().default({}),
-})
+  // Private runner metadata for simulation-owned sessions. Never returned by session APIs.
+  simulation: jsonb('simulation').$type<Record<string, unknown> | null>().default(null),
+}, (table) => [
+  uniqueIndex('game_session_simulation_setup_request_idx').on(sql`(${table.simulation}->>'setupRequestId')`)
+    .where(sql`${table.simulation} is not null`),
+])
 
 export const sessionPlayers = pgTable('session_players', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -34,6 +39,7 @@ export const sessionEvents = pgTable('session_events', {
   index('session_event_history_idx').on(table.sessionId, table.createdAt),
   index('session_event_sequence_idx').on(table.sessionId, table.sequence),
   uniqueIndex('session_event_request_idx').on(table.sessionId, sql`(${table.data}->>'requestId')`).where(sql`${table.type} = 'player.command'`),
+  uniqueIndex('session_event_simulation_control_idx').on(table.sessionId, sql`(${table.data}->>'requestId')`).where(sql`${table.type} = 'simulation.control'`),
 ])
 
 export const appSettings = pgTable('app_settings', {

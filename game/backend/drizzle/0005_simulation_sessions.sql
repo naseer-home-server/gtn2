@@ -1,0 +1,3 @@
+ALTER TABLE "game_sessions" ADD COLUMN "simulation" jsonb DEFAULT 'null'::jsonb;--> statement-breakpoint
+CREATE UNIQUE INDEX "game_session_simulation_setup_request_idx" ON "game_sessions" USING btree (("simulation"->>'setupRequestId')) WHERE "game_sessions"."simulation" is not null;--> statement-breakpoint
+CREATE UNIQUE INDEX "session_event_simulation_control_idx" ON "session_events" USING btree ("session_id",("data"->>'requestId')) WHERE "session_events"."type" = 'simulation.control';

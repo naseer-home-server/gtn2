@@ -7,7 +7,10 @@
   },
   "scripts": {
     "dev": "node scripts/local.mjs dev",
-    "build": "pnpm --filter game build",
+    "build": "pnpm --filter game build && pnpm --filter ai-simulation-ui build && pnpm --filter ai-simulation build",
+    "simulation:dev": "pnpm --filter backend build && pnpm --parallel --filter ai-simulation --filter ai-simulation-ui dev",
+    "simulation:build": "pnpm --filter backend build && pnpm --filter ai-simulation-ui build && pnpm --filter ai-simulation build",
+    "simulation:test": "pnpm --filter backend build && pnpm --filter ai-simulation test",
     "docker:dev": "docker compose up --build",
     "docker:prod": "docker compose up -d --build",
     "setup:local": "node scripts/local.mjs setup",

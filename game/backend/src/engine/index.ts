@@ -3,8 +3,9 @@ import { startFinalGame, actFinalGame } from './final-games.js'
 import { gameConfigSchema } from './config.js'
 import { cents, ensure, moneyAdd, moneyCompare, moneyMin, moneyScale, moneySub, safeMoney, teamById } from './helpers.js'
 import { GAME_ORDER, type CurrentRound, type EngineEnv, type EngineEvent, type EngineState, type GameAction, type GameConfig, type GameId, type Ranking, type Team } from './types.js'
-export { DEFAULT_CONFIG, gameConfigSchema } from './config.js'
+export { DEFAULT_CONFIG, gameActionSchema, gameConfigSchema } from './config.js'
 export { playerView } from './views.js'
+export { cents } from './money.js'
 export type * from './types.js'
 
 export function rankings(state: EngineState): Ranking[] {
@@ -66,7 +67,7 @@ export function startRoundEngine(state: EngineState, env: EngineEnv): EngineEven
   ensure(!state.reveal, 'All teams must acknowledge the rankings reveal first.')
   return startRound(state, env)
 }
-export function advanceEngine(state: EngineState, env: EngineEnv): EngineEvent[] {
+export function advanceEngine(state: EngineState, env: EngineEnv, prepareOnly = false): EngineEvent[] {
   ensure(state.status === 'playing' && state.current.phase === 'complete', 'Finish this round before advancing.')
   ensure(!state.reveal, 'All teams must acknowledge the rankings reveal first.')
   const startsNewGame = state.round === 3
@@ -79,6 +80,10 @@ export function advanceEngine(state: EngineState, env: EngineEnv): EngineEvent[]
   if (startsNewGame) {
     refreshPotTarget(state)
     captureGameStart(state)
+  }
+  if (prepareOnly) {
+    state.current = { game: GAME_ORDER[state.gameIndex], phase: 'ready', token: env.token() }
+    return [{ type: 'round.ready', data: { game: state.current.game, round: state.round } }]
   }
   return startRound(state, env)
 }

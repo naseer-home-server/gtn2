@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2023", "module": "NodeNext", "moduleResolution": "NodeNext",
+    "rootDir": "server", "outDir": "dist", "strict": true,
+    "esModuleInterop": true, "skipLibCheck": true, "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
+  },
+  "include": ["server/**/*.ts"]
+}

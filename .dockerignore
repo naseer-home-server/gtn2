@@ -7,3 +7,4 @@ node_modules
 **/.env.*
 .pnpm-store
 .DS_Store
+ai-simulation/data

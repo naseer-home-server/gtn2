@@ -1,0 +1,24 @@
+{
+  "name": "ai-simulation",
+  "private": true,
+  "type": "module",
+  "files": ["dist"],
+  "scripts": {
+    "dev": "pnpm --filter backend build && tsx watch server/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc -p tsconfig.json",
+    "test": "node --import tsx --test server/*.test.ts"
+  },
+  "dependencies": {
+    "backend": "workspace:*",
+    "dotenv": "^17.4.2",
+    "express": "^4.22.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.25",
+    "@types/node": "^24.13.2",
+    "tsx": "^4.23.1",
+    "typescript": "~6.0.2"
+  }
+}

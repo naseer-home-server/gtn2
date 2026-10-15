@@ -4,9 +4,9 @@ A monorepo for a game theory night inspired by Tom Scott's **Money**: five plann
 
 - `presentation/` — future HTML presentation.
 - `game/` — Vite, React, and TypeScript player app.
-- `ai-simulation/` — future multi-agent chat interface for playtesting and balancing.
+- `ai-simulation/` — web console for AI-hosted simulations, game tuning, and playtesting.
 
-See [docs/games.md](docs/games.md) for draft game concepts and unresolved rules. The presentation and simulation folders are currently empty.
+See [docs/games.md](docs/games.md) for draft game concepts and unresolved rules. The presentation folder remains reserved for future work.
 
 ## Run the game app
 
@@ -45,8 +45,14 @@ Open a session's **Arrival order** page to mark attendees as they arrive and cor
 
 After `pnpm setup:local`, the admin **Sessions** page has five **UX Preview** sessions, one checkpoint for each game. Set the matching session active, then sign in with one of its invited player accounts to view that game's player experience.
 
-All five games, public stars, the finale advantage, and repeatable paid ranking reveals run in a pure backend engine. A private reveal shows only the team's own rank; a public reveal shows every team's rank to everyone. PostgreSQL persists each action and outcome atomically with session state. [The state/action API](docs/game-api.md) supports future AI players directly, with the same authentication and visibility rules as the UI. The `ai-simulation/` folder remains empty.
+All five games, public stars, the finale advantage, and repeatable paid ranking reveals run in a pure backend engine. A private reveal shows only the team's own rank; a public reveal shows every team's rank to everyone. PostgreSQL persists each action and outcome atomically with session state. [The state/action API](docs/game-api.md) and the opt-in simulation bridge use the same game rules and filtered player views.
 
 Run `pnpm --filter backend test` for engine, visibility, authentication, and API tests, including a deterministic 15-round playthrough. Run `pnpm test:db` after local setup to include real PostgreSQL persistence tests and a full playthrough; the database tests roll back their fixtures.
 
 Run `pnpm --filter game build` to build both parts. The root `docker-compose.yml` is the monorepo service manifest; use `.env.example` for its environment variables. Run `pnpm docker:dev` to build and start services in the foreground, or `pnpm docker:prod` to build and start them in the background. The game service listens on container port 3000 and uses `/health` for container health checks.
+
+## Run the simulation web app
+
+See [ai-simulation/README.md](ai-simulation/README.md) for configuration, local development, and Docker instructions. The console exposes all shared game tuning fields, saves each run's configuration, and supports scripted testing or an OpenAI-compatible Chat Completions provider.
+
+The simulation uses the existing game service and database. Starting a simulation activates its generated session; run human games and simulations at different times. Ordinary game sessions retain real-time cave ticks, while simulation sessions use a persisted virtual clock.

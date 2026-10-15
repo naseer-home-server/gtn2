@@ -1,7 +1,10 @@
 node_modules/
+.pnpm-store/
+*.tsbuildinfo
 dist/
 game/backend/public/
 .DS_Store
 .env
 .env.*
 !.env.example
+ai-simulation/data/

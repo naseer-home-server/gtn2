@@ -42,7 +42,7 @@ async function persist(tx: Tx, sessionId: string, state: EngineState, events: En
   await tx.update(gameSessions).set({ state: state as unknown as Record<string, unknown>, currentGame: state.current.game, currentRound: state.round,
     ...(simulation !== undefined ? { simulation } : {}) }).where(eq(gameSessions.id, sessionId))
   if (events.length) await tx.insert(sessionEvents).values(events.map((event, index) => ({
-    sessionId, actorId, type: event.type, data: { ...event.data, revision: state.revision, eventIndex: index },
+    sessionId, actorId, type: event.type, data: { game: state.current.game, round: state.round, ...event.data, revision: state.revision, eventIndex: index },
   })))
 }
 function gameError(error: unknown): never {
@@ -170,7 +170,7 @@ export class DbGameplayRepository implements GameplayRepository {
     })
   }
 
-  async simulationControl(sessionId: string, requestId: string, operation: 'start' | 'advance' | 'tick', expectedToken?: string) {
+  async simulationControl(sessionId: string, requestId: string, operation: 'start' | 'advance' | 'prepare' | 'tick', expectedToken?: string) {
     try {
       return await this.db.transaction(async (tx) => {
         const row = await lockedSession(tx, sessionId)
@@ -190,8 +190,8 @@ export class DbGameplayRepository implements GameplayRepository {
         let events: EngineEvent[] = []
         if (operation === 'start') {
           events = startRoundEngine(state, this.environmentFor(row))
-        } else if (operation === 'advance') {
-          events = advanceEngine(state, this.environmentFor(row))
+        } else if (operation === 'advance' || operation === 'prepare') {
+          events = advanceEngine(state, this.environmentFor(row), operation === 'prepare')
         } else {
           ensure(state.current.game === 'cave' && state.current.phase === 'cave', 'The current round has no cave clock to advance.')
           ensure(!state.reveal, 'Cave time is paused during a ranking reveal.')

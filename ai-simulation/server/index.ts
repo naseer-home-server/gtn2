@@ -5,7 +5,7 @@ import { gameConfigSchema } from 'backend/engine'
 import { defaults, defaultOptions, operatorToken, providerConfig, publicDir, serviceKey, validateOptions } from './config.js'
 import { detail, getRun, listRuns, loadStore, saveRun, summary } from './store.js'
 import { beginRun, pauseRun, resumeRun, stepPausedRun, kickRun } from './runner.js'
-import { getPlayerView } from './game-client.js'
+import { getPlayerView, getServiceView } from './game-client.js'
 import type { CreateRunRequest, RunRecord } from './types.js'
 
 const app = express()
@@ -35,14 +35,22 @@ function audienceOf(value: unknown) {
 async function hydratedDetail(run: RunRecord, audience: string) {
   const result = detail(run, audience)
   if (!run.sessionId || audience === 'public') return result
+  const sessionId = run.sessionId
   const permitted = audience === 'observer' ? run.agents : run.agents.filter((agent) => agent.id === audience)
-  for (const agentView of result.agents) {
+  const hydrateAudit = async () => {
+    if (audience !== 'observer') return
+    try {
+      const service = await getServiceView(sessionId)
+      result.audit = { teams: (service.state?.teams || []).map((team: { id: string; name: string; balance: string; stars: number }) => ({ id: team.id, name: team.name, balance: team.balance, stars: team.stars })), events: service.events }
+    } catch { /* Stored audit snapshots and final standings remain available offline. */ }
+  }
+  await Promise.all([hydrateAudit(), ...result.agents.map(async agentView => {
     const actor = permitted.find((agent) => agent.id === agentView.agent.id)
     if (actor) {
-      try { agentView.view = await getPlayerView(run.sessionId, actor) }
+      try { agentView.view = await getPlayerView(sessionId, actor) }
       catch { /* Keep the last stored receipts available while the backend is temporarily unreachable. */ }
     }
-  }
+  })])
   return result
 }
 

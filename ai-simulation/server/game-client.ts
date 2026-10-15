@@ -35,7 +35,7 @@ export async function createSession(name: string, teamCount: number, seed: numbe
   return { ...session, players: session.players.map(({ agentId, ...agent }) => ({ ...agent, id: agentId })) }
 }
 export function getServiceView(sessionId: string, signal?: AbortSignal) { return request<ServiceView>(`/api/simulation/sessions/${encodeURIComponent(sessionId)}`, { signal }) }
-export function controlSession(sessionId: string, operation: 'start' | 'advance' | 'tick', expectedToken?: string, requestId: string = randomUUID(), signal?: AbortSignal) {
+export function controlSession(sessionId: string, operation: 'start' | 'advance' | 'prepare' | 'tick', expectedToken?: string, requestId: string = randomUUID(), signal?: AbortSignal) {
   return request<ServiceView>(`/api/simulation/sessions/${encodeURIComponent(sessionId)}/control`, { method: 'POST', signal, body: JSON.stringify({ requestId, operation, ...(expectedToken ? { expectedToken } : {}) }) })
 }
 export function getPlayerView(sessionId: string, agent: AgentRecord, signal?: AbortSignal) {

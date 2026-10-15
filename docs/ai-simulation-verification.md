@@ -44,9 +44,62 @@ An additional setup recovery fixture simulated backend session creation committi
 
 The web UI agent then verified the built production UI directly: team views hid observer metrics and displayed distinct permitted histories. The new paste-JSON configuration import accepted a valid initial balance of 321, rejected a cave collapse risk of 101 while retaining the prior configuration, restored defaults, and exported successfully.
 
-## Limits of this verification
+## Tool validation correction update — 15 October 2026
+
+Production builds pass for the shared backend, simulation API, and console. The simulation suite now has 24 passing tests, using local mock providers and an isolated temporary run store.
+
+The added checks cover assistant/tool call pairing, successful corrections, malformed JSON, visible action limits, attempt exhaustion, host and discussion-only responses, cancellation, token accounting, and budget interruption. A scheduler test exhausts one team's three attempts while a valid teammate is still responding: all calls settle, no actions are dispatched, the run pauses with the team and reason, and observer diagnostics remain absent from public/team views. A subsequent manual step completes the pending decisions without duplicates. Legacy saved runs load with three tool attempts.
+
+No paid provider requests were made, and no existing simulation data or PostgreSQL fixtures were changed for these checks.
+
+## Full history and context limits — 15 October 2026
+
+The simulation now passes 34 focused tests. Production builds pass for the shared backend, console, and simulation server, and Compose configuration validates with the new host/player context settings.
+
+Tests supply over 70 public messages and 70 private messages across games and verify that the oldest and newest entries, own observations, accepted actions, and legitimately observed rankings survive. Host prompts receive all public history while player prompts exclude other teams' secrets and operator diagnostics. Validation repairs retain only the latest failed tool exchange, and later turns contain no previous validation exchanges.
+
+Mock model catalogues cover compatible-provider context discovery and standard metadata without context fields. Explicit limits, output reservations, preflight overflow, provider-reported prompt/completion usage, provider context-length rejection, and the special context pause all pass. The scheduler test preserves its state and token totals across a context pause and reload, and public/team exports exclude observer usage and context diagnostics. Additional tests distinguish cumulative billed usage from current request context and reconstruct the available metrics in older saved runs.
+
+Preflight sizing is an estimate for arbitrary compatible tokenizers; actual provider counts and context-limit errors are also checked. Verification used only local mock model/game APIs and temporary stores. No paid requests were made and no existing run was resumed.
+
+## Model transport diagnostics — 15 October 2026
+
+All 36 focused tests and the simulation production build pass. A deliberately dropped mock connection preserves `UND_ERR_SOCKET`, provider host, model, attempt, and request stage as observer-only `MODEL_REQUEST_FAILED` diagnostics. Transport failures do not use validation correction attempts; operator cancellation does not create a transport error. The runner test confirms a network failure pauses without dispatching batch actions, persists its diagnostics, and allows a later successful step. Console polling retains newer run revisions to prevent older responses overwriting status. No real model calls were made or saved user runs resumed.
+
+## Cumulative token budget removed — 15 October 2026
+
+All 37 focused tests pass. Cumulative tokens remain recorded for the run and each model, but no longer pause the scheduler, correction loop, host, or decision/discussion barriers. New configurations omit the old limit, incoming legacy configurations ignore it, and persisted runs discard it on load. A regression run starts with 2,606,867 tokens used and a legacy limit of one token, then verifies validation recovery and continued game actions while preserving context-limit pauses. Step and wall-time limits remain. The live API confirms the paused Second run no longer has a token budget; it was not resumed during verification.
+
+## Cave turn clarity — 15 October 2026
+
+The saved Second run had 35 accepted cave decisions and 25 validation failures caused by game decisions attempted in financial-only turns. Explicit financial/discussion/decision turn identifiers and instructions now distinguish the scheduler phases, and observer request/rejection events identify their turn. The observer conversation displays existing private cave decision receipts with team names; this presentation change does not modify model histories or audience permissions.
+
+A mocked cave scheduler regression verifies both teams can pass the optional financial turn and then leave successfully on the subsequent game-decision turn, with no validation failures and no action dispatched during the financial turn. Public views exclude all votes and each team sees only its own vote. The suite passes 38 tests; existing real runs were not resumed during verification.
+
+## Bomb allocations and model output maxima — 15 October 2026
+
+The saved run exposed a rule-card error: it described up and down as separate piles, while both the shared engine and simulation validator correctly bound their combined total. Rule cards now explicitly describe the direction and recipient piles, per-player bounds, zero direction counts, independent totals, and examples. Prompt schemas use current numeric bounds; feedback reports both invalid pile totals. A resumed legacy bomb session receives one public correction per round without rewriting history.
+
+Responses previously missing tool calls frequently consumed exactly 1,200 output tokens. Exhausted output now generates a separate observer-only pause with finish reason and usage. The arbitrary fixed output cap is removed: each request uses its model's published output maximum even with manually configured context. Providers lacking output metadata require the documented maximum via host/player environment settings; no arbitrary fallback is used. A read-only live metadata request confirmed 128,000 maximum output tokens for the configured model; no paid completions were made and the user run was not resumed.
+
+Mocked tests cover standard/advantaged allocation schemas and examples, zero directions, differing legal totals, both invalid totals corrected on retry, full distinct host/player output maxima, missing output metadata, usage preservation, and an existing bomb session receiving a deduplicated rule correction before an output-limit pause.
+
+All 43 focused tests and the complete simulation production build pass. The actual resolver was also exercised against live provider metadata and resolved a 1,050,000-token context window and 128,000-token output maximum for both configured roles, ignoring the obsolete 1,200-token environment setting.
+
+## Original implementation verification limits
 
 - No real OpenAI request was made because no operator API key was configured. Provider protocol and scheduling were tested with local responses; model strategy and real provider behavior still need a keyed run.
 - The container image was not executed. Compose and equivalent local production packaging were verified.
 - Paste-JSON import was verified; the native file picker and narrow-viewport visual checks were unavailable through the browser controls. Responsive breakpoints were reviewed in source.
 - Broader statistical balance experiments and human behavior validation are separate from infrastructure correctness.
+
+
+## Discussion cadence and early closure — 15 October 2026
+
+The latest saved run retained minimum 1 / maximum 4 normal sweeps and 0 cave sweeps. It had no scheduled cave discussion beats, but the runner still emitted cave discussion open/close notices, and financial/game decision turns published public chat. Normal limits were also applied to separate post-round and next pre-round discussions. An earlier first-round review requested confirmation of a transfer promise its proposer had already made.
+
+Zero sweep counts now bypass discussion entirely, including notices and host reviews. Public/private chat is restricted by the action-turn tool schema, validation, and barrier delivery to scheduled discussion turns. The normal cadence now uses one shared discussion between rounds with previous private feedback and upcoming rules, with financial settlement before play. The initial discussion and final debrief remain. Already-started legacy discussions finish safely; a completed legacy post-round discussion is not repeated before the next round.
+
+The host receives the current sweep's public replies explicitly and is instructed to close agreed terms once the minimum is met, count conditional offers as commitments, and avoid redundant reconfirmation, impossible proof demands, or optional future planning. Consensus is judged by the host model; numerical minimums and caps are enforced by the runner.
+
+All 54 simulation tests pass, and the server and console production builds pass. Added mocked scheduler cases cover zero cave sweeps, initial one-sweep closure with maximum 4, a single discussion between two rounds, private feedback and upcoming-rule availability, financial actions while ready, minimum enforcement, maximum enforcement, exact positive cave counts, legacy boundary recovery, finale settlement, and zero normal limits. Provider checks reject both public and private action-turn chatter through the correction loop. These checks used only local mock model/game APIs and temporary stores; no paid model requests were made or existing runs resumed.

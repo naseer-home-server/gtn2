@@ -94,6 +94,12 @@ export const appRouter = router({
         return ctx.gameplay.advance(input.sessionId, ctx.user.id)
       }),
     }),
+    chats: router({
+      audit: adminProcedure.input(z.object({ sessionId: z.uuid() })).query(({ ctx, input }) => {
+        if (!ctx.chats) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Chats are unavailable.' })
+        return ctx.chats.adminAudit(input.sessionId)
+      }),
+    }),
     sessions: router({
       list: adminProcedure.query(({ ctx }) => ctx.sessions.list()),
       get: adminProcedure.input(z.object({ id: z.uuid() })).query(({ ctx, input }) => ctx.sessions.get(input.id)),

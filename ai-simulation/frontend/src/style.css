@@ -9,3 +9,15 @@
 
 .modal-backdrop{position:fixed;inset:0;z-index:20;background:rgba(22,27,38,.42);display:grid;place-items:center;padding:18px}.paste-modal{width:min(620px,100%);background:#fff;border:1px solid #e5e7ec;border-radius:14px;box-shadow:0 22px 70px rgba(25,32,50,.22);padding:18px;display:flex;flex-direction:column;gap:14px}.paste-modal-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.paste-modal-head h2{font:650 16px Manrope,sans-serif;margin:0 0 5px;color:#292e39}.paste-modal-head p{font-size:11px;color:#858c98;margin:0;line-height:1.5}.paste-modal textarea{width:100%;min-height:260px;resize:vertical;border:1px solid #e0e3e9;border-radius:8px;padding:12px;color:#38404d;background:#fbfcfd;font:11px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;outline:none}.paste-modal textarea:focus{border-color:#8290e2;box-shadow:0 0 0 3px rgba(103,119,220,.12)}.paste-modal-actions{display:flex;justify-content:flex-end;gap:8px}
 @media(max-width:560px){.paste-modal{padding:14px}.paste-modal textarea{min-height:210px}}
+
+.model-usage { margin: 12px 0; padding: 12px; border: 1px solid var(--border, #e2e4eb); border-radius: 10px; }
+.model-usage summary { cursor: pointer; font-weight: 600; }
+.model-usage-scroll { overflow-x: auto; margin: 10px 0; }
+.model-usage table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.model-usage th, .model-usage td { padding: 9px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border, #e2e4eb); }
+.model-usage small { display: block; color: #777d8b; margin-top: 4px; }
+.run-error pre { max-width: 100%; overflow-x: auto; font-size: 12px; }
+.main-content .game-accounts{--accounts-top:76px}
+.discussion-help{font-size:10px;line-height:1.5;color:#828b99;margin:0 0 12px}.discussion-phase{display:inline-block;padding:3px 6px;margin-top:6px;border-radius:5px;background:#edf4fb;color:#5b7b9c;font-size:9px}
+.message-row{gap:10px;padding:14px 0}.message-avatar{width:29px;height:29px;display:grid;place-items:center;border-radius:8px;background:#edf2fb;color:#6e80a0;font-size:11px;font-weight:600;flex:none}.private-message .message-avatar{background:#f2ecfb;color:#9476b0}.message-row .event-meta{flex-wrap:wrap;gap:7px}.message-row .event-meta>strong{font-size:12px;text-transform:none}.message-row .event-body>p,.message-rules p{font-size:12px;line-height:1.6;margin:7px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;color:#626c7c}.message-row .event-meta .activity-context>span{font-size:10px;color:#516179}.message-row .event-meta .activity-context>b{font-size:10px}.message-row .event-meta time{font-size:10px}.private-recipient{color:#9476b0!important}.message-rules summary{font-size:11px;color:#7e89a1;cursor:pointer;margin-top:7px}.message-row.compact .event-body>p{font-size:11px}.timeline-scroll{max-height:70vh;min-height:350px}.timeline-scroll>.game-activity{margin:12px 0}
+@media(max-width:560px){.main-content .game-accounts{--accounts-top:68px}.message-row .event-meta .activity-context{order:4;margin-top:2px}.timeline-scroll{min-height:260px}}

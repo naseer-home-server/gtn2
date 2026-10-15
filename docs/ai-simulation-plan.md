@@ -22,17 +22,18 @@ The simulation uses the existing game backend/database and activates its generat
 
 ## Agent turns: discussion beats and decision barriers
 
-Use short discussion beats. A beat is one opportunity for every team to respond to the same public transcript cutoff.
+Use one ordered discussion between rounds, plus an initial discussion and a final debrief. The upcoming round is ready, so its exact rules and the previous private feedback are available together. A sweep gives every team one turn in a newly shuffled, seeded order. The saved order survives pause/resume.
 
-1. Capture the current public transcript and each agent's permitted private context.
-2. Request responses from all team agents concurrently, subject to the provider concurrency limit. Queued requests retain the same cutoff.
-3. Each agent can speak, pass, or request a permitted private operation. Limit message length and tool steps per beat.
-4. Buffer messages until all responses arrive. Publish public messages together, in a seeded rotating display order. Private messages become available only to their recipients at the next cutoff.
-5. Refresh permitted state and begin the next beat. The host can answer rule questions and decide whether discussion should continue.
+1. Hold the round in its ready state for pre-round discussion, with all actions removed from the model’s current view. Brief teams on the repeated game-theory structure and the exact round rules.
+2. Save a shuffled speaking order, then request one player completion at a time using its filtered view and complete permitted history.
+3. Persist and deliver each public/private reply before requesting the next speaker. Later speakers can answer earlier proposals within the same sweep.
+4. The host reviews each sweep and may extend discussion within the configured cap. A completed speaker is skipped on recovery; an unfinished speaker keeps its original position.
+5. Offer a financial batch after each discussion sweep and a final settlement window before starting the upcoming round. Start only after discussion closes. Collect financial and main-game actions in separate, independent proposal batches. Only scheduled discussion turns may send public or private chat.
+6. When a round completes, deliver every team’s own private payout, balance, stars, and visible receipts, then prepare the upcoming round for the single between-round discussion. After the finale, retain a closing discussion and financial settlement before recording final standings.
 
-An agent never sees another agent's response from the same beat while composing its own. Nobody receives an advantage from faster model inference. This also avoids paying for a separate model call just to select the next speaker.
+Discussion turns deliberately see earlier replies in the same sweep. Game-decision and financial proposals retain a shared cutoff and are collected before any dispatch; model completion speed does not determine their execution order. The cave clock stays frozen throughout discussion and action collection.
 
-Initial tunable defaults: two guaranteed opening beats per round, a host review after each beat, a maximum of four normal beats, and one explicitly announced final-response beat before decisions. All-pass or all-ready signals can end discussion after the minimum; a new proposal or unanswered question can justify extending it within the cap. These are simulation scheduling parameters, not game tuning values.
+Defaults are two guaranteed sweeps and a maximum of four, applied once between rounds. The host closes an agreed current plan once the minimum is met; it must not extend for redundant confirmation, hidden-proof demands, or optional later-round plans. Cave decision-window discussion has its own exact sweep count; zero suppresses the phase entirely, including notices. A sweep is one scheduled simulation step even though its player API calls are sequential. These are scheduling parameters, not payout rules.
 
 The host judges whether the discussion is useful. The orchestrator enforces the hard cap even if the host keeps talking. Host failure pauses the run after bounded retries; it must not silently change the rules or fabricate a decision.
 
@@ -94,7 +95,7 @@ Rule briefings should include an authoritative rules card produced from shared c
 
 The host's setup tool should perform the seeded shuffle in code, then create the session and record arrivals/order through the existing admin APIs. The model requests setup; it does not invent a supposedly random order.
 
-Current `advance` starts the next round immediately. Plan the next round briefing while the completed round is held, or advance under a frozen simulation clock and withhold decision scheduling until briefing/discussion completes. Derive upcoming public rule cards from shared configuration without exposing future secrets. Call the final advance after round 15 to mark the playthrough finished.
+The simulation bridge’s `prepare` operation advances a completed round into the next round’s ready state, while the live host’s `advance` retains its existing immediate-start behavior. Pre-round discussion runs in ready; a separate `start` begins play. The final `prepare` occurs only after round 15’s post-round discussion and financial settlement, then marks the playthrough finished. Derive rule cards from shared configuration without exposing future secrets.
 
 Ranks disappear from current views after acknowledgment. An agent may remember a legitimately observed historical rank, just as a person could; record its snapshot time and do not represent it as a current rank. Private rank observations never enter shared summaries. Other teams' monetary amounts are never supplied as authoritative facts; player statements about them remain unverified claims and may be bluffs.
 
@@ -122,8 +123,8 @@ OPENAI_API_KEY=
 SIM_HOST_MODEL=
 SIM_PLAYER_MODEL=
 SIM_MAX_CONCURRENCY=5
-SIM_MAX_OUTPUT_TOKENS=1200
-SIM_MAX_TOTAL_TOKENS=250000
+SIM_HOST_MAX_OUTPUT_TOKENS=0
+SIM_PLAYER_MAX_OUTPUT_TOKENS=0
 GAME_API_BASE_URL=http://127.0.0.1:3000
 SIMULATION_SERVICE_KEY=
 SIMULATION_OPERATOR_TOKEN=
@@ -188,7 +189,7 @@ When browser end-to-end testing is requested, follow the repository instruction 
 
 AI playtests can expose exploits, ambiguous rules, information leaks, and dominant strategies. They are not a reliable estimate of how this particular group of human friends will behave. Use repeated runs, rotated positions, scripted baselines, and uncertainty reporting before changing payouts.
 
-Initial choices proposed here are one agent per team, five teams for a default full run, simultaneous discussion beats, virtual cave time, strict pause-on-infrastructure-failure, and the existing shared game environment with a separate web console service. Beat counts, cave conversation cadence, personalities, and budgets should be configurable. No new game rules or final visual theme are required to start.
+Current choices are one agent per team, five teams by default, ordered discussion sweeps, independent action barriers, private round feedback, virtual cave time, and strict pause-on-infrastructure-failure. Pre/post discussion limits, cave cadence, personalities, and budgets are configurable. The simulation uses the existing shared game environment and a separate web console service.
 
 
 ## Web configuration and deployment acceptance

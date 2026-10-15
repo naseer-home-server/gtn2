@@ -8,7 +8,7 @@ function fixture(): RunRecord {
   return {
     id: 'run-1', name: 'Trial', status: 'running', createdAt: '2026-10-14T00:00:00Z', updatedAt: '2026-10-14T00:00:00Z',
     options: { teamCount: 2, seed: 17, mode: 'scripted', hostModel: 'secret-host', playerModel: 'secret-player', minDiscussionBeats: 1,
-      maxDiscussionBeats: 2, caveDiscussionBeats: 1, maxTokens: 1000, maxSteps: 100, maxWallTimeMs: 60_000 },
+      maxDiscussionBeats: 2, caveDiscussionBeats: 1, maxSteps: 100, maxWallTimeMs: 60_000, maxToolAttempts: 1, hostContextTokens: 128000, playerContextTokens: 128000 },
     config: structuredClone(DEFAULT_CONFIG), sessionId: 'session-secret',
     agents: [
       { id: 'team-1', name: 'Team One', teamId: 't1', playerId: 'player-secret-1', email: 'one@example.test', credential: 'capability-secret-1' },

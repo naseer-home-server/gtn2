@@ -13,8 +13,14 @@ export type ChatInbox = {
   conversations: ChatConversation[]
 }
 export type ChatMessagePage = { messages: ChatMessage[]; hasMore: boolean }
+export type AdminChatAudit = {
+  sessionId: string
+  players: ChatPlayer[]
+  conversations: Array<{ conversation: ChatConversation; messages: ChatMessage[] }>
+}
 export interface ChatsRepository {
   inbox(email: string): Promise<ChatInbox>
+  adminAudit(sessionId: string): Promise<AdminChatAudit>
   direct(email: string, teamId: string): Promise<ChatConversation>
   createGroup(email: string, name: string, playerIds: string[]): Promise<ChatConversation>
   messages(email: string, conversationId: string, beforeSequence?: number): Promise<ChatMessagePage>

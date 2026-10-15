@@ -30,6 +30,10 @@ class MemoryChats implements ChatsRepository {
     this.calls.push({ method: 'inbox', email, args: [] })
     return { sessionId: 'session-1', selfPlayerId: this.selfPlayerId, players: [], teams: [], conversations: [conversation] }
   }
+  async adminAudit(sessionId: string) {
+    this.calls.push({ method: 'adminAudit', email: 'admin', args: [sessionId] })
+    return { sessionId, players: [], conversations: [] }
+  }
   async direct(email: string, teamId: string) {
     this.calls.push({ method: 'direct', email, args: [teamId] })
     return conversation

@@ -2,10 +2,11 @@ import { randomUUID } from 'node:crypto'
 import { gameConfigSchema, gameActionSchema } from 'backend/engine'
 import { appendEvent, getRun, saveRun } from './store.js'
 import { createSession, getPlayerView, getServiceView, controlSession, playerAction, createDirectChat, sendPrivateChat, type ServiceView } from './game-client.js'
-import { hostLine, playerTurn, scriptedTurn } from './provider.js'
+import { hostLine, playerTurn, scriptedTurn, type ModelTurnHooks, type PlayerTurnPhase } from './provider.js'
 import type { AgentRecord, RunRecord, RunEvent } from './types.js'
 import type { PlayerGameView } from 'backend/game'
-import { gameRuleCard, globalRuleCard } from './rules.js'
+import { gameRuleCard, globalRuleCard, gameTheoryBriefing } from './rules.js'
+import { recordRequest, recordUsage } from './usage.js'
 import { providerConfig } from './config.js'
 
 const running = new Set<string>()
@@ -17,29 +18,101 @@ export function hasBarrierPublicMessage(run: Pick<RunRecord, 'events'>, barrierI
 export function hasPrivateChatObservation(run: Pick<RunRecord, 'events'>, audience: string, clientMessageId: string) {
   return run.events.some((event) => event.audience === audience && event.type === 'chat.private-message' && event.data?.clientMessageId === clientMessageId)
 }
-export function runBudgetLimitReached(run: Pick<RunRecord, 'elapsedMs' | 'stepCount' | 'tokensUsed' | 'options'>) {
+export function runBudgetLimitReached(run: Pick<RunRecord, 'elapsedMs' | 'stepCount' | 'options'>) {
   if (run.elapsedMs >= run.options.maxWallTimeMs) return 'wall-time'
   if (run.stepCount >= run.options.maxSteps) return 'steps'
-  if (run.tokensUsed >= run.options.maxTokens) return 'tokens'
   return undefined
 }
 async function mapLimit<T, U>(items: T[], limit: number, fn: (item: T, index: number) => Promise<U>): Promise<U[]> {
   const result = new Array<U>(items.length)
   let cursor = 0
+  let failure: unknown
+  // Settle every in-flight call before pausing; no orphan model calls can outlive this batch.
   await Promise.all(Array.from({ length: Math.min(items.length, limit) }, async () => {
-    while (cursor < items.length) { const index = cursor++; result[index] = await fn(items[index]!, index) }
+    while (cursor < items.length && failure === undefined) {
+      const index = cursor++
+      try { result[index] = await fn(items[index]!, index) }
+      catch (error) { failure ??= error }
+    }
   }))
+  if (failure !== undefined) throw failure
   return result
 }
-async function overTokenBudget(run: RunRecord) {
-  if (run.tokensUsed <= run.options.maxTokens) return false
-  run.status = 'paused'
-  await appendEvent(run, { audience: 'observer', type: 'run.budget-paused', data: { stepCount: run.stepCount, tokensUsed: run.tokensUsed, limit: run.options.maxTokens } })
-  return true
+function modelTurnHooks(run: RunRecord, actor: { id: string; name: string }, game?: RunEvent['game'], round?: number, signal?: AbortSignal, turnPhase?: PlayerTurnPhase): ModelTurnHooks {
+  const stats = run.modelUsage?.[actor.id]
+  return {
+    actorId: actor.id,
+    turnPhase,
+    tokenCalibration: { promptTokens: stats?.calibrationPromptTokens, requestBytes: stats?.calibrationRequestBytes },
+    async onRequest(request, attempt) {
+      recordRequest(run, actor.id, request)
+      await appendEvent(run, { audience: 'observer', type: 'model.request', game, round,
+        data: { agentId: actor.id, turnPhase, attempt, ...request } })
+    },
+    async onContextError(error) {
+      const details = { agentId: actor.id, speakerName: actor.name, ...error.details }
+      if (run.status === 'running' || (run.status === 'paused' && !run.errorCode)) {
+        run.status = 'paused'; run.errorCode = error.code; run.error = actor.name + ': ' + error.message; run.errorDetails = details
+      }
+      await appendEvent(run, { audience: 'observer', type: 'model.context-limit', game, round,
+        text: actor.name + ': ' + error.message, data: { code: error.code, ...details } })
+    },
+    async onRequestError(error) {
+      const details = { agentId: actor.id, speakerName: actor.name, ...error.details }
+      if (run.status === 'running') {
+        run.status = 'paused'; run.errorCode = error.code; run.error = actor.name + ': ' + error.message; run.errorDetails = details
+      }
+      await appendEvent(run, { audience: 'observer', type: 'model.request-error', game, round,
+        text: actor.name + ': ' + error.message, data: { code: error.code, ...details } })
+    },
+    async onOutputError(error) {
+      const details = { agentId: actor.id, speakerName: actor.name, turnPhase, ...error.details }
+      if (run.status === 'running') {
+        run.status = 'paused'; run.errorCode = error.code; run.error = actor.name + ': ' + error.message; run.errorDetails = details
+      }
+      await appendEvent(run, { audience: 'observer', type: 'model.output-limit', game, round,
+        text: actor.name + ': ' + error.message, data: { code: error.code, ...details } })
+    },
+    async beforeAttempt() {
+      signal?.throwIfAborted()
+      if (run.status !== 'running') throw new Error('Run is no longer running')
+    },
+    async onUsage(tokens, attempt, usage) {
+      recordUsage(run, actor.id, usage)
+      run.tokensUsed += tokens
+      await appendEvent(run, { audience: 'observer', type: actor.id === 'host' ? 'model.host-usage' : 'model.player-usage',
+        game, round, data: { agentId: actor.id, tokens, attempt, ...usage } })
+    },
+    async onValidationError(failure) {
+      await appendEvent(run, { audience: 'observer', type: 'model.validation-error', game, round,
+        text: actor.name + ' tool attempt ' + failure.attempt + '/' + failure.maxAttempts + (turnPhase ? ' (' + turnPhase + ')' : '') + ' rejected: ' + failure.issues.join('; '),
+        data: { agentId: actor.id, speakerName: actor.name, turnPhase, ...failure } })
+    },
+  }
+}
+async function modelPlayerTurn(run: RunRecord, agent: AgentRecord, view: PlayerGameView, decision: boolean, signal: AbortSignal, turnPhase: PlayerTurnPhase = decision ? 'decision' : 'discussion') {
+  try {
+    return await playerTurn(view, run.events, run.options, run.config, decision, run.events.filter(event => event.audience === agent.id),
+      signal, modelTurnHooks(run, agent, view.game || undefined, view.round || undefined, signal, turnPhase))
+  } catch (error) {
+    if (signal.aborted) throw error
+    throw new Error(agent.name + ': ' + (error instanceof Error ? error.message : String(error)))
+  }
 }
 const orderFor = (count: number, seed: number, step: number) => {
   const offset = (Math.imul(seed ^ step, 0x45d9f3b) >>> 0) % count
   return Array.from({ length: count }, (_, i) => (i + offset) % count)
+}
+type DiscussionStage = 'pre-round' | 'post-round' | 'cave-discussion'
+function discussionOrder(count: number, seed: number) {
+  const order = Array.from({ length: count }, (_, index) => index)
+  let state = seed >>> 0 || 0x9e3779b9
+  for (let i = order.length - 1; i > 0; i--) {
+    state ^= state << 13; state ^= state >>> 17; state ^= state << 5; state >>>= 0
+    const j = Math.floor((state / 0x1_0000_0000) * (i + 1))
+    ;[order[i], order[j]] = [order[j]!, order[i]!]
+  }
+  return order
 }
 function currentLocation(service: ServiceView) {
   const state = service.state
@@ -54,6 +127,35 @@ function hostRulesCard(run: RunRecord, service: ServiceView, location = currentL
   return `${card} Finale advantage revealed: ${winner.name} may allocate up to ${run.config.bomb.advantageChits} chits per pile; every other team may allocate up to ${run.config.bomb.maxChits}. Shared arrival order resolves a tie for most stars.`
 }
 function isRoundComplete(service: ServiceView) { return service.state?.current?.phase === 'complete' }
+
+async function observePublicState(run: RunRecord, service: ServiceView) {
+  if (!service.state) return
+  const state = { status: service.status, game: service.state.current?.game, round: service.state.round,
+    phase: service.state.current?.phase,
+    teams: service.state.teams?.map((team: { id: string; name: string; stars: number }) => ({ id: team.id, name: team.name, stars: team.stars })),
+    pot: { amountCents: service.state.pot?.amount, targetCents: service.state.pot?.target },
+    publicReveal: service.state.reveal ? { id: service.state.reveal.id, rankings: service.state.reveal.rankings } : null,
+    bombRecipient: service.state.current?.game === 'bomb' ? service.state.current.recipient : null }
+  const previous = run.events.findLast(event => event.type === 'game.public-state')
+  if (JSON.stringify(previous?.data?.state) !== JSON.stringify(state)) {
+    await appendEvent(run, { audience: 'public', type: 'game.public-state', game: state.game, round: state.round,
+      text: 'Public game state updated.', data: { state } })
+  }
+  const priorAudit = run.events.findLast(event => event.type === 'game.audit-snapshot')
+  const eventCursor = Number(priorAudit?.data?.sessionEventSequence ?? 0)
+  const newEvents = (service.events || []).filter((event: any) => Number(event.sequence) > eventCursor)
+  const revision = Number(service.state.revision ?? service.revision)
+  if (Number(priorAudit?.data?.revision) !== revision || newEvents.length > 0) {
+    await appendEvent(run, { audience: 'observer', type: 'game.audit-snapshot', game: service.state.current?.game,
+      round: service.state.round, data: {
+        revision,
+        sessionEventSequence: Math.max(eventCursor, ...newEvents.map((event: any) => Number(event.sequence) || 0)),
+        teams: service.state.teams?.map((team: any) => ({ id: team.id, name: team.name, balance: team.balance, stars: team.stars })),
+        gameEvents: newEvents.map((event: any) => ({ sequence: event.sequence, type: event.type, actorId: event.actorId,
+          data: event.data, createdAt: event.createdAt })),
+      } })
+  }
+}
 
 export type SessionSetupDependencies = {
   createSession: typeof createSession
@@ -131,7 +233,7 @@ async function hostAnnouncement(run: RunRecord, service: ServiceView, signal: Ab
   const location = currentLocation(service)
   const previousCard = run.events.findLast((event) => event.type === 'rules.card' && event.game === location.game && event.round === location.round)
   const includeGlobal = !run.events.some((event) => event.type === 'rules.card' && event.audience === 'public')
-  const rulesCard = previousCard?.text || [includeGlobal ? globalRuleCard() : '', hostRulesCard(run, service, location)].filter(Boolean).join('\n\n')
+  const rulesCard = (location.game === 'bomb' ? undefined : previousCard?.text) || [includeGlobal ? globalRuleCard() : '', hostRulesCard(run, service, location)].filter(Boolean).join('\n\n')
   if (!previousCard) await appendEvent(run, { audience: 'public', type: 'rules.card', text: rulesCard, game: location.game, round: location.round })
   let announcement = text || `${location.game || 'Game'} · round ${location.round || 1}. The next phase is ready.`
   if (run.options.mode === 'openai') {
@@ -140,66 +242,131 @@ async function hostAnnouncement(run: RunRecord, service: ServiceView, signal: Ab
       : location.game === 'cave' ? { cave: run.config.cave }
       : location.game === 'circle' ? { circle: run.config.circle }
       : location.game === 'bomb' ? { bomb: run.config.bomb } : {}
-    const result = await hostLine({ rules: gameRules, rulesCard: hostRulesCard(run, service, location), game: location.game, round: location.round, phase: location.phase, publicProgress: { completedRounds: run.events.filter((e) => e.type === 'round.complete').length } }, run.options, signal)
+    const result = await hostLine({ rules: gameRules, rulesCard: hostRulesCard(run, service, location), game: location.game, round: location.round, phase: location.phase, publicProgress: { completedRounds: run.events.filter((e) => e.type === 'round.complete').length } }, run.options, signal, modelTurnHooks(run, { id: 'host', name: 'Host' }, location.game, location.round, signal), run.events)
     if (signal.aborted) return
-    run.tokensUsed += result.tokens
     announcement = result.text
-    await appendEvent(run, { audience: 'observer', type: 'model.host-usage', game: location.game, round: location.round, data: { tokens: result.tokens } })
     if (signal.aborted) return
-    if (await overTokenBudget(run)) return
   }
   if (signal.aborted) return
   await appendEvent(run, { audience: 'public', type: 'host.announcement', text: announcement, game: location.game, round: location.round })
 }
 
-async function discussionBeat(run: RunRecord, service: ServiceView, views: PlayerGameView[], epoch: number, signal: AbortSignal) {
+function discussionEvents(run: RunRecord, service: ServiceView, stage: DiscussionStage, window?: number) {
   const location = currentLocation(service)
-  const window = service.state?.current?.game === 'cave' ? service.state.current.tick : undefined
-  const seedBase = run.options.seed ^ (run.stepCount * 101)
-  const results = await mapLimit(run.agents, providerConfig.concurrency, async (agent, i) => {
-    const view = views[i]!
-    const answer = run.options.mode === 'scripted' ? scriptedTurn({ ...view, allowedActions: [] }, seedBase + i) : await playerTurn({ ...view, allowedActions: [] }, run.events, run.options, run.config, false, run.events.filter((e) => e.audience === agent.id), signal)
-    return { agent, answer }
-  })
-  if (run.status !== 'running' || run.abortEpoch !== epoch) return
-  run.stepCount++
-  for (const result of results) {
-    run.tokensUsed += result.answer.tokens
-    await appendEvent(run, { audience: 'observer', type: 'model.player-usage', game: location.game, round: location.round, data: { agentId: result.agent.id, tokens: result.answer.tokens, beat: run.stepCount } })
-  }
-  if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
-  if (await overTokenBudget(run)) return
-  const displayOrder = orderFor(results.length, run.options.seed ^ 0x25a5, run.stepCount)
-  const barrierId = randomUUID()
-  const proposals = displayOrder.map((ix) => {
-    const { agent, answer } = results[ix]!
-    return { agentId: agent.id, message: answer.message?.slice(0, 1000), privateMessage: answer.privateMessage, privateMessageId: answer.privateMessage ? randomUUID() : undefined }
-  })
-  const barrier = await appendEvent(run, { audience: 'observer', type: 'barrier.proposed', game: location.game, round: location.round,
-    data: { barrierId, kind: 'discussion', window, beat: run.stepCount, messageCount: results.filter((r) => r.answer.message).length, schedulerOrder: proposals.map((p) => p.agentId), proposals } })
-  const outcome = await dispatchBarrier(run, barrier, epoch, signal)
-  if (outcome === 'done' && run.status === 'running' && run.abortEpoch === epoch) await hostReview(run, service, run.stepCount, window, signal)
+  return run.events.filter(event => event.game === location.game && event.round === location.round
+    && event.data?.discussionStage === stage && event.data?.window === window)
+}
+function discussionNextStep(stage: DiscussionStage) {
+  return stage === 'pre-round' ? 'Settle agreed payments in the financial-action window, then the host will start the round for game decisions.'
+    : stage === 'post-round' ? 'A final financial-action window lets teams settle promises before moving to the next round.'
+      : 'Financial actions and simultaneous cave decisions follow; the clock stays frozen until decisions are collected.'
 }
 
-async function hostReview(run: RunRecord, service: ServiceView, beat: number, window?: number, signal?: AbortSignal) {
+async function discussionBeat(run: RunRecord, service: ServiceView, views: PlayerGameView[], stage: DiscussionStage, window: number | undefined, epoch: number, signal: AbortSignal) {
   const location = currentLocation(service)
-  let review = { text: 'Discussion is closed. Please make your decisions.', continueDiscussion: false, tokens: 0 }
-  if (run.options.mode === 'openai') {
-    const rules = location.game === 'bonus' ? { bonus: run.config.bonus } : location.game === 'high-low' ? { highLow: run.config.highLow }
-      : location.game === 'cave' ? { cave: run.config.cave } : location.game === 'circle' ? { circle: run.config.circle }
-        : location.game === 'bomb' ? { bomb: run.config.bomb } : {}
-    const discussion = run.events.filter((event) => event.audience === 'public' && event.game === location.game && event.round === location.round).slice(-30)
-      .map((event) => ({ type: event.type, speaker: event.data?.speakerName, text: event.text }))
-    review = await hostLine({ reviewRequired: true, rulesCard: hostRulesCard(run, service, location), game: location.game, round: location.round, phase: location.phase, rules, discussion }, run.options, signal)
-    run.tokensUsed += review.tokens
-    await appendEvent(run, { audience: 'observer', type: 'model.host-usage', game: location.game, round: location.round, data: { tokens: review.tokens } })
-    if (signal?.aborted) return false
-    if (await overTokenBudget(run)) return false
+  const phaseEvents = discussionEvents(run, service, stage, window)
+  let sweep = phaseEvents.findLast(event => event.type === 'discussion.sweep-started'
+    && !phaseEvents.some(done => done.type === 'discussion.beat' && done.data?.sweepId === event.id))
+  if (!sweep) {
+    if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
+    const beat = run.stepCount + 1
+    sweep = await appendEvent(run, { audience: 'observer', type: 'discussion.sweep-started', game: location.game, round: location.round,
+      data: { discussionStage: stage, window, beat,
+        schedulerOrder: discussionOrder(run.agents.length, run.options.seed ^ Math.imul(beat, 997)).map(index => run.agents[index]!.id) } })
   }
-  if (signal?.aborted) return false
-  await appendEvent(run, { audience: 'public', type: 'host.review', game: location.game, round: location.round, text: review.text, data: { continueDiscussion: review.continueDiscussion } })
-  await appendEvent(run, { audience: 'observer', type: 'host.discussion-decision', game: location.game, round: location.round, data: { beat, window, continueDiscussion: review.continueDiscussion } })
-  return review.continueDiscussion
+  const sweepId = sweep.id
+  const order = sweep.data?.schedulerOrder as string[]
+  for (const agentId of order) {
+    if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
+    const agent = run.agents.find(item => item.id === agentId)
+    if (!agent) throw new Error('Discussion order references an unknown team')
+    let barrier = run.events.findLast(event => event.type === 'barrier.proposed' && event.data?.sweepId === sweepId && event.data?.speakerId === agentId)
+    if (barrier && run.events.some(event => event.type === 'barrier.completed' && event.data?.barrierId === barrier!.data?.barrierId)) continue
+    if (!barrier) {
+      const view = views[run.agents.indexOf(agent)]!
+      // Dispatch this reply before requesting the next one: its history includes all earlier speakers.
+      const answer = run.options.mode === 'scripted' ? scriptedTurn({ ...view, allowedActions: [] }, run.options.seed ^ run.stepCount)
+        : await modelPlayerTurn(run, agent, { ...view, allowedActions: [] }, false, signal, stage)
+      if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
+      if (answer.action) throw new Error(agent.name + ': game actions are not allowed during discussion')
+      barrier = await appendEvent(run, { audience: 'observer', type: 'barrier.proposed', game: location.game, round: location.round,
+        data: { barrierId: randomUUID(), kind: 'discussion-turn', sweepId, speakerId: agent.id, discussionStage: stage, window,
+          proposals: [{ agentId: agent.id, message: answer.message?.slice(0, 1000), privateMessage: answer.privateMessage,
+            privateMessageId: answer.privateMessage ? randomUUID() : undefined }] } })
+    }
+    if (await dispatchBarrier(run, barrier, epoch, signal) !== 'done') return
+  }
+  if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return
+  run.stepCount++
+  await appendEvent(run, { audience: 'observer', type: 'discussion.beat', game: location.game, round: location.round,
+    data: { discussionStage: stage, window, sweepId, beat: sweep.data?.beat, schedulerOrder: order } })
+}
+
+async function hostReview(run: RunRecord, service: ServiceView, sweep: RunEvent, signal: AbortSignal) {
+  const location = currentLocation(service)
+  const stage = sweep.data!.discussionStage as DiscussionStage
+  const window = sweep.data?.window as number | undefined
+  const sweepId = String(sweep.data?.sweepId)
+  const phaseEvents = discussionEvents(run, service, stage, window)
+  const count = phaseEvents.filter(event => event.type === 'discussion.beat').length
+  const min = stage === 'cave-discussion' ? run.options.caveDiscussionBeats : run.options.minDiscussionBeats
+  const max = stage === 'cave-discussion' ? run.options.caveDiscussionBeats : run.options.maxDiscussionBeats
+  const prior = phaseEvents.find(event => event.type === 'host.review' && event.data?.sweepId === sweepId)
+  let review = { text: discussionNextStep(stage), continueDiscussion: false, tokens: 0 }
+  if (prior) review = { text: prior.text || '', continueDiscussion: prior.data?.continueDiscussion === true, tokens: 0 }
+  else if (run.options.mode === 'openai') {
+    const barriers = run.events.filter(event => event.type === 'barrier.proposed' && event.data?.sweepId === sweepId)
+    const currentSweep = ((sweep.data?.schedulerOrder || []) as string[]).map(agentId => {
+      const barrier = barriers.find(event => event.data?.speakerId === agentId)
+      const reply = barrier ? run.events.find(event => event.audience === 'public' && event.type === 'player.message' && event.data?.barrierId === barrier.data?.barrierId) : undefined
+      return { speaker: run.agents.find(agent => agent.id === agentId)?.name, message: reply?.text ?? null }
+    })
+    review = await hostLine({ reviewRequired: true, rulesCard: hostRulesCard(run, service, location),
+      game: location.game, round: location.round, phase: location.phase, discussionStage: stage,
+      currentSweep, completedSweeps: count, minimumSweeps: min, maximumSweeps: max, nextStep: discussionNextStep(stage),
+    }, run.options, signal, modelTurnHooks(run, { id: 'host', name: 'Host' }, location.game, location.round, signal), run.events)
+  }
+  if (signal.aborted || run.status !== 'running') return
+  const continueDiscussion = count < min || count < max && review.continueDiscussion
+  if (!prior) {
+    const text = continueDiscussion && !review.continueDiscussion ? 'We have another scheduled discussion sweep. Respond to the proposals already on the table.'
+      : !continueDiscussion && review.continueDiscussion ? 'The discussion limit has been reached. ' + discussionNextStep(stage) : review.text
+    await appendEvent(run, { audience: 'public', type: 'host.review', game: location.game, round: location.round, text,
+      data: { discussionStage: stage, window, sweepId, continueDiscussion } })
+  }
+  await appendEvent(run, { audience: 'observer', type: 'host.discussion-decision', game: location.game, round: location.round,
+    data: { discussionStage: stage, window, sweepId, beat: sweep.data?.beat, continueDiscussion } })
+}
+
+async function discussionPhase(run: RunRecord, service: ServiceView, views: PlayerGameView[], stage: DiscussionStage, window: number | undefined, epoch: number, signal: AbortSignal) {
+  if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return false
+  const max = stage === 'cave-discussion' ? run.options.caveDiscussionBeats : run.options.maxDiscussionBeats
+  // Disabled discussion has no speakers, host reviews, or public open/close notices.
+  if (max === 0) return true
+  const phaseEvents = discussionEvents(run, service, stage, window)
+  if (phaseEvents.some(event => event.type === 'discussion.closed')) return true
+  const location = currentLocation(service)
+  if (!phaseEvents.some(event => event.type === 'discussion.opened')) {
+    const text = stage === 'pre-round' ? 'Between-round discussion: review your own previous results and agree on a plan using the upcoming round rules. Actions are separate; financial settlement follows each discussion sweep.'
+      : stage === 'post-round' ? 'Post-round discussion: every team has received its own private round feedback. Review promises and negotiate payments; a financial-action window follows each discussion sweep.'
+        : 'Cave window discussion: take turns and respond to earlier speakers. The clock is frozen; financial actions and cave decisions follow separately.'
+    await appendEvent(run, { audience: 'public', type: 'discussion.opened', game: location.game, round: location.round,
+      text, data: { discussionStage: stage, window, speakerName: 'Host' } })
+  }
+  const sweeps = phaseEvents.filter(event => event.type === 'discussion.beat')
+  const unreviewed = sweeps.find(event => !phaseEvents.some(review => review.type === 'host.discussion-decision' && review.data?.sweepId === event.data?.sweepId))
+  if (unreviewed) { await hostReview(run, service, unreviewed, signal); return false }
+  const min = stage === 'cave-discussion' ? run.options.caveDiscussionBeats : run.options.minDiscussionBeats
+  const lastReview = phaseEvents.findLast(event => event.type === 'host.discussion-decision')
+  const pendingSweep = phaseEvents.some(event => event.type === 'discussion.sweep-started' && !sweeps.some(done => done.data?.sweepId === event.id))
+  if (pendingSweep || sweeps.length < min || sweeps.length < max && lastReview?.data?.continueDiscussion === true) {
+    await discussionBeat(run, service, views, stage, window, epoch, signal)
+    return false
+  }
+  if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return false
+  await appendEvent(run, { audience: 'public', type: 'discussion.closed', game: location.game, round: location.round,
+    text: discussionNextStep(stage), data: { discussionStage: stage, window, speakerName: 'Host' } })
+  return true
 }
 
 async function getViews(run: RunRecord, signal?: AbortSignal) {
@@ -213,6 +380,23 @@ async function getViews(run: RunRecord, signal?: AbortSignal) {
     }
   }
   return views
+}
+async function roundFeedback(run: RunRecord, service: ServiceView, views: PlayerGameView[]) {
+  const location = currentLocation(service)
+  const feedback = views.map((view, index) => {
+    const earnings = view.earnings.find(item => item.game === location.game && item.round === location.round)
+    if (!earnings || !view.team) throw new Error(run.agents[index]!.name + ': private round feedback is not ready; the next discussion has not started')
+    return { agent: run.agents[index]!, view, earnings }
+  })
+  for (const { agent, view, earnings } of feedback) {
+    if (run.events.some(event => event.type === 'round.feedback' && event.audience === agent.id && event.game === location.game && event.round === location.round)) continue
+    await appendEvent(run, { audience: agent.id, type: 'round.feedback', game: location.game, round: location.round,
+      text: `Your round payout is ${earnings.amount}. Your current balance is ${view.team!.balance}. This is your private result, not evidence of other teams' choices.`,
+      data: { earnings, balance: view.team!.balance, stars: view.team!.stars,
+        received: view.roundState?.received, returned: view.roundState?.returned,
+        moneyTransfers: view.moneyTransfers, bombRecipient: view.roundState?.bombRecipient,
+        bombDirection: view.roundState?.bombDirection } })
+  }
 }
 async function acknowledgeReveals(run: RunRecord, views: PlayerGameView[], epoch: number, signal: AbortSignal) {
   let acknowledged = false
@@ -236,20 +420,16 @@ async function acknowledgeReveals(run: RunRecord, views: PlayerGameView[], epoch
 async function decisionBarrier(run: RunRecord, service: ServiceView, views: PlayerGameView[], epoch: number, signal: AbortSignal) {
   const location = currentLocation(service)
   const responses = await mapLimit(run.agents, providerConfig.concurrency, async (agent, i) => {
-    const view = views[i]!
+    const view = { ...views[i]!, allowedActions: views[i]!.allowedActions.filter(type => !['money.transfer', 'pot.contribute', 'reveal.acknowledge'].includes(type)) }
+    if (!view.allowedActions.length) return { agent, view, answer: { tokens: 0 } as Awaited<ReturnType<typeof playerTurn>> }
     const answer = run.options.mode === 'scripted'
       ? scriptedTurn(view, run.options.seed ^ (run.stepCount * 997) ^ i)
-      : await playerTurn(view, run.events, run.options, run.config, true, run.events.filter((e) => e.audience === agent.id), signal)
+      : await modelPlayerTurn(run, agent, view, true, signal)
     return { agent, view, answer }
   })
   if (run.status !== 'running' || run.abortEpoch !== epoch) return 'cancelled' as const
   run.stepCount++
-  for (const { agent, answer } of responses) {
-    run.tokensUsed += answer.tokens
-    await appendEvent(run, { audience: 'observer', type: 'model.player-usage', game: location.game, round: location.round, data: { agentId: agent.id, tokens: answer.tokens, beat: run.stepCount } })
-  }
   if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return 'cancelled' as const
-  if (await overTokenBudget(run)) return 'cancelled' as const
   const order = orderFor(responses.length, run.options.seed ^ 0x5f17, run.stepCount)
   const barrierId = randomUUID()
   const proposals = order.map((ix) => {
@@ -270,28 +450,27 @@ function operationWindow(service: ServiceView) {
   return `${current?.game || 'none'}:${service.state?.round || 0}:${current?.phase || 'none'}:${current?.game === 'cave' ? current.tick : ''}`
 }
 
-async function operationBarrier(run: RunRecord, service: ServiceView, views: PlayerGameView[], epoch: number, signal: AbortSignal) {
+async function operationBarrier(run: RunRecord, service: ServiceView, views: PlayerGameView[], epoch: number, signal: AbortSignal, window = operationWindow(service)) {
   const location = currentLocation(service)
+  // A public reveal can invalidate the rest of a batch. Keep accepted payments final when recollecting it.
+  const accepted = new Set(run.events.filter(event => event.type === 'command.accepted').map(event => event.data?.requestId))
+  const committed = new Set(run.events.filter(event => event.type === 'barrier.proposed' && event.data?.kind === 'operations' && event.data?.window === window)
+    .flatMap(event => (event.data?.proposals || []) as Array<{ agentId: string; actionRequestId?: string }>)
+    .filter(proposal => proposal.actionRequestId && accepted.has(proposal.actionRequestId)).map(proposal => proposal.agentId))
   const proposals = await mapLimit(run.agents, providerConfig.concurrency, async (agent, i) => {
     const view = views[i]!
     const sideActions = view.allowedActions.filter((action) => action === 'money.transfer' || action === 'pot.contribute')
-    if (!sideActions.length) return { agent, view, answer: { tokens: 0 } as { tokens: number; action?: any; message?: string; privateMessage?: { teamId: string; text: string } } }
+    if (!sideActions.length || committed.has(agent.id)) return { agent, view, answer: { tokens: 0 } as { tokens: number; action?: any; message?: string; privateMessage?: { teamId: string; text: string } } }
     const limitedView = { ...view, allowedActions: sideActions }
     const answer = run.options.mode === 'scripted' ? scriptedTurn(limitedView, run.options.seed ^ (run.stepCount * 31) ^ i)
-      : await playerTurn(limitedView, run.events, run.options, run.config, true, run.events.filter((e) => e.audience === agent.id), signal)
+      : await modelPlayerTurn(run, agent, limitedView, true, signal, 'operations')
     return { agent, view: limitedView, answer }
   })
   if (run.status !== 'running' || run.abortEpoch !== epoch) return 'cancelled' as const
   run.stepCount++
-  for (const { agent, answer } of proposals) {
-    run.tokensUsed += answer.tokens
-    if (answer.tokens) await appendEvent(run, { audience: 'observer', type: 'model.player-usage', game: location.game, round: location.round, data: { agentId: agent.id, tokens: answer.tokens, phase: 'operations' } })
-  }
   if (signal.aborted || run.status !== 'running' || run.abortEpoch !== epoch) return 'cancelled' as const
-  if (await overTokenBudget(run)) return 'cancelled' as const
   const order = orderFor(proposals.length, run.options.seed ^ 0x1b7, run.stepCount)
   const barrierId = randomUUID()
-  const window = operationWindow(service)
   const stored = order.map((ix) => {
     const { agent, answer } = proposals[ix]!
     const parsed = answer.action ? gameActionSchema.safeParse(answer.action) : undefined
@@ -311,18 +490,20 @@ async function dispatchBarrier(run: RunRecord, barrier: RunEvent, epoch: number,
   const data = barrier.data || {}
   const proposals = Array.isArray(data.proposals) ? data.proposals as Array<Record<string, any>> : []
   const barrierId = String(data.barrierId || barrier.id)
+  // Only scheduled discussion turns may communicate, including when recovering old batches.
+  const messagingAllowed = data.kind === 'discussion-turn' || data.kind === 'discussion'
   for (const proposal of proposals) {
     if (run.status !== 'running' || run.abortEpoch !== epoch) return 'cancelled'
     const agent = run.agents.find((item) => item.id === proposal.agentId)
     if (!agent) throw new Error('Stored barrier references an unknown agent')
     const publicMessageExists = hasBarrierPublicMessage(run, barrierId, agent.id)
-    if (proposal.message && !publicMessageExists) {
-      await appendEvent(run, { audience: 'public', type: 'player.message', text: proposal.message, game: barrier.game, round: barrier.round, data: { speakerId: agent.id, speakerName: agent.name, barrierId } })
+    if (messagingAllowed && proposal.message && !publicMessageExists) {
+      await appendEvent(run, { audience: 'public', type: 'player.message', text: proposal.message, game: barrier.game, round: barrier.round, data: { speakerId: agent.id, speakerName: agent.name, barrierId, discussionStage: data.discussionStage } })
     }
-    if (proposal.message && !run.events.some((event) => event.type === 'barrier.message-sent' && event.data?.barrierId === barrierId && event.data?.agentId === agent.id)) {
+    if (messagingAllowed && proposal.message && !run.events.some((event) => event.type === 'barrier.message-sent' && event.data?.barrierId === barrierId && event.data?.agentId === agent.id)) {
       await appendEvent(run, { audience: 'observer', type: 'barrier.message-sent', data: { barrierId, agentId: agent.id } })
     }
-    if (proposal.privateMessage && !run.events.some((event) => event.type === 'chat.send-accepted' && event.data?.requestId === proposal.privateMessageId)) {
+    if (messagingAllowed && proposal.privateMessage && !run.events.some((event) => event.type === 'chat.send-accepted' && event.data?.requestId === proposal.privateMessageId)) {
       await sendPrivateMessage(run, agent, proposal.privateMessage.teamId, proposal.privateMessage.text, signal, epoch, proposal.privateMessageId)
     }
     if (!proposal.action || run.events.some((event) => event.type === 'command.accepted' && event.data?.requestId === proposal.actionRequestId)) continue
@@ -428,7 +609,7 @@ async function recoverPendingIntent(run: RunRecord, epoch: number, signal: Abort
     typeof event.data?.requestId === 'string' && !accepted.has(String(event.data.requestId)))
   if (controlIntent) {
     const data = controlIntent.data!
-    const operation = data.operation === 'start' || data.operation === 'advance' || data.operation === 'tick' ? data.operation : undefined
+    const operation = data.operation === 'start' || data.operation === 'advance' || data.operation === 'prepare' || data.operation === 'tick' ? data.operation : undefined
     if (!operation || typeof data.requestId !== 'string') throw new Error('Stored host command intent is incomplete')
     await controlSession(run.sessionId!, operation, typeof data.expectedToken === 'string' ? data.expectedToken : undefined, data.requestId, signal)
     if (run.abortEpoch !== epoch || run.status !== 'running') return true
@@ -440,6 +621,7 @@ async function recoverPendingIntent(run: RunRecord, epoch: number, signal: Abort
 
 async function finishRun(run: RunRecord, service: ServiceView) {
   if (run.events.some((event) => event.type === 'run.finished')) return
+  await observePublicState(run, service)
   try { await getViews(run) } catch { /* Preserve final results even if player views are no longer available. */ }
   run.status = 'finished'
   const teams = service.state?.teams as Array<{ id: string; name: string; balance: string; stars: number; tieOrder: number }> | undefined
@@ -478,85 +660,148 @@ async function stepRun(run: RunRecord, epoch: number, signal: AbortSignal) {
   }
   let service = await getServiceView(sessionId, signal)
   if (run.status !== 'running' || run.abortEpoch !== epoch) return
+  await observePublicState(run, service)
   if (service.status === 'finished' || service.state?.status === 'finished') {
     await finishRun(run, service); return
   }
   const loc = currentLocation(service)
-  const unreviewedBeat = [...run.events].reverse().find((event) => event.type === 'discussion.beat' && event.game === loc.game && event.round === loc.round && !run.events.some((review) => review.type === 'host.discussion-decision' && review.data?.beat === event.data?.beat && review.game === event.game && review.round === event.round))
-  if (unreviewedBeat && loc.phase !== 'ready' && loc.phase !== 'complete') {
-    await hostReview(run, service, Number(unreviewedBeat.data?.beat || 0), unreviewedBeat.data?.window as number | undefined, signal)
-    return
+  if (!run.events.some(event => event.type === 'host.briefing' && event.data?.version === 'shared-discussions-v2')) {
+    await appendEvent(run, { audience: 'public', type: 'host.briefing', game: loc.game, round: loc.round,
+      text: gameTheoryBriefing(), data: { version: 'shared-discussions-v2', speakerName: 'Host' } })
   }
-  if (loc.phase !== 'ready' && !run.events.some((event) => event.type === 'host.announcement' && event.game === loc.game && event.round === loc.round)) {
-    await hostAnnouncement(run, service, signal)
-    return
+  if (loc.game === 'bomb' && run.events.some(event => event.type === 'rules.card' && event.game === 'bomb' && event.round === loc.round && event.text?.includes('each up/down pile')) &&
+    !run.events.some(event => event.type === 'rules.correction' && event.game === 'bomb' && event.round === loc.round && event.data?.version === 'bomb-pile-totals-v1')) {
+    await appendEvent(run, { audience: 'public', type: 'rules.correction', game: 'bomb', round: loc.round,
+      text: 'Correction: up and down share ONE direction pile; recipient chits form the other pile. ' + hostRulesCard(run, service, loc),
+      data: { version: 'bomb-pile-totals-v1' } })
   }
+  const active = () => !signal.aborted && run.status === 'running' && run.abortEpoch === epoch
+  const operationDone = (window: string) => run.events.some(event => event.type === 'operation.batch.completed' && event.data?.window === window)
+
   if (loc.phase === 'ready') {
-    const first = run.events.filter((e) => e.type === 'round.started').length === 0
+    if (!run.events.some(event => event.type === 'host.announcement' && event.game === loc.game && event.round === loc.round)) {
+      await hostAnnouncement(run, service, signal)
+      return
+    }
+    const views = await getViews(run, signal)
+    if (!active() || await acknowledgeReveals(run, views, epoch, signal)) return
+    // Older saved runs may already have discussed this boundary after the previous round.
+    // Finish an existing pre-round sweep, but do not start a second discussion for that gap.
+    const previousRound = run.events.findLast(event => event.type === 'round.complete'
+      && (event.game !== loc.game || event.round !== loc.round))
+    const alreadyDiscussed = previousRound && run.events.some(event => event.type === 'discussion.closed'
+      && event.game === previousRound.game && event.round === previousRound.round && event.data?.discussionStage === 'post-round')
+    const phaseEvents = discussionEvents(run, service, 'pre-round')
+    if (!alreadyDiscussed || phaseEvents.some(event => event.type === 'discussion.sweep-started')) {
+      const unsettled = phaseEvents.find(event => event.type === 'discussion.beat'
+        && !operationDone('pre-round:' + loc.game + ':' + loc.round + ':' + event.data?.sweepId))
+      if (unsettled) {
+        await operationBarrier(run, service, views, epoch, signal, 'pre-round:' + loc.game + ':' + loc.round + ':' + unsettled.data?.sweepId)
+        return
+      }
+      if (!await discussionPhase(run, service, views, 'pre-round', undefined, epoch, signal)) return
+      const finalWindow = 'pre-settlement:' + loc.game + ':' + loc.round
+      if (!operationDone(finalWindow)) {
+        await operationBarrier(run, service, views, epoch, signal, finalWindow)
+        return
+      }
+    }
+    if (!active()) return
     const requestId = randomUUID()
-    await appendEvent(run, { audience: 'observer', type: 'host.command-intent', game: loc.game, round: loc.round, data: { operation: first ? 'start' : 'start', requestId } })
-    if (run.abortEpoch !== epoch || run.status !== 'running') return
-    await controlSession(sessionId, 'start', undefined, requestId, signal)
+    await appendEvent(run, { audience: 'observer', type: 'host.command-intent', game: loc.game, round: loc.round,
+      data: { operation: 'start', requestId, expectedToken: service.state.current.token } })
+    if (!active()) return
+    await controlSession(sessionId, 'start', service.state.current.token, requestId, signal)
+    if (!active()) return
     await appendEvent(run, { audience: 'observer', type: 'host.command-accepted', data: { requestId, operation: 'start' } })
     await appendEvent(run, { audience: 'observer', type: 'round.started', game: loc.game, round: loc.round })
-    service = await getServiceView(sessionId, signal)
+    await appendEvent(run, { audience: 'public', type: 'host.round-started', game: loc.game, round: loc.round,
+      text: 'The round has started. Financial actions are available in their own window, followed by independently collected game choices.' })
+    return
+  }
+
+  if (loc.phase === 'complete') {
+    const views = await getViews(run, signal)
+    if (!active() || await acknowledgeReveals(run, views, epoch, signal)) return
+    await roundFeedback(run, service, views)
+    if (!active()) return
+    if (!run.events.some(event => event.type === 'round.complete' && event.game === loc.game && event.round === loc.round)) {
+      await appendEvent(run, { audience: 'public', type: 'round.complete', game: loc.game, round: loc.round,
+        text: 'The round is complete. Every team has privately received its own payout and updated account. Review these results in the next discussion.' })
+    }
+    const finalRound = loc.game === 'bomb' && loc.round === 3
+    const existingPostDiscussion = discussionEvents(run, service, 'post-round').some(event => event.type === 'discussion.opened')
+    if (finalRound || existingPostDiscussion) {
+      // Settle promises after every completed discussion sweep, before anyone starts the next sweep.
+      const unsettled = discussionEvents(run, service, 'post-round').find(event => event.type === 'discussion.beat'
+        && !operationDone('post-round:' + loc.game + ':' + loc.round + ':' + event.data?.sweepId))
+      if (unsettled) {
+        await operationBarrier(run, service, views, epoch, signal, 'post-round:' + loc.game + ':' + loc.round + ':' + unsettled.data?.sweepId)
+        return
+      }
+      if (!await discussionPhase(run, service, views, 'post-round', undefined, epoch, signal)) return
+      const finalWindow = 'post-settlement:' + loc.game + ':' + loc.round
+      if (!operationDone(finalWindow)) {
+        await operationBarrier(run, service, views, epoch, signal, finalWindow)
+        return
+      }
+    }
+    if (!active()) return
+    const requestId = randomUUID()
+    await appendEvent(run, { audience: 'observer', type: 'host.command-intent', game: loc.game, round: loc.round,
+      data: { operation: 'prepare', requestId, expectedToken: service.state.current.token } })
+    if (!active()) return
+    service = await controlSession(sessionId, 'prepare', service.state.current.token, requestId, signal)
+    if (!active()) return
+    await appendEvent(run, { audience: 'observer', type: 'host.command-accepted', data: { requestId, operation: 'prepare' } })
+    if (service.status === 'finished' || service.state?.status === 'finished') await finishRun(run, service)
+    return
+  }
+
+  if (!run.events.some(event => event.type === 'host.announcement' && event.game === loc.game && event.round === loc.round)) {
     await hostAnnouncement(run, service, signal)
     return
   }
-  if (loc.phase === 'complete') {
-    if (!run.events.some((event) => event.type === 'round.complete' && event.game === loc.game && event.round === loc.round)) {
-      await appendEvent(run, { audience: 'public', type: 'round.complete', game: loc.game, round: loc.round, text: `${loc.game} round ${loc.round} is complete.` })
-    }
-    const requestId = randomUUID()
-    await appendEvent(run, { audience: 'observer', type: 'host.command-intent', game: loc.game, round: loc.round, data: { operation: 'advance', requestId } })
-    if (run.abortEpoch !== epoch || run.status !== 'running') return
-    service = await controlSession(sessionId, 'advance', undefined, requestId, signal)
-    await appendEvent(run, { audience: 'observer', type: 'host.command-accepted', data: { requestId, operation: 'advance' } })
-    if (service.status === 'finished' || service.state?.status === 'finished') {
-      await finishRun(run, service); return
-    }
-    await hostAnnouncement(run, service, signal)
-    return
+  if (!run.events.some(event => event.type === 'host.round-started' && event.game === loc.game && event.round === loc.round)) {
+    await appendEvent(run, { audience: 'public', type: 'host.round-started', game: loc.game, round: loc.round,
+      text: 'The round is underway. Financial actions and independently collected game decisions are now available in their separate turns.' })
   }
   const views = await getViews(run, signal)
-  if (await acknowledgeReveals(run, views, epoch, signal)) return
-  const window = operationWindow(service)
-  const operationDone = run.events.some((event) => event.type === 'operation.batch.completed' && event.game === loc.game && event.round === loc.round && event.data?.window === window)
-  if (!operationDone) {
-    const result = await operationBarrier(run, service, views, epoch, signal)
-    if (result !== 'done') return
-    return
-  }
-  const caveWindow = service.state?.current?.game === 'cave' ? service.state.current.tick : undefined
+  if (!active() || await acknowledgeReveals(run, views, epoch, signal)) return
   const inCave = service.state?.current?.game === 'cave'
-  const windowEvents = run.events.filter((e) => e.type === 'discussion.beat' && e.game === loc.game && e.round === loc.round && (!inCave || e.data?.window === caveWindow))
-  const discussionCount = windowEvents.length
-  const minBeats = inCave ? run.options.caveDiscussionBeats : run.options.minDiscussionBeats
-  const maxBeats = inCave ? run.options.caveDiscussionBeats : run.options.maxDiscussionBeats
-  const lastReview = run.events.findLast((e) => e.type === 'host.discussion-decision' && e.game === loc.game && e.round === loc.round && (!inCave || e.data?.window === caveWindow))
-  if (discussionCount < minBeats || (discussionCount < maxBeats && lastReview?.data?.continueDiscussion === true)) {
-    await discussionBeat(run, service, views, epoch, signal)
+  const caveWindow = inCave ? Number(service.state.current.tick) : undefined
+  if (inCave && !await discussionPhase(run, service, views, 'cave-discussion', caveWindow, epoch, signal)) return
+
+  const window = operationWindow(service)
+  if (!operationDone(window)) {
+    await operationBarrier(run, service, views, epoch, signal)
     return
   }
   const decision = await decisionBarrier(run, service, views, epoch, signal)
-  if (run.status !== 'running' || run.abortEpoch !== epoch) return
-  if (decision === 'recollect' || decision === 'cancelled') return
+  if (!active() || decision === 'recollect' || decision === 'cancelled') return
   service = await getServiceView(sessionId, signal)
-  if (isRoundComplete(service)) return
+  if (!active() || isRoundComplete(service)) return
   if (service.state?.current?.game === 'cave' && service.state?.current?.phase === 'cave' && service.state?.current?.nextTickAt != null) {
     const requestId = randomUUID()
     const caveToken = service.state.current.token
-    await appendEvent(run, { audience: 'observer', type: 'cave.logical-tick-intent', game: 'cave', round: service.state.round, data: { requestId, operation: 'tick', expectedToken: String(caveToken), window: service.state.current.tick, revision: service.revision } })
-    if (run.abortEpoch !== epoch || run.status !== 'running') return
+    await appendEvent(run, { audience: 'observer', type: 'cave.logical-tick-intent', game: 'cave', round: service.state.round,
+      data: { requestId, operation: 'tick', expectedToken: String(caveToken), window: service.state.current.tick, revision: service.revision } })
+    if (!active()) return
     service = await controlSession(sessionId, 'tick', String(caveToken), requestId, signal)
+    if (!active()) return
     await appendEvent(run, { audience: 'observer', type: 'host.command-accepted', data: { requestId, operation: 'tick' } })
-    await appendEvent(run, { audience: 'public', type: 'cave.window', game: 'cave', round: service.state.round, logicalTime: service.logicalTime, text: 'The cave clock advances to the next decision window.' })
+    await appendEvent(run, { audience: 'public', type: 'cave.window', game: 'cave', round: service.state.round,
+      logicalTime: service.logicalTime, text: 'The cave clock advances to the next decision window.' })
   }
 }
 
 export async function resumeRun(run: RunRecord) {
   if (run.status !== 'paused') throw new Error('Only paused runs can resume')
-  run.error = undefined
+  const until = Date.now() + 5000
+  while (running.has(run.id) && Date.now() < until) await wait(10)
+  if (running.has(run.id)) throw new Error('Previous model calls are still settling; retry resume shortly')
+  if (run.status !== 'paused') throw new Error('Run changed state while waiting to resume')
+  run.error = undefined; run.errorCode = undefined; run.errorDetails = undefined
   if (!run.sessionId || !run.agents.length) await ensureSession(run)
   if (run.status !== 'paused') throw new Error('Run changed state while its session was being restored')
   run.status = 'running'; await saveRun(run); void supervise(run.id)
@@ -581,11 +826,17 @@ export async function stepPausedRun(run: RunRecord) {
   if (run.status !== 'paused') throw new Error('Run changed state while its session was being restored')
   run.abortEpoch++
   const epoch = run.abortEpoch
-  run.status = 'running'; await saveRun(run)
+  run.status = 'running'; run.error = undefined; run.errorCode = undefined; run.errorDetails = undefined; await saveRun(run)
   const controller = new AbortController(); controllers.set(run.id, controller)
   const started = Date.now()
   try { await stepRun(run, epoch, controller.signal) }
-  catch (error) { if (run.status === 'running') run.status = 'paused'; throw error }
+  catch (error) {
+    if (run.status === 'running') {
+      run.status = 'paused'; run.error = error instanceof Error ? error.message : String(error)
+      await appendEvent(run, { audience: 'observer', type: 'run.paused-error', data: { message: run.error } })
+    }
+    throw error
+  }
   finally {
     run.elapsedMs += Date.now() - started
     controllers.delete(run.id)

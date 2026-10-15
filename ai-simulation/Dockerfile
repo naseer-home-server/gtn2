@@ -15,6 +15,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm config set store-dir /pnpm/store && pnpm install --frozen-lockfile
 
 COPY game/backend ./game/backend
+COPY game/frontend/src/components/game-activity ./game/frontend/src/components/game-activity
 COPY ai-simulation ./ai-simulation
 RUN pnpm --filter backend build && \
     pnpm --filter ai-simulation-ui build && \

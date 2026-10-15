@@ -6,13 +6,17 @@ import {
   SkipForward, Square, WandSparkles, X,
 } from 'lucide-react'
 import type { ConfigResponse, GameConfig, RunDetail, RunEvent, RunOptions, RunSummary } from './types'
+import { ActivityCard, GameContext, TeamAccounts } from '../../../game/frontend/src/components/game-activity/ActivityCard'
+import { observerAccounts, observerTranscript } from './observer'
 
 const tokenKey = 'simulation.operatorToken'
 const rounds = ['Round 1', 'Round 2', 'Round 3']
 const baseRunOptions: RunOptions = {
   teamCount: 5, seed: 20261014, mode: 'scripted', hostModel: '', playerModel: '',
   minDiscussionBeats: 2, maxDiscussionBeats: 4, caveDiscussionBeats: 1,
-  maxTokens: 250000, maxSteps: 1000, maxWallTimeMs: 3600000,
+  maxSteps: 1000, maxWallTimeMs: 3600000,
+  maxToolAttempts: 3,
+  hostContextTokens: 0, playerContextTokens: 0,
 }
 
 async function request<T>(path: string, token?: string, init: RequestInit = {}): Promise<T> {
@@ -86,6 +90,9 @@ function validateConfig(config: any): string | null {
   if (config.bomb.minChits > config.bomb.maxChits || config.bomb.maxChits > config.bomb.advantageChits) return 'Chit limits must be minimum ≤ standard maximum ≤ most-starred maximum.'
   return null
 }
+function usageTotal(tokens: number, reported: number | undefined, calls: number) {
+  return reported === calls && calls > 0 ? tokens.toLocaleString() : reported ? '≥' + tokens.toLocaleString() : '—'
+}
 function prettyTime(value?: number | string) {
   if (value === undefined || value === null || value === '') return '—'
   const number = typeof value === 'number' ? value : Date.parse(value)
@@ -95,6 +102,8 @@ function prettyTime(value?: number | string) {
 function eventText(event: RunEvent): string {
   if (event.text) return event.text
   const data = event.data || {}
+  const action = data.action as { type?: string; decision?: string } | undefined
+  if (event.type === 'action.accepted' && action?.type === 'cave.decide') return `Private cave decision accepted: ${action.decision}.`
   for (const key of ['message', 'content', 'text', 'summary', 'announcement']) if (typeof data[key] === 'string') return data[key] as string
   return event.type.replaceAll(/[._]/g, ' ')
 }
@@ -131,7 +140,8 @@ function App() {
   const [pasteOpen, setPasteOpen] = useState(false)
   const [pastedConfig, setPastedConfig] = useState('')
   const importRef = useRef<HTMLInputElement>(null)
-  const selectedSummary = detail?.summary.id === selectedId ? detail.summary : runs.find(run => run.id === selectedId)
+  const listedSummary = runs.find(run => run.id === selectedId)
+  const selectedSummary = detail?.summary.id === selectedId && (!listedSummary || detail.summary.revision >= listedSummary.revision) ? detail.summary : listedSummary
   const agents = detail?.agents || []
   const currentAgent = agents.find(item => item.agent.id === audience)
   const audienceAgents = selectedSummary?.agents || agents.map(item => ({ id: item.agent.id, name: item.agent.name, teamId: item.agent.teamId }))
@@ -144,7 +154,7 @@ function App() {
       const result = await request<ConfigResponse>('/api/config')
       setServerConfig(result)
       setConfig(current => current || structuredClone(result.defaults))
-      setOptions(current => ({ ...result.defaultsRun, ...current, hostModel: current.hostModel || result.provider.hostModel, playerModel: current.playerModel || result.provider.playerModel }))
+      setOptions(current => ({ ...result.defaultsRun, ...current, hostContextTokens: current.hostContextTokens || result.defaultsRun.hostContextTokens, playerContextTokens: current.playerContextTokens || result.defaultsRun.playerContextTokens, hostModel: current.hostModel || result.provider.hostModel, playerModel: current.playerModel || result.provider.playerModel }))
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Could not load simulation configuration.') }
     finally { setLoading(false) }
   }, [])
@@ -153,7 +163,10 @@ function App() {
     if (!auth) return
     try {
       const result = await request<{ runs: RunSummary[] }>('/api/runs', auth)
-      setRuns(result.runs || [])
+      setRuns(current => (result.runs || []).map(incoming => {
+        const previous = current.find(run => run.id === incoming.id)
+        return previous && previous.revision > incoming.revision ? previous : incoming
+      }))
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Could not load run history.') }
   }, [token])
 
@@ -161,8 +174,8 @@ function App() {
     if (!id || !auth) return
     try {
       const result = await request<RunDetail>(`/api/runs/${encodeURIComponent(id)}?audience=${encodeURIComponent(view)}`, auth)
-      setDetail(result)
-      setRuns(current => current.map(run => run.id === result.summary.id ? result.summary : run))
+      setDetail(current => current?.summary.id === result.summary.id && current.summary.revision > result.summary.revision ? current : result)
+      setRuns(current => current.map(run => run.id === result.summary.id && run.revision <= result.summary.revision ? result.summary : run))
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Could not load run details.') }
   }, [selectedId, token, audience])
 
@@ -238,7 +251,8 @@ function App() {
     setWorking(true); setError(''); setNotice('')
     try {
       const next = await request<RunDetail>(`/api/runs/${encodeURIComponent(selectedId)}/control`, token, { method: 'POST', body: JSON.stringify({ operation }) })
-      setDetail(next); setRuns(current => current.map(run => run.id === next.summary.id ? next.summary : run))
+      setDetail(current => current?.summary.id === next.summary.id && current.summary.revision > next.summary.revision ? current : next)
+      setRuns(current => current.map(run => run.id === next.summary.id && run.revision <= next.summary.revision ? next.summary : run))
       setNotice(operation === 'step' ? 'Advanced one simulation step.' : `Run ${operation} requested.`)
     } catch (cause) { setError(cause instanceof Error ? cause.message : `Could not ${operation} the run.`) }
     finally { setWorking(false) }
@@ -253,8 +267,12 @@ function App() {
   function chooseRun(run: RunSummary) { setSelectedId(run.id); setDetail(null); setAudience('observer') }
 
   const timeline = useMemo(() => detail?.events || [], [detail])
-  const conversationEvents = timeline.filter(event => audience === 'observer' ? event.audience === 'public' : true)
+  const conversationEvents = timeline.filter(event => event.type !== 'game.public-state' && (audience === 'observer' ? (event.audience === 'public' || event.type === 'model.validation-error' || event.type === 'model.context-limit' || event.type === 'model.request-error' || event.type === 'model.output-limit' || (event.type === 'action.accepted' && (event.data?.action as { type?: string } | undefined)?.type === 'cave.decide')) : true))
+    .map(event => event.type === 'action.accepted' ? { ...event, data: { ...event.data, speakerName: agents.find(item => item.agent.id === event.audience)?.agent.name || event.audience } } : event)
   const observerView = audience === 'observer'
+  const accountTeams = useMemo(() => detail && observerView ? observerAccounts(detail) : [], [detail, observerView])
+  const observerItems = useMemo(() => detail && observerView ? observerTranscript(detail, accountTeams) : [], [detail, observerView, accountTeams])
+  const conversationCount = observerView ? observerItems.length : conversationEvents.length
   const visibleEventCount = detail ? timeline.length : observerView ? selectedSummary?.eventCount || 0 : 0
   const visibleStepCount = observerView ? selectedSummary?.stepCount || 0 : undefined
   const visibleTokenCount = observerView ? selectedSummary?.tokensUsed || 0 : undefined
@@ -320,12 +338,16 @@ function App() {
                 <div className="form-field"><label htmlFor="run-name">Run name <span>optional</span></label><input id="run-name" value={runName} onChange={e => setRunName(e.target.value)} placeholder="e.g. Baseline · seed 41" /></div>
                 <div className="form-field"><label>Agent mode</label><div className="segmented"><button type="button" className={options.mode === 'scripted' ? 'active' : ''} onClick={() => setOptions({ ...options, mode: 'scripted' })}><Activity size={14} /> Scripted</button><button type="button" className={options.mode === 'openai' ? 'active' : ''} onClick={() => setOptions({ ...options, mode: 'openai' })}><WandSparkles size={14} /> OpenAI</button></div></div>
                 {isOpenAI && <div className="model-fields"><div className="form-field"><label htmlFor="host-model">Host model</label><input id="host-model" value={options.hostModel} onChange={e => setOptions({ ...options, hostModel: e.target.value })} placeholder="Configured on server" /></div><div className="form-field"><label htmlFor="player-model">Player model</label><input id="player-model" value={options.playerModel} onChange={e => setOptions({ ...options, playerModel: e.target.value })} placeholder="Configured on server" /></div><div className={`key-status ${serverConfig?.provider.configured ? 'good' : 'bad'}`}><KeyRound size={14} />{serverConfig?.provider.configured ? 'Provider key is configured on the server.' : 'Add an API key to the server environment to use OpenAI mode.'}</div></div>}
+                {isOpenAI && <div className="form-field"><div className="two-fields"><NumberSetting label="Host context tokens" value={options.hostContextTokens} min={0} max={10000000} step={1} onChange={value => setOptions({ ...options, hostContextTokens: value })} /><NumberSetting label="Player context tokens" value={options.playerContextTokens} min={0} max={10000000} step={1} onChange={value => setOptions({ ...options, playerContextTokens: value })} /></div><small>0 discovers the limit from provider model metadata. If unavailable, enter the model's documented context window. Full permitted history is retained; a full context pauses the run.</small></div>}
+                {isOpenAI && <div className="form-field"><NumberSetting label="Tool call attempts" value={options.maxToolAttempts} min={1} max={10} step={1} onChange={value => setOptions({ ...options, maxToolAttempts: value })} /><small>Includes the first proposal. Validation errors return privately to the model; the run pauses when attempts are exhausted.</small></div>}
                 <div className="two-fields"><NumberSetting label="Teams" value={options.teamCount} min={2} max={5} step={1} onChange={value => setOptions({ ...options, teamCount: value })} /><NumberSetting label="Setup seed" value={options.seed} min={0} max={2147483647} step={1} onChange={value => setOptions({ ...options, seed: value })} /></div>
-                <div className="form-subheading"><span>Discussion and cave cadence</span><CircleHelp size={14} aria-label="Limits for each team's simultaneous discussion opportunities" /></div>
-                <div className="two-fields"><NumberSetting label="Minimum beats" value={options.minDiscussionBeats} min={0} max={20} step={1} onChange={value => setOptions({ ...options, minDiscussionBeats: value })} /><NumberSetting label="Maximum beats" value={options.maxDiscussionBeats} min={0} max={20} step={1} onChange={value => setOptions({ ...options, maxDiscussionBeats: value })} /></div>
-                <NumberSetting label="Cave discussion beats / window" value={options.caveDiscussionBeats} min={0} max={5} step={1} onChange={value => setOptions({ ...options, caveDiscussionBeats: value })} />
+                <div className="form-subheading"><span>Discussion and cave cadence</span><CircleHelp size={14} aria-label="One sweep gives every team a turn in a fresh shuffled order. Limits apply once between rounds; the host closes after agreement once the minimum is met." /></div>
+                <div className="two-fields"><NumberSetting label="Minimum sweeps" value={options.minDiscussionBeats} min={0} max={20} step={1} onChange={value => setOptions({ ...options, minDiscussionBeats: value })} /><NumberSetting label="Maximum sweeps" value={options.maxDiscussionBeats} min={0} max={20} step={1} onChange={value => setOptions({ ...options, maxDiscussionBeats: value })} /></div>
+                <p className="discussion-help">One discussion between rounds reviews results and plans the next round. The host may close after the minimum; financial settlement follows each sweep.</p>
+                <NumberSetting label="Cave sweeps / window" value={options.caveDiscussionBeats} min={0} max={5} step={1} onChange={value => setOptions({ ...options, caveDiscussionBeats: value })} />
+                <small>0 disables discussion inside cave decision windows. The normal discussion before a cave round still uses the limits above.</small>
                 <div className="form-subheading"><span>Run budgets</span><Clock3 size={14} /></div>
-                <div className="two-fields"><NumberSetting label="Token budget" value={options.maxTokens} min={100} max={5000000} step={100} onChange={value => setOptions({ ...options, maxTokens: value })} /><NumberSetting label="Step budget" value={options.maxSteps} min={1} max={10000} step={1} onChange={value => setOptions({ ...options, maxSteps: value })} /></div>
+                <NumberSetting label="Step budget" value={options.maxSteps} min={1} max={10000} step={1} onChange={value => setOptions({ ...options, maxSteps: value })} />
                 <NumberSetting label="Wall time (minutes)" value={Math.round(options.maxWallTimeMs / 60000)} min={1} max={1440} step={1} onChange={value => setOptions({ ...options, maxWallTimeMs: value * 60000 })} />
                 <div className="config-snapshot"><Shield size={14} /><span>Players use the shared game engine and their own filtered views.</span></div>
                 <button className="button primary start-button" disabled={!token || !config || !!configError || working || (isOpenAI && !serverConfig?.provider.configured)}><CirclePlay size={17} />{working ? 'Starting…' : 'Start simulation'}</button>
@@ -336,24 +358,26 @@ function App() {
           </div>
         </> : <>
           <div className="page-heading run-heading"><div><div className="eyebrow">SIMULATION RUN</div><h1>{selectedSummary?.name || `Simulation ${selectedId.slice(0, 8)}`}</h1><p>{selectedSummary?.options?.mode || 'run'} mode · {selectedSummary?.options?.teamCount ?? '—'} teams · seed {selectedSummary?.options?.seed ?? '—'} · started {prettyTime(selectedSummary?.createdAt)}</p></div><div className="heading-actions"><button className="button secondary" onClick={exportReplay}><ArrowDownToLine size={15} /> Export replay</button><button className="button secondary" onClick={() => { setSelectedId(''); setDetail(null) }}><Plus size={15} /> New run</button></div></div>
+          {observerView && <TeamAccounts teams={accountTeams} finished={selectedSummary?.status === 'finished'} />}
           <section className="run-overview">
             <div className="run-status"><span className={`status-pill ${statusTone(selectedSummary?.status)}`}><i />{selectedSummary?.status || 'loading'}</span><span className="overview-divider" /><span className="progress-caption">{observerView ? <>Step {visibleStepCount} <span>of {selectedSummary?.options?.maxSteps ?? '—'}</span></> : 'Progress hidden in this view'}</span>{observerView && <><div className="progress-track"><span style={{ width: `${progress}%` }} /></div><span className="progress-number">{progress}%</span></>}</div>
             <div className="run-metrics"><Metric label="Visible agents" value={String(visibleAgentCount || '—')} /><Metric label="Tokens used" value={visibleTokenCount === undefined ? '—' : visibleTokenCount.toLocaleString()} /><Metric label="Visible events" value={String(visibleEventCount)} /><Metric label="Updated" value={prettyTime(selectedSummary?.updatedAt)} /></div>
+            {observerView && Object.keys(selectedSummary?.modelUsage || {}).length > 0 && <details className="model-usage"><summary>Host and player token usage</summary><div className="model-usage-scroll"><table><thead><tr><th>Agent / model</th><th>Responses</th><th>Input total</th><th>Output total</th><th>Total usage</th><th>Latest input</th><th>Context window</th></tr></thead><tbody>{Object.entries(selectedSummary?.modelUsage || {}).map(([id, usage]) => <tr key={id}><td>{id === 'host' ? 'Host' : selectedSummary?.agents.find(agent => agent.id === id)?.name || id}<small>{usage.model}</small></td><td>{usage.calls}</td><td>{usageTotal(usage.promptTokens, usage.promptUsageCalls, usage.calls)}</td><td>{usageTotal(usage.completionTokens, usage.completionUsageCalls, usage.calls)}</td><td>{usage.totalTokens.toLocaleString()}</td><td>{usage.lastPromptTokens === undefined ? '~' : ''}{(usage.lastPromptTokens ?? usage.lastEstimatedPromptTokens)?.toLocaleString() || '—'}<small>+{usage.reservedOutputTokens?.toLocaleString() || '—'} reserved output</small></td><td>{usage.contextWindowTokens?.toLocaleString() || 'Unknown'}<small>{usage.contextSource || 'not resolved'}</small></td></tr>)}</tbody></table></div><small>Cumulative usage counts repeated prompts. Context applies to the latest input plus output allowance, not lifetime usage. ~ indicates an estimate; ≥ is partial historical usage; — means unavailable.</small></details>}
             <div className="control-bar"><div className="control-buttons">{selectedSummary?.status === 'running' ? <button className="button secondary" disabled={working} onClick={() => void control('pause')}><Pause size={14} /> Pause</button> : <button className="button secondary" disabled={working || ['finished', 'stopped', 'failed'].includes(selectedSummary?.status || '')} onClick={() => void control('resume')}><Play size={14} /> Resume</button>}<button className="button secondary" disabled={working || selectedSummary?.status !== 'paused'} onClick={() => void control('step')}><SkipForward size={15} /> Step once</button><button className="button danger" disabled={working || ['finished', 'stopped', 'failed'].includes(selectedSummary?.status || '')} onClick={() => void control('stop')}><Square size={13} /> Stop</button></div><span className="run-revision">Revision {selectedSummary?.revision ?? '—'}</span></div>
           </section>
-          {selectedSummary?.error && <div className="run-error"><AlertCircle size={16} /><div><strong>Run error</strong><p>{selectedSummary.error}</p></div></div>}
+          {selectedSummary?.error && <div className="run-error"><AlertCircle size={16} /><div><strong>{selectedSummary.errorCode?.startsWith("MODEL_CONTEXT") ? "Model context limit" : selectedSummary.errorCode?.startsWith('MODEL_OUTPUT_LIMIT') ? 'Model output limit' : 'Run error'}</strong><p>{selectedSummary.error}</p>{observerView && selectedSummary.errorDetails && <details><summary>Error details</summary><pre>{displayValue(selectedSummary.errorDetails)}</pre></details>}</div></div>}
 
-          <div className="run-tabs"><button className={activePane === 'conversation' ? 'active' : ''} onClick={() => setActivePane('conversation')}><MessageSquareText size={15} /> Room conversation <span>{conversationEvents.length}</span></button><button className={activePane === 'inspector' ? 'active' : ''} onClick={() => setActivePane('inspector')}><Eye size={15} /> State inspector</button><div className="audience-select"><label htmlFor="audience">View</label><select id="audience" value={audience} onChange={e => setAudience(e.target.value)}><option value="observer">Observer audit</option><option value="public">Public view</option>{audienceAgents.map(agent => <option key={agent.id} value={agent.id}>Team · {agent.name}</option>)}</select></div><button className="icon-button" title="Refresh current view" onClick={() => { void loadDetail(); void loadRuns() }}><RotateCcw size={15} /></button></div>
+          <div className="run-tabs"><button className={activePane === 'conversation' ? 'active' : ''} onClick={() => setActivePane('conversation')}><MessageSquareText size={15} /> Room conversation <span>{conversationCount}</span></button><button className={activePane === 'inspector' ? 'active' : ''} onClick={() => setActivePane('inspector')}><Eye size={15} /> State inspector</button><div className="audience-select"><label htmlFor="audience">View</label><select id="audience" value={audience} onChange={e => setAudience(e.target.value)}><option value="observer">Observer audit</option><option value="public">Public view</option>{audienceAgents.map(agent => <option key={agent.id} value={agent.id}>Team · {agent.name}</option>)}</select></div><button className="icon-button" title="Refresh current view" onClick={() => { void loadDetail(); void loadRuns() }}><RotateCcw size={15} /></button></div>
           {activePane === 'conversation' ? <section className="timeline-panel">
-            <div className="timeline-head"><div><span className="live-mark"><Radio size={14} /></span><div><strong>{audience === 'observer' ? 'Observer transcript' : audience === 'public' ? 'Public room transcript' : `Private view · ${currentAgent?.agent.name || 'selected team'}`}</strong><small>{audience === 'observer' ? 'Privileged audit stream' : 'Filtered by the runner for this audience'}</small></div></div><span className="timeline-count">{conversationEvents.length} events</span></div>
+            <div className="timeline-head"><div><span className="live-mark"><Radio size={14} /></span><div><strong>{audience === 'observer' ? 'Observer transcript' : audience === 'public' ? 'Public room transcript' : `Private view · ${currentAgent?.agent.name || 'selected team'}`}</strong><small>{audience === 'observer' ? 'Discussion · decisions · results · private chats' : 'Filtered by the runner for this audience'}</small></div></div><span className="timeline-count">{conversationCount} events</span></div>
             {audience !== 'observer' && <div className="privacy-note"><Shield size={14} /> This view and export are requested from the server with the selected audience.</div>}
-            <div className="timeline-scroll">{conversationEvents.length ? conversationEvents.map(event => <EventRow key={event.id || event.sequence} event={event} />) : <div className="empty-state"><MessageSquareText size={24} /><strong>No conversation yet</strong><span>The room transcript will appear as agents speak.</span></div>}</div>
-            <div className="timeline-footer"><span><i className="dot-public" /> Public room activity</span><span>Updated {prettyTime(selectedSummary?.updatedAt)}</span></div>
+            <div className="timeline-scroll">{observerView ? observerItems.length ? observerItems.map(item => item.activity ? <ActivityCard key={item.id} activity={item.activity} teams={accountTeams} /> : <EventRow key={item.id} event={item.event!} />) : <div className="empty-state"><MessageSquareText size={24} /><strong>No activity yet</strong><span>Discussion and game events will appear together here.</span></div> : conversationEvents.length ? conversationEvents.map(event => <EventRow key={event.id || event.sequence} event={event} />) : <div className="empty-state"><MessageSquareText size={24} /><strong>No conversation yet</strong></div>}</div>
+            <div className="timeline-footer"><span><i className="dot-public" /> {observerView ? 'Discussion, decisions, outcomes & private chats' : audience === 'public' ? 'Public room activity' : 'Public and own private activity'}</span><span>Updated {prettyTime(selectedSummary?.updatedAt)}</span></div>
           </section> : <section className="inspector-layout">
             <div className="inspector-card"><div className="inspector-card-head"><div><span className="large-icon"><Eye size={17} /></span><div><h3>{audience === 'observer' ? 'Observer audit' : audience === 'public' ? 'Public state' : `Team view · ${currentAgent?.agent.name || ''}`}</h3><p>{audience === 'observer' ? 'Privileged run state returned by the runner.' : 'Team scoped details returned by the runner.'}</p></div></div></div>
               <div className="inspector-content">{audience !== 'observer' && audience !== 'public' && currentAgent?.view !== undefined ? <pre>{displayValue(currentAgent.view)}</pre> : <div className="summary-facts"><Fact label="Run status" value={selectedSummary?.status || '—'} /><Fact label="Session" value={selectedSummary?.sessionId || '—'} /><Fact label="Simulation steps" value={visibleStepCount === undefined ? '—' : String(visibleStepCount)} /><Fact label="Visible events" value={String(visibleEventCount)} /><Fact label="Seed" value={String(selectedSummary?.options?.seed ?? '—')} /><Fact label="Mode" value={selectedSummary?.options?.mode || '—'} /></div>}</div>
             </div>
-            <div className="inspector-card"><div className="inspector-card-head"><div><span className="large-icon purple"><MessageSquareText size={17} /></span><div><h3>{audience === 'observer' ? 'Recent event log' : 'Private team activity'}</h3><p>{audience === 'observer' ? 'Sequence, phase, and event payload.' : 'Only events available to the selected agent.'}</p></div></div></div><div className="private-event-list">{audience === 'observer' ? timeline.slice(-12).reverse().map(event => <EventRow compact key={event.id || event.sequence} event={event} />) : (currentAgent?.privateEvents || []).slice(-12).reverse().map(event => <EventRow compact key={event.id || event.sequence} event={event} />)}{audience !== 'observer' && !(currentAgent?.privateEvents?.length) && <p className="muted-center">No private activity for this team yet.</p>}</div></div>
+            <div className="inspector-card"><div className="inspector-card-head"><div><span className="large-icon purple"><MessageSquareText size={17} /></span><div><h3>{audience === 'observer' ? 'Recent activity' : 'Private team activity'}</h3><p>{audience === 'observer' ? 'Choices, results, and conversation.' : 'Only events available to the selected agent.'}</p></div></div></div><div className="private-event-list">{audience === 'observer' ? observerItems.slice(-12).reverse().map(item => item.activity ? <ActivityCard key={item.id} activity={item.activity} teams={accountTeams} /> : <EventRow compact key={item.id} event={item.event!} />) : (currentAgent?.privateEvents || []).slice(-12).reverse().map(event => <EventRow compact key={event.id || event.sequence} event={event} />)}{audience !== 'observer' && !(currentAgent?.privateEvents?.length) && <p className="muted-center">No private activity for this team yet.</p>}</div></div>
             {audience === 'observer' && <div className="inspector-card agent-roster"><div className="inspector-card-head"><div><span className="large-icon green"><Bot size={17} /></span><div><h3>Agent roster</h3><p>Run identities without credentials.</p></div></div></div>{agents.length ? agents.map(({ agent }) => <button key={agent.id} className="agent-row" onClick={() => { setAudience(agent.id); setActivePane('inspector') }}><span className="avatar">{agent.name.slice(0, 1).toUpperCase()}</span><span><strong>{agent.name}</strong><small>Team {agent.teamId.slice(0, 8)}</small></span><ChevronDown size={14} /></button>) : <p className="muted-center">Agent details appear when the run is initialized.</p>}</div>}
           </section>}
         </>}
@@ -371,8 +395,19 @@ function Metric({ label, value }: { label: string; value: string }) { return <di
 function Fact({ label, value }: { label: string; value: string }) { return <div className="fact"><span>{label}</span><strong>{value}</strong></div> }
 function EventRow({ event, compact = false }: { event: RunEvent; compact?: boolean }) {
   const label = event.type.replaceAll(/[._]/g, ' ')
-  const speaker = typeof event.data?.speakerName === 'string' ? event.data.speakerName : event.type.startsWith('host.') ? 'Host' : ''
-  return <article className={`event-row ${compact ? 'compact' : ''}`}><div className="event-marker"><span /></div><div className="event-body"><div className="event-meta"><strong>{speaker || label}</strong>{speaker && <span className="event-kind">{label}</span>}<span>#{event.sequence}</span><time>{prettyTime(event.wallTime)}</time></div><p>{eventText(event)}</p>{event.game && <span className="event-context">{event.game}{event.round ? ` · Round ${event.round}` : ''}{event.logicalTime !== undefined ? ` · t=${event.logicalTime}` : ''}</span>}{event.data && Object.keys(event.data).length > 0 && <details className="event-details"><summary>Event details</summary><pre>{displayValue(event.data)}</pre></details>}</div></article>
+  const isPrivate = event.type === 'chat.private-message'
+  const isRules = event.type === 'rules.card' || event.type === 'host.briefing'
+  const discussionStage = event.data?.discussionStage
+  const stageLabel = discussionStage === 'pre-round' ? 'Round discussion' : discussionStage === 'post-round' ? 'After round' : discussionStage === 'cave-discussion' ? 'Cave window' : undefined
+  const speaker = String(event.data?.speakerName || (isPrivate ? event.data?.senderName : undefined) || (event.type.startsWith('host.') || isRules ? 'Host' : '') || label)
+  return <article className={`event-row message-row ${compact ? 'compact' : ''} ${isPrivate ? 'private-message' : ''}`}>
+    <div className="message-avatar">{isPrivate ? <LockKeyhole size={14} /> : speaker === 'Host' ? <Bot size={15} /> : speaker.slice(0, 1).toUpperCase()}</div>
+    <div className="event-body"><div className="event-meta"><strong>{speaker}</strong>{isPrivate && <span className="private-recipient">→ {String(event.data?.recipientName || event.data?.recipientId || 'Private room')}</span>}{event.game && <GameContext game={event.game} round={event.round} />}<time>{prettyTime(event.wallTime)}</time></div>
+      {stageLabel && <span className="discussion-phase">{stageLabel}</span>}
+      {isRules ? <details className="message-rules"><summary>{event.type === 'host.briefing' ? 'Game theory & cooperation briefing' : 'Game rules'}</summary><p>{eventText(event)}</p></details> : <p>{eventText(event)}</p>}
+      {event.type.startsWith('model.') && event.data && <details className="event-details"><summary>Diagnostic details</summary><pre>{displayValue(event.data)}</pre></details>}
+    </div>
+  </article>
 }
 function downloadJson(value: unknown, filename: string) {
   const blob = new Blob([JSON.stringify(value, null, 2)], { type: 'application/json' })

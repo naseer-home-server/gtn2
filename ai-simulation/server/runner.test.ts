@@ -24,7 +24,7 @@ test('private chat replay dedupes each recipient observation by stable client me
 
 test('initial session setup retries with the stable run id without duplicating setup events', async () => {
   const options: RunOptions = { teamCount: 2, seed: 41, mode: 'scripted', hostModel: '', playerModel: '', minDiscussionBeats: 0,
-    maxDiscussionBeats: 0, caveDiscussionBeats: 0, maxTokens: 1000, maxSteps: 20, maxWallTimeMs: 60_000 }
+    maxDiscussionBeats: 0, caveDiscussionBeats: 0, maxSteps: 20, maxWallTimeMs: 60_000, maxToolAttempts: 1, hostContextTokens: 128000, playerContextTokens: 128000 }
   const run: RunRecord = { id: 'run-stable-id', name: 'Recovery', status: 'paused', createdAt: '', updatedAt: '', options,
     config: structuredClone(DEFAULT_CONFIG), agents: [], events: [], cursor: 0, stepCount: 0, tokensUsed: 0, revision: 0,
     abortEpoch: 0, elapsedMs: 0, memories: {} }
@@ -59,12 +59,13 @@ test('initial session setup retries with the stable run id without duplicating s
   assert.equal(run.agents[0]?.credential, 'capability')
 })
 
-test('manual stepping uses the same elapsed-time, step, and token budget limits', () => {
+test('run limits enforce wall time and steps while cumulative tokens never block progress', () => {
   const options: RunOptions = { teamCount: 2, seed: 41, mode: 'scripted', hostModel: '', playerModel: '', minDiscussionBeats: 0,
-    maxDiscussionBeats: 0, caveDiscussionBeats: 0, maxTokens: 100, maxSteps: 4, maxWallTimeMs: 1000 }
+    maxDiscussionBeats: 0, caveDiscussionBeats: 0, maxSteps: 4, maxWallTimeMs: 1000, maxToolAttempts: 1, hostContextTokens: 128000, playerContextTokens: 128000 }
   const usage = { options, elapsedMs: 0, stepCount: 0, tokensUsed: 0 }
   assert.equal(runBudgetLimitReached(usage), undefined)
   assert.equal(runBudgetLimitReached({ ...usage, elapsedMs: 1000 }), 'wall-time')
   assert.equal(runBudgetLimitReached({ ...usage, stepCount: 4 }), 'steps')
-  assert.equal(runBudgetLimitReached({ ...usage, tokensUsed: 100 }), 'tokens')
+  const legacy = { ...usage, tokensUsed: 2_606_867, options: { ...options, maxTokens: 1 } }
+  assert.equal(runBudgetLimitReached(legacy), undefined)
 })

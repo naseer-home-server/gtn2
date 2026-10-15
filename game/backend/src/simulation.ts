@@ -20,7 +20,7 @@ type SimulationMeta = Record<string, unknown> & {
 
 const setupSchema = z.object({ requestId: z.uuid(), name: z.string().trim().min(1).max(80), teamCount: z.number().int().min(2).max(5),
   seed: z.union([z.string().min(1).max(200), z.number().int().safe()]), config: gameConfigSchema.optional() })
-const controlSchema = z.object({ requestId: z.uuid(), operation: z.enum(['start', 'advance', 'tick']), expectedToken: z.string().min(1).max(100).optional() })
+const controlSchema = z.object({ requestId: z.uuid(), operation: z.enum(['start', 'advance', 'prepare', 'tick']), expectedToken: z.string().min(1).max(100).optional() })
 const jsonError = (response: express.Response, error: unknown) => {
   const failure = error instanceof TRPCError ? error : error instanceof z.ZodError
     ? new TRPCError({ code: 'BAD_REQUEST', message: error.message })

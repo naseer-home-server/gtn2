@@ -1,8 +1,9 @@
 import { mkdir, readFile, rename, writeFile, chmod } from 'node:fs/promises'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
-import { dataDir } from './config.js'
+import { dataDir, defaultOptions } from './config.js'
 import type { RunRecord, RunEvent, RunSummary, RunDetail, PublicAgent } from './types.js'
+import { restoreUsage } from './usage.js'
 
 const file = path.join(dataDir, 'runs.json')
 let records = new Map<string, RunRecord>()
@@ -14,7 +15,13 @@ export async function loadStore() {
     const value = JSON.parse(await readFile(file, 'utf8')) as RunRecord[]
     records = new Map(value.map((r) => [r.id, r]))
     for (const run of records.values()) {
+      const { maxTokens: _legacyTokenBudget, ...options } = run.options as typeof run.options & { maxTokens?: unknown }
+      run.options = options
       run.elapsedMs ??= 0
+      run.options.maxToolAttempts ??= defaultOptions.maxToolAttempts
+      run.options.hostContextTokens ??= defaultOptions.hostContextTokens
+      run.options.playerContextTokens ??= defaultOptions.playerContextTokens
+      restoreUsage(run)
       if (run.status === 'running' || run.status === 'stopping' || run.status === 'created') run.status = 'paused'
     }
   } catch (error) {
@@ -48,6 +55,8 @@ export function detail(run: RunRecord, audience = 'observer'): RunDetail {
   const visibleAgents = run.agents.filter((agent) => observer || audience === 'public' || audience === agent.id)
   const safeSummary = summary(run)
   if (!observer) {
+    safeSummary.error = undefined
+    safeSummary.errorCode = undefined; safeSummary.errorDetails = undefined; safeSummary.modelUsage = undefined
     safeSummary.config = undefined
     safeSummary.sessionId = undefined
     safeSummary.options = { ...run.options, seed: undefined, hostModel: '', playerModel: '' }

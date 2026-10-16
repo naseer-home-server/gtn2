@@ -24,7 +24,7 @@ The new default public price is average current balance ÷ 3, rounded to the nea
 
 **Limit:** The coalition gives up its normal high payouts, and sharing any captured payout is another unenforced promise. This guarantees zero new game earnings for one outsider only when every other team follows the zero-choice plan; it does not reduce the outsider's accumulated balance. A plan with one coalition team choosing high is less robust because the culprit can also choose zero and potentially win on arrival order.
 
-**Why betrayal is tempting:** If everyone chooses the maximum, everyone earns the maximum. One team can undercut by one cent and retain the maximum payout while reducing every other team's payout. Its benefit is a relative lead, even without an increase in its own earnings. That fits the simulation objective of finishing first by balance.
+**Why betrayal can be tempting:** If everyone chooses the maximum, everyone earns the maximum. One team can undercut by one cent and retain the maximum payout while reducing every other team's payout. Its immediate benefit is a relative lead, without an increase in its own earnings. The current simulation objective prioritizes money taken home, so that relative lead alone is not a reason to undercut; the team must weigh any effects on its future earnings, trust, and retaliation.
 
 ## Cave mining
 

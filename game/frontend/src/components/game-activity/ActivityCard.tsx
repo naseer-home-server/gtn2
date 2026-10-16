@@ -28,7 +28,7 @@ export function TeamAccounts({ teams, finished = false }: { teams: ReviewTeam[];
   return <section className="game-accounts" aria-label={finished ? 'Final team accounts' : 'Team accounts'}>
     <div className="accounts-heading"><Coins size={16} aria-hidden="true" /><strong>{finished ? 'Final team accounts' : 'Team accounts'}</strong><span>{finished ? 'Final balances' : 'Current balances'}</span></div>
     <div className="accounts-grid">{teams.length ? teams.map((team, index) => <article className="team-account" key={team.id}>
-      <div className="account-name"><span className={`account-avatar account-color-${index % 5}`}>{team.rank ? `#${team.rank}` : team.name.slice(0, 1)}</span><strong>{team.name}</strong><span className="account-stars"><Star size={12} aria-hidden="true" />{team.stars ?? '—'}</span></div>
+      <div className="account-name"><span className={`account-avatar account-color-${index % 7}`}>{team.rank ? `#${team.rank}` : team.name.slice(0, 1)}</span><strong>{team.name}</strong><span className="account-stars"><Star size={12} aria-hidden="true" />{team.stars ?? '—'}</span></div>
       <strong className="account-balance">{moneyCents(team.balance)}</strong>
     </article>) : <p className="activity-note">Accounts appear when teams are assigned.</p>}</div>
   </section>

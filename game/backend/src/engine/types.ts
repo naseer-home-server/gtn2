@@ -3,12 +3,13 @@ export type GameId = typeof GAME_ORDER[number]
 export type Money = string
 export type MoneyInput = string | number
 export type Triple<T> = [T, T, T]
+export type CaveCollapseRisk = [number, number, number, number, number] | [number, number, number, number, number, number, number]
 export type GameConfig = {
   initialBalance: number
   revealPotMultiplier: number
   bonus: { bag: Triple<number>; threshold: Triple<number>; multiplier: Triple<number>; stars: number }
   highLow: { pool: Triple<number>; multiplier: Triple<number>; stars: number }
-  cave: { startingMoney: Triple<number>; growth: Triple<number>; tickSeconds: number; collapseRisk: [number, number, number, number, number]; stars: number }
+  cave: { startingMoney: Triple<number>; growth: Triple<number>; tickSeconds: number; maxTicks: number; collapseRisk: CaveCollapseRisk; stars: number }
   circle: { multiplier: Triple<number> }
   bomb: { minChits: number; maxChits: number; advantageChits: number; factor: Triple<number> }
 }
@@ -87,7 +88,7 @@ export type PlayerGameView = {
   earnings: { game: GameId; round: number; amount: string }[]
   roundState: {
     phase: string; submitted: boolean; choiceLimit?: string
-    unbanked?: string; hasLeft?: boolean; nextTickAt?: number | null
+    unbanked?: string; hasLeft?: boolean; nextTickAt?: number | null; tick?: number
     sender?: PublicTeam; received?: { money: string; stars: number }; returned?: { money: string; stars: number }
     minChits?: number; maxChits?: number; bombRecipient?: PublicTeam; bombDirection?: 'up' | 'down'
   } | null

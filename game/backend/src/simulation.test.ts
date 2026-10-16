@@ -90,13 +90,14 @@ test('simulation setup, player capabilities, controls, and actions share the per
         const origin = `http://127.0.0.1:${address.port}`
         const serviceHeaders = { 'content-type': 'application/json', 'x-simulation-service-key': 'simulation-test-secret-'.padEnd(40, 'x') }
         const config = structuredClone(DEFAULT_CONFIG)
-        config.cave.collapseRisk = [0, 0, 0, 0, 0]
-        const setup = { requestId: randomUUID(), name: `Simulation ${randomUUID()}`, teamCount: 2, seed: 73, config }
+        config.cave.collapseRisk = [0, 0, 0, 0, 0, 0, 0]
+        const setup = { requestId: randomUUID(), name: `Simulation ${randomUUID()}`, teamCount: 7, seed: 73, config }
         const create = () => fetch(`${origin}/api/simulation/sessions`, { method: 'POST', headers: serviceHeaders, body: JSON.stringify(setup) })
         const firstResponse = await create()
         assert.equal(firstResponse.status, 201)
         const first = await firstResponse.json() as { sessionId: string; players: Array<{ agentId: string; teamId: string; playerId: string; email: string; credential: string }> }
-        assert.equal(first.players.length, 2)
+        assert.equal(first.players.length, 7)
+        assert.equal((await sessions.get(first.sessionId)).players.length, 14)
         assert.ok(first.players.every((player) => player.teamId && player.credential))
         const retryResponse = await create()
         const retry = await retryResponse.json() as typeof first
@@ -115,6 +116,16 @@ test('simulation setup, player capabilities, controls, and actions share the per
         assert.equal(concurrentA.sessionId, concurrentB.sessionId)
         assert.deepEqual(concurrentA.players.map(({ credential }) => credential), concurrentB.players.map(({ credential }) => credential))
         await sessions.setActive(first.sessionId, 'simulation:runner')
+        const invited = (await sessions.get(first.sessionId)).players
+        const groupResponse = await fetch(`${origin}/api/simulation/sessions/${first.sessionId}/players/${first.players[0]!.agentId}/chat/groups`, {
+          method: 'POST', headers: { ...serviceHeaders, authorization: `Bearer ${first.players[0]!.credential}` },
+          body: JSON.stringify({ name: 'All fourteen players', playerIds: invited.filter(member => member.id !== first.players[0]!.playerId).map(member => member.id) }),
+        })
+        assert.equal(groupResponse.status, 200)
+        const group = await groupResponse.json() as { playerIds: string[] }
+        assert.equal(group.playerIds.length, 14)
+        const tooManyTeams = await fetch(`${origin}/api/simulation/sessions`, { method: 'POST', headers: serviceHeaders, body: JSON.stringify({ ...setup, requestId: randomUUID(), teamCount: 8 }) })
+        assert.equal(tooManyTeams.status, 400)
 
         const player = first.players[0]!
         const playerHeaders = { ...serviceHeaders, authorization: `Bearer ${player.credential}` }

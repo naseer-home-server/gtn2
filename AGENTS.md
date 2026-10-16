@@ -1,6 +1,6 @@
 # Game Theory Night 2
 
-A night for friends inspired by Tom Scott’s **Money**: five games, three rounds each, increasing stakes. Play as teams of two (one solo team if needed), up to five teams. Each team is one “player,” with a balance carried across rounds/games; ties use a fixed order based on each team's first member to arrive.
+A night for friends inspired by Tom Scott’s **Money**: five games, three rounds each, increasing stakes. Play as teams of two (one solo team if needed), up to seven teams. Each team is one “player,” with a balance carried across rounds/games; ties use a fixed order based on each team's first member to arrive.
 
 - `presentation/`: future HTML presentation.
 - `game/`: Vite + React + TypeScript app for player login and gameplay.

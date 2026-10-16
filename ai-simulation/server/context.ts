@@ -1,8 +1,8 @@
 import { providerConfig } from './config.js'
 
-export type ContextInfo = { model: string; contextWindowTokens: number; contextSource: 'configured' | 'provider'; maxOutputTokens: number; outputSource?: 'configured' | 'provider' }
+export type ContextInfo = { model: string; contextWindowTokens: number; contextSource: 'configured' | 'provider'; maxOutputTokens: number; outputSource?: 'configured' | 'provider'; promptPriceUsdPerToken?: number; completionPriceUsdPerToken?: number }
 export type RequestContext = ContextInfo & { requestBytes: number; estimatedPromptTokens: number; reservedOutputTokens: number }
-export type CompletionUsage = RequestContext & { promptTokens?: number; completionTokens?: number; totalTokens: number; finishReason?: string; reasoningTokens?: number }
+export type CompletionUsage = RequestContext & { promptTokens?: number; completionTokens?: number; totalTokens: number; finishReason?: string; reasoningTokens?: number; costUsd?: number; estimatedCostUsd?: number }
 export class ModelContextError extends Error {
   constructor(readonly code: 'MODEL_CONTEXT_LIMIT' | 'MODEL_CONTEXT_LIMIT_UNKNOWN', readonly details: Record<string, unknown>, message: string) {
     super(code + ': ' + message); this.name = 'ModelContextError'
@@ -20,7 +20,6 @@ const catalogues = new Map<string, { expires: number; models: Promise<any[]> }>(
 const positiveInteger = (value: unknown): number | undefined => typeof value === 'number' && Number.isSafeInteger(value) && value > 0 ? value : undefined
 export async function resolveModelContext(model: string, configured: number, signal?: AbortSignal, configuredOutput = 0): Promise<ContextInfo> {
   const explicitContext = positiveInteger(configured), explicitOutput = positiveInteger(configuredOutput)
-  if (explicitContext && explicitOutput) return { model, contextWindowTokens: explicitContext, contextSource: 'configured', maxOutputTokens: explicitOutput, outputSource: 'configured' }
   const key = providerConfig.baseUrl + '\0' + providerConfig.apiKey
   let catalogue = catalogues.get(key)
   if (!catalogue || catalogue.expires < Date.now()) {
@@ -48,8 +47,13 @@ export async function resolveModelContext(model: string, configured: number, sig
     .map(positiveInteger).filter((value): value is number => value !== undefined)
   const maxOutputTokens = outputLimits.length ? Math.min(...outputLimits) : explicitOutput
   if (!maxOutputTokens) throw new ModelOutputLimitUnknown({ model })
+  const price = (value: unknown) => {
+    const parsed = typeof value === 'number' || typeof value === 'string' ? Number(value) : NaN
+    return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined
+  }
   return { model, contextWindowTokens: explicitContext || Math.min(...limits), contextSource: explicitContext ? 'configured' : 'provider',
-    maxOutputTokens, outputSource: outputLimits.length ? 'provider' : 'configured' }
+    maxOutputTokens, outputSource: outputLimits.length ? 'provider' : 'configured',
+    promptPriceUsdPerToken: price(found?.pricing?.prompt), completionPriceUsdPerToken: price(found?.pricing?.completion) }
 }
 
 export function sizeRequest(messages: Array<Record<string, unknown>>, tools: unknown, context: ContextInfo,

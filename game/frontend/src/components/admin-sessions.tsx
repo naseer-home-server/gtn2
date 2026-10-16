@@ -1,4 +1,5 @@
 import { useState, type SubmitEvent } from 'react'
+import { MAX_SESSION_PLAYERS } from '../../../backend/src/engine/limits'
 import { Link, useNavigate } from 'react-router-dom'
 import { useGameSessions } from '@/hooks/use-game-sessions'
 import { Button } from '@/components/ui/button'
@@ -21,7 +22,7 @@ export function AdminSessions() {
   }
   return <div className="space-y-6">
     <Card>
-      <CardHeader><CardTitle><h2>Create game session</h2></CardTitle><CardDescription>Invite up to ten people using the email they will log in with.</CardDescription></CardHeader>
+      <CardHeader><CardTitle><h2>Create game session</h2></CardTitle><CardDescription>Invite up to {MAX_SESSION_PLAYERS} people using the email they will log in with.</CardDescription></CardHeader>
       <CardContent><form onSubmit={submit} className="space-y-4">
         <div className="space-y-2"><Label htmlFor="session-name">Session name</Label><Input id="session-name" value={name} onChange={(e) => setName(e.target.value)} required maxLength={100} placeholder="Game Theory Night 2" /></div>
         <div className="space-y-2"><Label htmlFor="player-emails">Player emails</Label><textarea id="player-emails" className="min-h-32 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" value={emails} onChange={(e) => setEmails(e.target.value)} required placeholder="One email per line" /><p className="text-sm text-muted-foreground">Separate emails with new lines or commas.</p></div>

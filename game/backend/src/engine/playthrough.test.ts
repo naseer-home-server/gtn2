@@ -36,7 +36,11 @@ function advance(state: EngineState, e: EngineEnv) {
 
 test('complete deterministic 15-round playthrough covers stakes, cave banking, transfers, and finale advantage', () => {
   const e = env()
-  const { state, events } = startEngine(teams(), structuredClone(DEFAULT_CONFIG), e)
+  const config = structuredClone(DEFAULT_CONFIG)
+  // Fixed tuning keeps the expected final balances independent of editable defaults.
+  config.cave.startingMoney = [5, 10, 25]
+  config.highLow.multiplier = [2, 5, 10]
+  const { state, events } = startEngine(teams(), config, e)
   assert.equal(state.gameIndex, 0)
   assert.equal(current(state).game, 'bonus')
   assert.equal(events.at(-1)?.type, 'round.ready')
@@ -159,7 +163,7 @@ test('complete deterministic 15-round playthrough covers stakes, cave banking, t
 })
 
 test('orchestrator rejects invalid starts, early advances, stale tokens, and wrong game actions', () => {
-  assert.throws(() => startEngine(teams().slice(0, 1), structuredClone(DEFAULT_CONFIG), env()), /two and five/)
+  assert.throws(() => startEngine(teams().slice(0, 1), structuredClone(DEFAULT_CONFIG), env()), /2 and 7/)
   const { state } = startEngine(teams(), structuredClone(DEFAULT_CONFIG), env())
   assert.throws(() => advanceEngine(state, env()), /Finish this round/)
   assert.throws(() => applyAction(state, 'a', 'old-token', { type: 'bonus.take', amount: 0 }, env()), /earlier round or tick/)

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { GameConfig, GameId, TeamAssignment } from 'backend/game'
+import { MIN_TEAMS, MAX_TEAMS, MAX_SESSION_PLAYERS } from '../../../backend/src/engine/limits'
 import { useAdminGame } from '@/hooks/use-gameplay'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -45,10 +46,10 @@ export function AdminGame({ sessionId, players }: { sessionId: string; players: 
   const nextGame = engine ? GAME_ORDER[engine.gameIndex + (engine.round === 3 ? 1 : 0)] : undefined
   const nextRound = engine ? (engine.round === 3 ? 1 : engine.round + 1) : undefined
   const allIds = teams.flatMap((team) => [team.first, team.second].filter(Boolean))
-  const validTeams = teams.length >= 2 && teams.length <= 5 && teams.every((team) => team.name.trim() && team.first)
+  const validTeams = teams.length >= MIN_TEAMS && teams.length <= MAX_TEAMS && teams.every((team) => team.name.trim() && team.first)
   const soloCount = teams.filter((team) => team.first && !team.second).length
   const soloMatchesAttendance = allIds.length % 2 === soloCount
-  const validPeople = allIds.length >= 2 && allIds.length <= 10 && new Set(allIds).size === allIds.length
+  const validPeople = allIds.length >= 2 && allIds.length <= MAX_SESSION_PLAYERS && new Set(allIds).size === allIds.length
   const canStart = Boolean(validTeams && soloMatchesAttendance && validPeople && !start.isPending)
   const activities = engine ? gameActivities(view.events, engine.teams) : []
   function updateTeam(index: number, key: keyof DraftTeam, value: string) {
@@ -80,8 +81,8 @@ export function AdminGame({ sessionId, players }: { sessionId: string; players: 
           <p className="text-sm text-muted-foreground">Useful for preview sessions. The session starts at round 1 of this game.</p>
         </section>
         <section className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-medium">Teams</h3><Button variant="outline" disabled={teams.length >= 5} onClick={() => setTeams((items) => [...items, freshTeam()])}>Add team</Button></div>
-          <p className="text-sm text-muted-foreground">Choose 2–5 teams from arrived players. One team may be solo when attendance is odd.</p>
+          <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-medium">Teams</h3><Button variant="outline" disabled={teams.length >= MAX_TEAMS} onClick={() => setTeams((items) => [...items, freshTeam()])}>Add team</Button></div>
+          <p className="text-sm text-muted-foreground">Choose {MIN_TEAMS}–{MAX_TEAMS} teams from arrived players. One team may be solo when attendance is odd.</p>
           {teams.map((team, index) => <div key={index} className="grid gap-3 rounded-lg border p-3 sm:grid-cols-[1fr_1fr_1fr_auto] sm:items-end">
             <div className="space-y-1"><Label htmlFor={`team-${index}-name`}>Team name</Label><Input id={`team-${index}-name`} value={team.name} onChange={(e) => updateTeam(index, 'name', e.target.value)} placeholder={`Team ${index + 1}`} /></div>
             {(['first', 'second'] as const).map((slot) => <div key={slot} className="space-y-1"><Label htmlFor={`team-${index}-${slot}`}>{slot === 'first' ? 'Player 1' : 'Player 2'}</Label><select id={`team-${index}-${slot}`} className="h-8 w-full rounded-lg border border-input bg-background px-2 text-sm" value={team[slot]} onChange={(e) => updateTeam(index, slot, e.target.value)}><option value="">Select arrived player</option>{optionsFor(team[slot]).map((player) => <option key={player.id} value={player.id}>{player.email}</option>)}</select></div>)}

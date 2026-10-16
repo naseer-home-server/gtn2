@@ -79,7 +79,7 @@ test('exhausted corrections pause without dispatching any batch decisions; a lat
   const initialTokens = 2_606_867
   const run: RunRecord = {
     id: 'test-recovery', name: 'Recovery test', status: 'paused', createdAt: '', updatedAt: '',
-    options: { teamCount: 2, seed: 41, mode: 'openai', hostModel: 'mock', playerModel: 'mock', minDiscussionBeats: 0,
+    options: { teamCount: 2, seed: 41, mode: 'openai', hostModel: 'mock', playerModel: 'mock', hostReasoningEffort: 'high', playerReasoningEffort: 'high', minDiscussionBeats: 0,
       maxDiscussionBeats: 0, caveDiscussionBeats: 0, maxToolAttempts: 3, hostContextTokens: 128000, playerContextTokens: 128000, maxSteps: 20, maxWallTimeMs: 60_000 },
     config: structuredClone(DEFAULT_CONFIG), sessionId: 'session',
     agents: teams.map((team, index) => ({ id: 'team-' + (index + 1), name: team.name, teamId: team.id, playerId: team.playerIds[0]!, email: team.name + '@test.invalid', credential: 'test-only' })),

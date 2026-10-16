@@ -1,9 +1,11 @@
 import { startEarlyGame, actEarlyGame, tickCave } from './early-games.js'
 import { startFinalGame, actFinalGame } from './final-games.js'
 import { gameConfigSchema } from './config.js'
+import { MIN_TEAMS, MAX_TEAMS } from './limits.js'
 import { cents, ensure, moneyAdd, moneyCompare, moneyMin, moneyScale, moneySub, safeMoney, teamById } from './helpers.js'
 import { GAME_ORDER, type CurrentRound, type EngineEnv, type EngineEvent, type EngineState, type GameAction, type GameConfig, type GameId, type Ranking, type Team } from './types.js'
 export { DEFAULT_CONFIG, gameActionSchema, gameConfigSchema } from './config.js'
+export * from './limits.js'
 export { playerView } from './views.js'
 export { cents } from './money.js'
 export type * from './types.js'
@@ -44,8 +46,8 @@ function captureGameStart(state: EngineState) {
   }
 }
 export function startEngine(teams: Team[], config: GameConfig, env: EngineEnv, startingGame: EngineState['current']['game'] = 'bonus'): { state: EngineState; events: EngineEvent[] } {
-  gameConfigSchema.parse(config)
-  ensure(teams.length >= 2 && teams.length <= 5, 'Assign between two and five teams.')
+  config = gameConfigSchema.parse(config)
+  ensure(teams.length >= MIN_TEAMS && teams.length <= MAX_TEAMS, `Assign between ${MIN_TEAMS} and ${MAX_TEAMS} teams.`)
   ensure(new Set(teams.map((team) => team.id)).size === teams.length, 'Team IDs must be unique.')
   const state: EngineState = {
     version: 1, revision: 0, status: 'playing', config: structuredClone(config),

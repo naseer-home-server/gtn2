@@ -8,11 +8,13 @@ import {
 import type { ConfigResponse, GameConfig, RunDetail, RunEvent, RunOptions, RunSummary } from './types'
 import { ActivityCard, GameContext, TeamAccounts } from '../../../game/frontend/src/components/game-activity/ActivityCard'
 import { observerAccounts, observerTranscript } from './observer'
+import { MIN_TEAMS, MAX_TEAMS } from '../../../game/backend/src/engine/limits'
 
 const tokenKey = 'simulation.operatorToken'
 const rounds = ['Round 1', 'Round 2', 'Round 3']
 const baseRunOptions: RunOptions = {
   teamCount: 5, seed: 20261014, mode: 'scripted', hostModel: '', playerModel: '',
+  hostReasoningEffort: 'high', playerReasoningEffort: 'high',
   minDiscussionBeats: 2, maxDiscussionBeats: 4, caveDiscussionBeats: 1,
   maxSteps: 1000, maxWallTimeMs: 3600000,
   maxToolAttempts: 3,
@@ -52,7 +54,8 @@ const configGroups: ConfigGroup[] = [
     { path: 'cave.startingMoney', label: 'Starting money', min: 0, max: 1e12, step: 0.01 },
     { path: 'cave.growth', label: 'Growth multiplier', min: 1, max: 1e6, step: 0.1 },
     { path: 'cave.tickSeconds', label: 'Decision window (seconds)', min: 1, max: 3600, step: 1 },
-    { path: 'cave.collapseRisk', label: 'Collapse risk by teams departed', min: 0, max: 100, step: 1, hint: 'Percent chance at 0, 1, 2, 3, and 4 teams departed.' },
+    { path: 'cave.maxTicks', label: 'Maximum ticks', min: 1, max: 1000, step: 1, integer: true, hint: 'The safe opening decision window counts as tick 1.' },
+    { path: 'cave.collapseRisk', label: 'Collapse risk by teams departed', min: 0, max: 100, step: 1, hint: 'Percent chance by departures, from 0 to 6. Legacy five-entry tables cap at their last value.' },
     { path: 'cave.stars', label: 'Stars for cave total winner', min: 0, max: 1000, step: 1, integer: true },
   ] },
   { id: 'circle', title: 'What goes around comes around', description: 'Transfer multiplier by round. This game awards no stars.', rows: 'rounds', fields: [
@@ -81,8 +84,8 @@ function validateConfig(config: any): string | null {
     const val = getPath(config, path)
     const spec = configGroups.flatMap(group => group.fields).find(field => field.path === path)!
     if (Array.isArray(val)) {
-      const expected = path === 'cave.collapseRisk' ? 5 : 3
-      if (val.length !== expected || val.some(item => typeof item !== 'number' || !Number.isFinite(item))) return `${path} must contain ${expected} finite numbers.`
+      const lengths = path === 'cave.collapseRisk' ? [5, 7] : [3]
+      if (!lengths.includes(val.length) || val.some(item => typeof item !== 'number' || !Number.isFinite(item))) return `${path} must contain ${lengths.join(' or ')} finite numbers.`
     } else if (typeof val !== 'number' || !Number.isFinite(val)) return `${path} must be a finite number.`
     const values = Array.isArray(val) ? val : [val]
     if (values.some(item => (spec.min !== undefined && item < spec.min) || (spec.max !== undefined && item > spec.max) || (spec.integer && !Number.isInteger(item)))) return `${spec.label} values must be ${spec.integer ? 'whole numbers ' : ''}between ${spec.min ?? '−∞'} and ${spec.max ?? '∞'}.`
@@ -92,6 +95,25 @@ function validateConfig(config: any): string | null {
 }
 function usageTotal(tokens: number, reported: number | undefined, calls: number) {
   return reported === calls && calls > 0 ? tokens.toLocaleString() : reported ? '≥' + tokens.toLocaleString() : '—'
+}
+function usd(value: number) {
+  return new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', minimumFractionDigits: 4, maximumFractionDigits: 6 }).format(value)
+}
+type ModelUsage = NonNullable<RunSummary['modelUsage']>[string]
+function formatModelCost(usage: ModelUsage) {
+  const actual = usage.actualCostUsd || 0, estimated = usage.estimatedCostUsd || 0
+  if (!actual && !estimated && !(usage.calls > (usage.unpricedCalls || 0))) return '—'
+  const total = actual + estimated
+  return `${estimated ? '~' : ''}${(usage.unpricedCalls || 0) > 0 ? '≥' : ''}${usd(total)}`
+}
+function formatRunCost(usages?: Record<string, ModelUsage>) {
+  const entries = Object.values(usages || {})
+  if (!entries.length) return '—'
+  const cost = entries.reduce((sum, item) => sum + (item.actualCostUsd || 0) + (item.estimatedCostUsd || 0), 0)
+  if (entries.every(item => !(item.actualCostUsd || 0) && !(item.estimatedCostUsd || 0) && !(item.calls > (item.unpricedCalls || 0)))) return '—'
+  const estimated = entries.some(item => (item.estimatedCostUsd || 0) > 0)
+  const partial = entries.some(item => (item.unpricedCalls || 0) > 0)
+  return `${estimated ? '~' : ''}${partial ? '≥' : ''}${usd(cost)}`
 }
 function prettyTime(value?: number | string) {
   if (value === undefined || value === null || value === '') return '—'
@@ -322,7 +344,7 @@ function App() {
                     const current = config ? getPath(config, field.path) : undefined
                     const isArray = Array.isArray(current)
                     const count = isArray ? current.length : 1
-                    const labels = field.path === 'cave.collapseRisk' ? ['0 departed', '1 departed', '2 departed', '3 departed', '4 departed'] : rounds
+                    const labels = field.path === 'cave.collapseRisk' ? Array.from({ length: count }, (_, index) => `${index} departed`) : rounds
                     return <div className={`field-row ${isArray ? 'array-field' : ''}`} key={field.path}>
                       <div className="field-label"><strong>{field.label}</strong>{field.hint && <small>{field.hint}</small>}</div>
                       <div className="field-inputs">{Array.from({ length: count }, (_, index) => <label className="number-field" key={index}>{isArray && <span>{labels[index]}</span>}<input type="number" min={field.min} max={field.max} step={field.step} value={isArray ? current[index] : current as number} onChange={e => updateConfig(field.path, isArray ? index : null, e.target.value)} aria-label={`${field.label}${isArray ? ` ${labels[index]}` : ''}`} /></label>)}</div>
@@ -337,10 +359,10 @@ function App() {
                 <div className="setup-card-title"><span className="large-icon"><Bot size={19} /></span><div><h2>Run setup</h2><p>Configure agents and run limits.</p></div></div>
                 <div className="form-field"><label htmlFor="run-name">Run name <span>optional</span></label><input id="run-name" value={runName} onChange={e => setRunName(e.target.value)} placeholder="e.g. Baseline · seed 41" /></div>
                 <div className="form-field"><label>Agent mode</label><div className="segmented"><button type="button" className={options.mode === 'scripted' ? 'active' : ''} onClick={() => setOptions({ ...options, mode: 'scripted' })}><Activity size={14} /> Scripted</button><button type="button" className={options.mode === 'openai' ? 'active' : ''} onClick={() => setOptions({ ...options, mode: 'openai' })}><WandSparkles size={14} /> OpenAI</button></div></div>
-                {isOpenAI && <div className="model-fields"><div className="form-field"><label htmlFor="host-model">Host model</label><input id="host-model" value={options.hostModel} onChange={e => setOptions({ ...options, hostModel: e.target.value })} placeholder="Configured on server" /></div><div className="form-field"><label htmlFor="player-model">Player model</label><input id="player-model" value={options.playerModel} onChange={e => setOptions({ ...options, playerModel: e.target.value })} placeholder="Configured on server" /></div><div className={`key-status ${serverConfig?.provider.configured ? 'good' : 'bad'}`}><KeyRound size={14} />{serverConfig?.provider.configured ? 'Provider key is configured on the server.' : 'Add an API key to the server environment to use OpenAI mode.'}</div></div>}
+                {isOpenAI && <div className="model-fields"><div className="form-field"><label htmlFor="host-model">Host model</label><input id="host-model" value={options.hostModel} onChange={e => setOptions({ ...options, hostModel: e.target.value })} placeholder="Configured on server" /></div><div className="form-field"><label htmlFor="host-reasoning-effort">Host reasoning effort</label><select id="host-reasoning-effort" value={options.hostReasoningEffort} onChange={e => setOptions({ ...options, hostReasoningEffort: e.target.value as RunOptions['hostReasoningEffort'] })}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="xhigh">XHigh</option></select></div><div className="form-field"><label htmlFor="player-model">Player model</label><input id="player-model" value={options.playerModel} onChange={e => setOptions({ ...options, playerModel: e.target.value })} placeholder="Configured on server" /></div><div className="form-field"><label htmlFor="player-reasoning-effort">Player reasoning effort</label><select id="player-reasoning-effort" value={options.playerReasoningEffort} onChange={e => setOptions({ ...options, playerReasoningEffort: e.target.value as RunOptions['playerReasoningEffort'] })}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="xhigh">XHigh</option></select></div><div className={`key-status ${serverConfig?.provider.configured ? 'good' : 'bad'}`}><KeyRound size={14} />{serverConfig?.provider.configured ? 'Provider key is configured on the server.' : 'Add an API key to the server environment to use OpenAI mode.'}</div></div>}
                 {isOpenAI && <div className="form-field"><div className="two-fields"><NumberSetting label="Host context tokens" value={options.hostContextTokens} min={0} max={10000000} step={1} onChange={value => setOptions({ ...options, hostContextTokens: value })} /><NumberSetting label="Player context tokens" value={options.playerContextTokens} min={0} max={10000000} step={1} onChange={value => setOptions({ ...options, playerContextTokens: value })} /></div><small>0 discovers the limit from provider model metadata. If unavailable, enter the model's documented context window. Full permitted history is retained; a full context pauses the run.</small></div>}
                 {isOpenAI && <div className="form-field"><NumberSetting label="Tool call attempts" value={options.maxToolAttempts} min={1} max={10} step={1} onChange={value => setOptions({ ...options, maxToolAttempts: value })} /><small>Includes the first proposal. Validation errors return privately to the model; the run pauses when attempts are exhausted.</small></div>}
-                <div className="two-fields"><NumberSetting label="Teams" value={options.teamCount} min={2} max={5} step={1} onChange={value => setOptions({ ...options, teamCount: value })} /><NumberSetting label="Setup seed" value={options.seed} min={0} max={2147483647} step={1} onChange={value => setOptions({ ...options, seed: value })} /></div>
+                <div className="two-fields"><NumberSetting label="Teams" value={options.teamCount} min={MIN_TEAMS} max={MAX_TEAMS} step={1} onChange={value => setOptions({ ...options, teamCount: value })} /><NumberSetting label="Setup seed" value={options.seed} min={0} max={2147483647} step={1} onChange={value => setOptions({ ...options, seed: value })} /></div>
                 <div className="form-subheading"><span>Discussion and cave cadence</span><CircleHelp size={14} aria-label="One sweep gives every team a turn in a fresh shuffled order. Limits apply once between rounds; the host closes after agreement once the minimum is met." /></div>
                 <div className="two-fields"><NumberSetting label="Minimum sweeps" value={options.minDiscussionBeats} min={0} max={20} step={1} onChange={value => setOptions({ ...options, minDiscussionBeats: value })} /><NumberSetting label="Maximum sweeps" value={options.maxDiscussionBeats} min={0} max={20} step={1} onChange={value => setOptions({ ...options, maxDiscussionBeats: value })} /></div>
                 <p className="discussion-help">One discussion between rounds reviews results and plans the next round. Transfers and reveal contributions are available during discussion. The host may close after the minimum; game choices wait for the round to start.</p>
@@ -361,8 +383,8 @@ function App() {
           {observerView && <TeamAccounts teams={accountTeams} finished={selectedSummary?.status === 'finished'} />}
           <section className="run-overview">
             <div className="run-status"><span className={`status-pill ${statusTone(selectedSummary?.status)}`}><i />{selectedSummary?.status || 'loading'}</span><span className="overview-divider" /><span className="progress-caption">{observerView ? <>Step {visibleStepCount} <span>of {selectedSummary?.options?.maxSteps ?? '—'}</span></> : 'Progress hidden in this view'}</span>{observerView && <><div className="progress-track"><span style={{ width: `${progress}%` }} /></div><span className="progress-number">{progress}%</span></>}</div>
-            <div className="run-metrics"><Metric label="Visible agents" value={String(visibleAgentCount || '—')} /><Metric label="Tokens used" value={visibleTokenCount === undefined ? '—' : visibleTokenCount.toLocaleString()} /><Metric label="Visible events" value={String(visibleEventCount)} /><Metric label="Updated" value={prettyTime(selectedSummary?.updatedAt)} /></div>
-            {observerView && Object.keys(selectedSummary?.modelUsage || {}).length > 0 && <details className="model-usage"><summary>Host and player token usage</summary><div className="model-usage-scroll"><table><thead><tr><th>Agent / model</th><th>Responses</th><th>Input total</th><th>Output total</th><th>Total usage</th><th>Latest input</th><th>Context window</th></tr></thead><tbody>{Object.entries(selectedSummary?.modelUsage || {}).map(([id, usage]) => <tr key={id}><td>{id === 'host' ? 'Host' : selectedSummary?.agents.find(agent => agent.id === id)?.name || id}<small>{usage.model}</small></td><td>{usage.calls}</td><td>{usageTotal(usage.promptTokens, usage.promptUsageCalls, usage.calls)}</td><td>{usageTotal(usage.completionTokens, usage.completionUsageCalls, usage.calls)}</td><td>{usage.totalTokens.toLocaleString()}</td><td>{usage.lastPromptTokens === undefined ? '~' : ''}{(usage.lastPromptTokens ?? usage.lastEstimatedPromptTokens)?.toLocaleString() || '—'}<small>+{usage.reservedOutputTokens?.toLocaleString() || '—'} reserved output</small></td><td>{usage.contextWindowTokens?.toLocaleString() || 'Unknown'}<small>{usage.contextSource || 'not resolved'}</small></td></tr>)}</tbody></table></div><small>Cumulative usage counts repeated prompts. Context applies to the latest input plus output allowance, not lifetime usage. ~ indicates an estimate; ≥ is partial historical usage; — means unavailable.</small></details>}
+            <div className="run-metrics"><Metric label="Visible agents" value={String(visibleAgentCount || '—')} /><Metric label="Tokens used" value={visibleTokenCount === undefined ? '—' : visibleTokenCount.toLocaleString()} />{observerView && <Metric label="Model cost so far" value={formatRunCost(selectedSummary?.modelUsage)} />}<Metric label="Visible events" value={String(visibleEventCount)} /><Metric label="Updated" value={prettyTime(selectedSummary?.updatedAt)} /></div>
+            {observerView && Object.keys(selectedSummary?.modelUsage || {}).length > 0 && <details className="model-usage"><summary>Host and player token usage and cost</summary><div className="model-usage-scroll"><table><thead><tr><th>Agent / model</th><th>Responses</th><th>Input total</th><th>Output total</th><th>Total usage</th><th>Cost so far</th><th>Latest input</th><th>Context window</th></tr></thead><tbody>{Object.entries(selectedSummary?.modelUsage || {}).map(([id, usage]) => <tr key={id}><td>{id === 'host' ? 'Host' : selectedSummary?.agents.find(agent => agent.id === id)?.name || id}<small>{usage.model}</small></td><td>{usage.calls}</td><td>{usageTotal(usage.promptTokens, usage.promptUsageCalls, usage.calls)}</td><td>{usageTotal(usage.completionTokens, usage.completionUsageCalls, usage.calls)}</td><td>{usage.totalTokens.toLocaleString()}</td><td>{formatModelCost(usage)}<small>{usage.promptPriceUsdPerToken !== undefined && usage.completionPriceUsdPerToken !== undefined ? `Rates: $${(usage.promptPriceUsdPerToken * 1e6).toPrecision(4)} / $${(usage.completionPriceUsdPerToken * 1e6).toPrecision(4)} per 1M input/output tokens` : 'No published rates available'}</small></td><td>{usage.lastPromptTokens === undefined ? '~' : ''}{(usage.lastPromptTokens ?? usage.lastEstimatedPromptTokens)?.toLocaleString() || '—'}<small>+{usage.reservedOutputTokens?.toLocaleString() || '—'} reserved output</small></td><td>{usage.contextWindowTokens?.toLocaleString() || 'Unknown'}<small>{usage.contextSource || 'not resolved'}</small></td></tr>)}</tbody></table></div><small>Reported OpenRouter cost is used when returned. Otherwise cost uses the model catalogue input/output rates and reported token counts; it may differ when caching, provider routing, or special token types change billing. Cumulative usage counts repeated prompts. Context applies to the latest input plus output allowance, not lifetime usage. ~ indicates an estimate; ≥ is partial historical usage; — means unavailable.</small></details>}
             <div className="control-bar"><div className="control-buttons">{selectedSummary?.status === 'running' ? <button className="button secondary" disabled={working} onClick={() => void control('pause')}><Pause size={14} /> Pause</button> : <button className="button secondary" disabled={working || ['finished', 'stopped', 'failed'].includes(selectedSummary?.status || '')} onClick={() => void control('resume')}><Play size={14} /> Resume</button>}<button className="button secondary" disabled={working || selectedSummary?.status !== 'paused'} onClick={() => void control('step')}><SkipForward size={15} /> Step once</button><button className="button danger" disabled={working || ['finished', 'stopped', 'failed'].includes(selectedSummary?.status || '')} onClick={() => void control('stop')}><Square size={13} /> Stop</button></div><span className="run-revision">Revision {selectedSummary?.revision ?? '—'}</span></div>
           </section>
           {selectedSummary?.error && <div className="run-error"><AlertCircle size={16} /><div><strong>{selectedSummary.errorCode?.startsWith("MODEL_CONTEXT") ? "Model context limit" : selectedSummary.errorCode?.startsWith('MODEL_OUTPUT_LIMIT') ? 'Model output limit' : 'Run error'}</strong><p>{selectedSummary.error}</p>{observerView && selectedSummary.errorDetails && <details><summary>Error details</summary><pre>{displayValue(selectedSummary.errorDetails)}</pre></details>}</div></div>}

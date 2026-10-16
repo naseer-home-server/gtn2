@@ -40,12 +40,18 @@ export function gameRuleCard(game: string | null | undefined, round: number | nu
   }
   if (game === 'cave') {
     const starting = Number(live?.startingMoney ?? config.cave.startingMoney[index]), growth = Number(live?.growth ?? config.cave.growth[index])
-    const risk = config.cave.collapseRisk.map((value) => `${money(value)}%`).join(' / ')
-    return `Cave mining · Round ${index + 1}. Start with ${money(starting)} unbanked. The first decision window is safe: leave to bank it. When a later window expires, collapse risk for 0 / 1 / 2 / 3 / 4 teams already departed is ${risk}. If the cave survives, remaining unbanked money grows by ×${growth}; no response means stay. Leaving banks the current amount; collapse gives teams still inside zero for this round. Previously banked money is safe. You see only your current unbanked amount, not who left or how many remain. Across all three rounds, the team with the most cave money banked receives ${config.cave.stars} stars.`
+    const maxTicks = Number(live?.maxTicks ?? config.cave.maxTicks ?? 10)
+    const deadline = `At most ${maxTicks} decision windows are allowed per round, counting the safe opening window as tick 1. Tick ${maxTicks} is the final decision window. When it expires, every team still inside automatically banks its current unbanked money and the round ends, with no further collapse check, growth, or tick ${maxTicks + 1}. Earlier windows still risk collapse as described.`
+    const position = view?.roundState?.tick === undefined ? '' : ` Current tick: ${view.roundState.tick} of ${maxTicks}.`
+    const risks = Array.isArray(live?.collapseRisk) ? live.collapseRisk as number[] : config.cave.collapseRisk
+    const departures = risks.map((_value, index) => index).join(' / ')
+    const risk = risks.map((value) => `${money(value)}%`).join(' / ')
+    const legacy = risks.length < 7 ? ' For any additional departures, the last listed risk applies.' : ''
+    return `Cave mining · Round ${index + 1}. Start with ${money(starting)} unbanked. The first decision window is safe: leave to bank it. When a window expires before the final tick, collapse risk for ${departures} teams already departed is ${risk}.${legacy} If the cave survives, remaining unbanked money grows by ×${growth}; no response means stay. ${deadline}${position} Leaving banks the current amount; collapse gives teams still inside zero for this round. Previously banked money is safe. You see your current tick and unbanked amount, not who left or how many remain. Across all three rounds, the team with the most cave money banked receives ${config.cave.stars} stars.`
   }
   if (game === 'circle') {
     const multiplier = Number(live?.multiplier ?? config.circle.multiplier[index])
-    return `What goes around comes around · Round ${index + 1}. Teams are randomly assigned to hidden circles of at least two teams. Send any amount up to your balance and any number of stars up to your star balance to the next team; outgoing amounts are multiplied by ×${multiplier}. You may return money and stars up to your current balances to your sender; returns are not multiplied. Your sender and received amounts are visible, while your recipient and circle structure stay hidden. This game awards no new stars.`
+    return `What goes around comes around · Round ${index + 1}. Teams are randomly assigned to hidden circles of at least two teams. Each valid combination of circle sizes is equally likely. For six teams the possible sizes are 6, 4+2, 3+3, or 2+2+2; for seven teams they are 7, 5+2, 4+3, or 3+2+2. Send any amount up to your balance and any number of stars up to your star balance to the next team; outgoing amounts are multiplied by ×${multiplier}. You may return money and stars up to your current balances to your sender; returns are not multiplied. Your sender and received amounts are visible, while your recipient and circle structure stay hidden. This game awards no new stars.`
   }
   if (game === 'bomb') {
     const factor = Number(live?.factor ?? config.bomb.factor[index])

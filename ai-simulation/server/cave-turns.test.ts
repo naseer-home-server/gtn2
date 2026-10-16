@@ -67,7 +67,7 @@ test('cave financial turns explain their restrictions and subsequent decision tu
   const { saveRun, detail } = await import('./store.js')
   const run: RunRecord = {
     id: 'cave-run', name: 'Cave turns', status: 'paused', createdAt: '', updatedAt: '',
-    options: { teamCount: 2, seed: 41, mode: 'openai', hostModel: 'mock', playerModel: 'mock', minDiscussionBeats: 0,
+    options: { teamCount: 2, seed: 41, mode: 'openai', hostModel: 'mock', playerModel: 'mock', hostReasoningEffort: 'high', playerReasoningEffort: 'high', minDiscussionBeats: 0,
       maxDiscussionBeats: 0, caveDiscussionBeats: 0, maxToolAttempts: 3, hostContextTokens: 128000,
       playerContextTokens: 128000, maxSteps: 20, maxWallTimeMs: 60_000 },
     config: structuredClone(DEFAULT_CONFIG), sessionId: 'cave-session',
@@ -85,6 +85,8 @@ test('cave financial turns explain their restrictions and subsequent decision tu
     for (const prompt of prompts) {
       assert.equal(prompt.turnPhase, 'operations')
       assert.equal(prompt.playerView.roundState.phase, 'cave-decisions')
+      assert.match(prompt.rulesCard, /At most 10 decision windows/)
+      assert.match(prompt.rulesCard, /every team still inside automatically banks/)
       assert.ok(!prompt.playerView.allowedActions.includes('cave.decide'))
       assert.match(prompt.instruction, /optional financial-action turn/)
       assert.match(prompt.instruction, /actionJson to null/)

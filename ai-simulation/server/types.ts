@@ -1,7 +1,9 @@
 import type { GameConfig, GameId, GameAction, PlayerGameView, SessionEventView } from 'backend/game'
 
+export type ReasoningEffort = 'low' | 'medium' | 'high' | 'xhigh'
 export type RunOptions = {
   teamCount: number; seed: number; mode: 'scripted' | 'openai'; hostModel: string; playerModel: string
+  hostReasoningEffort: ReasoningEffort; playerReasoningEffort: ReasoningEffort
   minDiscussionBeats: number; maxDiscussionBeats: number; caveDiscussionBeats: number
   maxSteps: number; maxWallTimeMs: number
   maxToolAttempts: number
@@ -9,6 +11,8 @@ export type RunOptions = {
 }
 export type ModelTokenUsage = {
   model: string; calls: number; totalTokens: number; promptTokens: number; completionTokens: number
+  actualCostUsd?: number; estimatedCostUsd?: number; unpricedCalls?: number
+  promptPriceUsdPerToken?: number; completionPriceUsdPerToken?: number
   promptUsageCalls?: number; completionUsageCalls?: number
   lastPromptTokens?: number; lastCompletionTokens?: number; lastTotalTokens?: number
   lastRequestBytes?: number; lastEstimatedPromptTokens?: number; reservedOutputTokens?: number

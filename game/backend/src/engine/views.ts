@@ -27,7 +27,7 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
   const i = state.round - 1
   if (current.game === 'bonus') base.rules = { bag: state.config.bonus.bag[i], threshold: state.config.bonus.threshold[i], multiplier: state.config.bonus.multiplier[i], roundThreeStars: state.config.bonus.stars }
   if (current.game === 'high-low') base.rules = { pool: state.config.highLow.pool[i], multiplier: state.config.highLow.multiplier[i], roundThreeStars: state.config.highLow.stars }
-  if (current.game === 'cave') base.rules = { startingMoney: state.config.cave.startingMoney[i], growth: state.config.cave.growth[i], tickSeconds: state.config.cave.tickSeconds, collapseRisk: state.config.cave.collapseRisk, gameStars: state.config.cave.stars }
+  if (current.game === 'cave') base.rules = { startingMoney: state.config.cave.startingMoney[i], growth: state.config.cave.growth[i], tickSeconds: state.config.cave.tickSeconds, maxTicks: state.config.cave.maxTicks ?? 10, collapseRisk: state.config.cave.collapseRisk, gameStars: state.config.cave.stars }
   if (current.game === 'circle') base.rules = { multiplier: state.config.circle.multiplier[i] }
   if (current.game === 'bomb') {
     base.rules = { factor: state.config.bomb.factor[i] }
@@ -42,6 +42,7 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
       base.roundState.choiceLimit = current.game === 'bonus' ? units(cents(state.config.bonus.bag[state.round - 1])) : units(moneyMultiply(cents(state.config.highLow.pool[state.round - 1]), state.config.highLow.multiplier[state.round - 1]))
       if (current.phase === 'choices' && !base.roundState.submitted) base.allowedActions.push(current.game === 'bonus' ? 'bonus.take' : 'high-low.choose')
     } else if (current.game === 'cave') {
+      base.roundState.tick = current.tick
       const hasLeft = !current.inside.includes(team.id)
       base.roundState.hasLeft = hasLeft
       base.roundState.unbanked = hasLeft || current.phase === 'complete' ? '0.00' : units(current.unbanked)

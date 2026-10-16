@@ -7,6 +7,7 @@ import { z } from 'zod'
 import type { AppDb } from './db/index.js'
 import { gameSessions, sessionEvents, sessionPlayers } from './db/schema.js'
 import { DEFAULT_CONFIG, gameConfigSchema, playerCommandSchema } from './engine/config.js'
+import { MIN_TEAMS, MAX_TEAMS, MAX_TEAM_MEMBERS, MAX_SESSION_PLAYERS } from './engine/limits.js'
 import { DbGameplayRepository } from './gameplay.js'
 import type { DbGameSessionsRepository } from './game-sessions.js'
 import type { DbChatsRepository } from './chats.js'
@@ -18,7 +19,7 @@ type SimulationMeta = Record<string, unknown> & {
   playerAgents: Record<string, string>; config: z.infer<typeof gameConfigSchema>
 }
 
-const setupSchema = z.object({ requestId: z.uuid(), name: z.string().trim().min(1).max(80), teamCount: z.number().int().min(2).max(5),
+const setupSchema = z.object({ requestId: z.uuid(), name: z.string().trim().min(1).max(80), teamCount: z.number().int().min(MIN_TEAMS).max(MAX_TEAMS),
   seed: z.union([z.string().min(1).max(200), z.number().int().safe()]), config: gameConfigSchema.optional() })
 const controlSchema = z.object({ requestId: z.uuid(), operation: z.enum(['start', 'advance', 'prepare', 'tick']), expectedToken: z.string().min(1).max(100).optional() })
 const jsonError = (response: express.Response, error: unknown) => {
@@ -128,7 +129,7 @@ export class SimulationBridge {
       catch (error) { jsonError(response, error) }
     })
     router.post('/sessions/:sessionId/players/:agentId/chat/groups', async (request, response) => {
-      try { const player = response.locals.simPlayer.player as typeof sessionPlayers.$inferSelect; const body = z.object({ name: z.string().min(1).max(60), playerIds: z.array(z.uuid()).min(2).max(9) }).parse(request.body); response.json(await this.chats.createGroup(player.email, body.name, body.playerIds)) }
+      try { const player = response.locals.simPlayer.player as typeof sessionPlayers.$inferSelect; const body = z.object({ name: z.string().min(1).max(60), playerIds: z.array(z.uuid()).min(2).max(MAX_SESSION_PLAYERS - 1) }).parse(request.body); response.json(await this.chats.createGroup(player.email, body.name, body.playerIds)) }
       catch (error) { jsonError(response, error) }
     })
     router.post('/sessions/:sessionId/players/:agentId/chat/messages', async (request, response) => {
@@ -167,7 +168,7 @@ export class SimulationBridge {
       if (meta.setupSignature !== signature) throw new TRPCError({ code: 'CONFLICT', message: 'This setup request ID was already used with different settings.' })
       return this.finishSetup(row.id, meta)
     }
-    const playerCount = input.teamCount * 2
+    const playerCount = input.teamCount * MAX_TEAM_MEMBERS
     const newSessionId = randomUUID()
     let raw: { id: string; meta: SimulationMeta }
     try {
@@ -181,7 +182,7 @@ export class SimulationBridge {
       const arrivalOrder = shuffle(draftIds, `${seed}:arrivals`)
       const players = await tx.insert(sessionPlayers).values(draftIds.map((index) => ({ sessionId: created.id, email: `sim-${created.id}-${index + 1}@simulation.invalid`, arrivalOrder: arrivalOrder.indexOf(index) + 1 }))).returning()
       const playerByDraftId = new Map(players.map((player, index) => [draftIds[index]!, player]))
-      const teamPlayers = Array.from({ length: input.teamCount }, (_value, index) => pairings.slice(index * 2, index * 2 + 2)
+      const teamPlayers = Array.from({ length: input.teamCount }, (_value, index) => pairings.slice(index * MAX_TEAM_MEMBERS, (index + 1) * MAX_TEAM_MEMBERS)
         .map((draftId) => playerByDraftId.get(draftId)!).sort((a, b) => a.arrivalOrder! - b.arrivalOrder!))
       const assignments = shuffle(teamPlayers, `${seed}:team-order`).map((members, index) => ({ name: `Team ${index + 1}`, playerIds: members.map(({ id }) => id) }))
       const playerAgents = Object.fromEntries(assignments.map((team, index) => [`team-${index + 1}`, team.playerIds[0]!]))

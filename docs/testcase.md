@@ -18,6 +18,19 @@ This run covers local setup and the browser smoke above. A fresh run of the full
 
 ## Setup and access
 
+### Seven-team transition — browser checks pending
+
+- [ ] Create a session with fourteen invitees, mark all arrivals, reorder all fourteen, assign seven pairs, and start play; also cover six pairs plus one solo team with thirteen attendees.
+- [ ] Reject a fifteenth invitee, an eighth team, duplicate membership, more than two members per team, and two solo teams.
+- [ ] Complete all fifteen rounds with seven teams; verify public ranking reveals wait for all seven acknowledgments and own information stays private.
+- [ ] Transfer money to all six other teams, including six custom allocations and uneven cent splitting.
+- [ ] Open a group with thirteen other people and verify all fourteen members can use it.
+- [ ] In the simulation form choose six/seven teams, edit all seven cave risks, and check host/player rules, account display, cost totals, and pause/resume.
+- [ ] Confirm each six-/seven-team circle grouping can occur and the UI never exposes the outgoing recipient or other circles.
+- [ ] Import a five-entry cave risk configuration and resume an older five-team run without altering its stored risk table.
+
+### Previously recorded setup checks
+
 - [x] With **UX Preview — cave** active, log in with an invited player account and verify the player view opens the matching game.
 - [x] Create a session with nine invitees; mark arrivals, reorder them, then restore and freeze the arrival order.
 - [x] Assign four pairs and one solo team; start with valid configuration.

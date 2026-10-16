@@ -3,7 +3,7 @@ import type { ModelTokenUsage, RunRecord } from './types.js'
 
 function actorUsage(run: RunRecord, actorId: string, model: string): ModelTokenUsage {
   run.modelUsage ??= {}
-  return run.modelUsage[actorId] ??= { model, calls: 0, totalTokens: 0, promptTokens: 0, completionTokens: 0 }
+  return run.modelUsage[actorId] ??= { model, calls: 0, totalTokens: 0, promptTokens: 0, completionTokens: 0, actualCostUsd: 0, estimatedCostUsd: 0, unpricedCalls: 0 }
 }
 export function recordRequest(run: RunRecord, actorId: string, request: RequestContext) {
   Object.assign(actorUsage(run, actorId, request.model), {
@@ -18,6 +18,11 @@ export function recordUsage(run: RunRecord, actorId: string, usage: Partial<Comp
   stats.promptUsageCalls = (stats.promptUsageCalls || 0) + Number(usage.promptTokens !== undefined)
   stats.completionUsageCalls = (stats.completionUsageCalls || 0) + Number(usage.completionTokens !== undefined)
   stats.lastPromptTokens = usage.promptTokens; stats.lastCompletionTokens = usage.completionTokens; stats.lastTotalTokens = usage.totalTokens
+  if (usage.promptPriceUsdPerToken !== undefined) stats.promptPriceUsdPerToken = usage.promptPriceUsdPerToken
+  if (usage.completionPriceUsdPerToken !== undefined) stats.completionPriceUsdPerToken = usage.completionPriceUsdPerToken
+  if (usage.costUsd !== undefined) stats.actualCostUsd = (stats.actualCostUsd || 0) + usage.costUsd
+  else if (usage.estimatedCostUsd !== undefined) stats.estimatedCostUsd = (stats.estimatedCostUsd || 0) + usage.estimatedCostUsd
+  else stats.unpricedCalls = (stats.unpricedCalls || 0) + 1
   if (usage.promptTokens !== undefined && usage.requestBytes) {
     stats.calibrationPromptTokens = usage.promptTokens; stats.calibrationRequestBytes = usage.requestBytes
   }

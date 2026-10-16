@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import dotenv from 'dotenv'
-import { DEFAULT_CONFIG } from 'backend/engine'
+import { DEFAULT_CONFIG, MIN_TEAMS, MAX_TEAMS } from 'backend/engine'
 import type { RunOptions } from './types.js'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
@@ -23,7 +23,7 @@ export const providerConfig = {
 }
 export const defaultOptions: RunOptions = {
   teamCount: 5, seed: 20261014, mode: 'scripted', hostModel: providerConfig.hostModel,
-  playerModel: providerConfig.playerModel, minDiscussionBeats: 2, maxDiscussionBeats: 4,
+  playerModel: providerConfig.playerModel, hostReasoningEffort: 'high', playerReasoningEffort: 'high', minDiscussionBeats: 2, maxDiscussionBeats: 4,
   caveDiscussionBeats: 1, maxSteps: 200, maxWallTimeMs: 30 * 60 * 1000,
   maxToolAttempts: 3,
   hostContextTokens: providerConfig.hostContextTokens, playerContextTokens: providerConfig.playerContextTokens,
@@ -33,9 +33,12 @@ export const defaults = structuredClone(DEFAULT_CONFIG)
 export function validateOptions(options: Partial<RunOptions>): RunOptions {
   const { maxTokens: _legacyTokenBudget, ...currentOptions } = options as Partial<RunOptions> & { maxTokens?: unknown }
   const result = { ...defaultOptions, ...currentOptions }
-  if (!Number.isInteger(result.teamCount) || result.teamCount < 2 || result.teamCount > 5) throw new Error('teamCount must be between 2 and 5')
+  if (!Number.isInteger(result.teamCount) || result.teamCount < MIN_TEAMS || result.teamCount > MAX_TEAMS) throw new Error(`teamCount must be between ${MIN_TEAMS} and ${MAX_TEAMS}`)
   if (!Number.isInteger(result.seed) || result.seed < 0) throw new Error('seed must be a non-negative integer')
   if (!['scripted', 'openai'].includes(result.mode)) throw new Error('mode must be scripted or openai')
+  for (const field of ['hostReasoningEffort', 'playerReasoningEffort'] as const) {
+    if (!['low', 'medium', 'high', 'xhigh'].includes(result[field])) throw new Error(field + ' must be low, medium, high, or xhigh')
+  }
   for (const field of ['hostContextTokens', 'playerContextTokens'] as const) {
     if (!Number.isSafeInteger(result[field]) || result[field] < 0 || result[field] > 10_000_000) throw new Error(field + ' must be 0 (automatic) or a context window up to 10,000,000 tokens')
   }

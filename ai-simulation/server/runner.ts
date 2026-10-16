@@ -716,6 +716,11 @@ async function stepRun(run: RunRecord, epoch: number, signal: AbortSignal) {
     await finishRun(run, service); return
   }
   const loc = currentLocation(service)
+  if (loc.game === 'cave' && run.events.some(event => event.type === 'rules.card' && event.game === 'cave' && event.round === loc.round && !event.text?.includes('final decision window')) &&
+    !run.events.some(event => event.type === 'rules.correction' && event.game === 'cave' && event.round === loc.round && event.data?.version === 'cave-tick-limit-v1')) {
+    await appendEvent(run, { audience: 'public', type: 'rules.correction', game: 'cave', round: loc.round,
+      text: 'Cave tick limit update: ' + hostRulesCard(run, service, loc), data: { version: 'cave-tick-limit-v1' } })
+  }
   if (!run.events.some(event => event.type === 'host.briefing' && event.data?.version === 'discussion-finances-v3')) {
     await appendEvent(run, { audience: 'public', type: 'host.briefing', game: loc.game, round: loc.round,
       text: gameTheoryBriefing(), data: { version: 'discussion-finances-v3', speakerName: 'Host' } })
@@ -842,7 +847,7 @@ async function stepRun(run: RunRecord, epoch: number, signal: AbortSignal) {
     if (!active()) return
     await appendEvent(run, { audience: 'observer', type: 'host.command-accepted', data: { requestId, operation: 'tick' } })
     await appendEvent(run, { audience: 'public', type: 'cave.window', game: 'cave', round: service.state.round,
-      logicalTime: service.logicalTime, text: 'The cave clock advances to the next decision window.' })
+      logicalTime: service.logicalTime, text: service.state.current.phase === 'complete' ? 'The cave round has ended.' : 'The cave clock advances to the next decision window.' })
   }
 }
 

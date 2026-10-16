@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { randomUUID } from 'node:crypto'
 import { test } from 'node:test'
 import { appRouter } from './router.js'
 import type { ChatConversation, ChatInbox, ChatMessage, ChatsRepository } from './chat-types.js'
@@ -57,6 +58,13 @@ class MemorySettings implements SettingsRepository {
   async get(): Promise<Settings> { return { emailLoginEnabled: this.enabled } }
   async setEmailLoginEnabled(enabled: boolean) { this.enabled = enabled; return this.get() }
 }
+
+test('group chat routes accept thirteen other players and reject a fourteenth', async () => {
+  const { caller } = createCaller(player)
+  const peers = Array.from({ length: 14 }, randomUUID)
+  assert.equal((await caller.chat.createGroup({ name: 'Full session', playerIds: peers.slice(0, 13) })).playerIds.length, 14)
+  await assert.rejects(caller.chat.createGroup({ name: 'Too many', playerIds: peers }), { code: 'BAD_REQUEST' })
+})
 
 function createCaller(user: AuthUser | null, options: { chats?: ChatsRepository; member?: boolean; memberPlayerId?: string; settings?: SettingsRepository } = {}) {
   const chats = options.chats ?? new MemoryChats(options.memberPlayerId)

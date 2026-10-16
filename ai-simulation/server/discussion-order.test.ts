@@ -7,8 +7,8 @@ function permutations(values: string[]): string[][] {
   return values.flatMap((value, index) => permutations(values.filter((_, i) => i !== index)).map(rest => [value, ...rest]))
 }
 
-test('sequential position swaps can reach every order of two to five teams without losing a team', () => {
-  for (let count = 2; count <= 5; count++) {
+test('sequential position swaps can reach every order of two to seven teams without losing a team', () => {
+  for (let count = 2; count <= 7; count++) {
     const initial = Array.from({ length: count }, (_, index) => 'team-' + index)
     for (const target of permutations(initial)) {
       const current = [...initial]

@@ -25,6 +25,7 @@ const args = (overrides: Partial<ToolArgs> = {}): ToolArgs => ({
 const payload = (toolArgs: ToolArgs, totalTokens = 37, id = 'call-test') => ({ choices: [{ message: { tool_calls: [{ id, type: 'function', function: { name: 'submit_turn', arguments: JSON.stringify(toolArgs) } }] } }], usage: { total_tokens: totalTokens } })
 const options = (): RunOptions => ({
   teamCount: 2, seed: 9, mode: 'openai', hostModel: 'mock-host', playerModel: 'mock-player',
+  hostReasoningEffort: 'high', playerReasoningEffort: 'high',
   minDiscussionBeats: 0, maxDiscussionBeats: 2, caveDiscussionBeats: 1,
   maxSteps: 40, maxWallTimeMs: 60_000, maxToolAttempts: 1, hostContextTokens: 128000, playerContextTokens: 128000,
 })
@@ -55,7 +56,7 @@ function fixture(game: 'bonus' | 'bomb' = 'bonus') {
   return { state, config, view }
 }
 
-async function withMockProvider<T>(handler: (request: CapturedRequest, response: ServerResponse, mock: MockProvider) => void, run: (mock: MockProvider) => Promise<T>): Promise<T> {
+async function withMockProvider<T>(handler: (request: CapturedRequest, response: ServerResponse, mock: MockProvider) => void, run: (mock: MockProvider) => Promise<T>, captureMetadata = false): Promise<T> {
   const requests: CapturedRequest[] = []
   const server = createServer((request, response) => {
     let body = ''
@@ -67,6 +68,8 @@ async function withMockProvider<T>(handler: (request: CapturedRequest, response:
         respond: (value, target = response) => { target.statusCode = 200; target.setHeader('content-type', 'application/json'); target.end(JSON.stringify(value)) },
       }
       const captured = { url: request.url ?? '', headers: request.headers, body: body ? JSON.parse(body) : null }
+      // Completion-focused mocks use an empty catalogue; metadata tests opt in to recording and handling it.
+      if (captured.url === '/v1/models' && !captureMetadata) { mock.respond({ data: [] }); return }
       requests.push(captured)
       handler(captured, response, mock)
     })
@@ -354,6 +357,39 @@ test('tool-attempt configuration defaults to three and rejects out-of-range limi
   for (const maxToolAttempts of [0, 11, 1.5]) assert.throws(() => validateOptions({ mode: 'scripted', maxToolAttempts }), /maxToolAttempts/)
 })
 
+test('simulation options accept six and seven teams and reject eight', () => {
+  for (const teamCount of [6, 7]) assert.equal(validateOptions({ mode: 'scripted', teamCount }).teamCount, teamCount)
+  assert.throws(() => validateOptions({ mode: 'scripted', teamCount: 8 }), /teamCount/)
+})
+
+test('host and player requests use their own selected reasoning effort', async () => {
+  await withMockProvider((request, response, mock) => mock.respond(payload(request.body.model === 'mock-host' ? args({ message: 'Host reply', actionJson: null }) : args()), response), async mock => {
+    const { view, config } = fixture()
+    const runOptions = { ...options(), hostReasoningEffort: 'low' as const, playerReasoningEffort: 'xhigh' as const }
+    await playerTurn(view, [], runOptions, config)
+    await hostLine({}, runOptions)
+    assert.deepEqual(mock.requests.map(request => request.body.reasoning_effort), ['xhigh', 'low'])
+  })
+})
+
+test('reported costs override catalogue estimates and explicit context limits still discover pricing', async () => {
+  let completion = 0
+  await withMockProvider((request, response, mock) => {
+    if (request.url === '/v1/models') { mock.respond({ data: [{ id: 'mock-player', pricing: { prompt: '0.000002', completion: '0.000008' } }] }, response); return }
+    const result = { ...payload(args()), usage: { prompt_tokens: 100, completion_tokens: 10, total_tokens: 110, ...(completion++ ? { cost: 0.0001 } : {}) } }
+    mock.respond(result, response)
+  }, async mock => {
+    const { view, config } = fixture()
+    const usages: any[] = []
+    for (let i = 0; i < 2; i++) await playerTurn(view, [], options(), config, true, [], undefined, { onUsage: (_tokens, _attempt, usage) => { usages.push(usage) } })
+    assert.ok(Math.abs(usages[0].estimatedCostUsd - 0.00028) < 1e-12)
+    assert.equal(usages[1].costUsd, 0.0001)
+    assert.equal(usages[1].estimatedCostUsd, undefined)
+    assert.equal(mock.requests.filter(request => request.url === '/v1/models').length, 1)
+    assert.ok(mock.requests.filter(request => request.url.endsWith('/chat/completions')).every(request => request.body.usage.include))
+  }, true)
+})
+
 test('context window options support automatic discovery and explicit documented limits', () => {
   assert.equal(validateOptions({ mode: 'scripted', hostContextTokens: 0, playerContextTokens: 128000 }).playerContextTokens, 128000)
   for (const value of [-1, 1.5, 10000001]) {
@@ -520,7 +556,7 @@ test('automatic context discovery uses provider metadata and reserves its suppor
     assert.equal(seen[0].contextWindowTokens, 128000)
     assert.equal(seen[0].contextSource, 'provider')
     assert.equal(mock.requests.find(request => request.url === '/v1/chat/completions')!.body.max_completion_tokens, 100)
-  })
+  }, true)
 })
 
 test('standard model metadata without context limits requires an explicit window before any completion', async () => {
@@ -533,7 +569,7 @@ test('standard model metadata without context limits requires an explicit window
     })
     assert.equal(mock.requests.length, 1)
     assert.equal(mock.requests[0]!.url, '/v1/models')
-  })
+  }, true)
 })
 
 test('host and player use their full published output maxima even with manually configured context windows', async () => {
@@ -555,7 +591,7 @@ test('host and player use their full published output maxima even with manually 
     assert.equal(completions[1]!.body.max_completion_tokens, 64000)
     assert.equal(mock.requests.filter(request => request.url === '/v1/models').length, 1)
     assert.ok(seen.every(request => request.contextSource === 'configured' && request.contextWindowTokens === 500000 && request.outputSource === 'provider'))
-  })
+  }, true)
 })
 
 test('unpublished output limits pause for documented configuration without guessing or calling completions', async () => {
@@ -573,7 +609,7 @@ test('unpublished output limits pause for documented configuration without guess
     assert.equal(notifications, 1)
     assert.equal(mock.requests.length, 1)
     assert.equal(mock.requests[0]!.url, '/v1/models')
-  })
+  }, true)
 })
 
 test('bomb rules, examples and schemas use one combined direction total and a separate recipient total for each team limit', () => {

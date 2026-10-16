@@ -42,7 +42,7 @@ function resolveHighLow(state: EngineState, events: EngineEvent[]) {
   finishRound(state, payouts, { choices: { ...choices }, lowest, highest, winner }, events)
 }
 
-function finishCave(state: EngineState, events: EngineEvent[], reason: 'collapsed' | 'everyone-left') {
+function finishCave(state: EngineState, events: EngineEvent[], reason: 'collapsed' | 'everyone-left' | 'tick-limit') {
   const current = state.current
   ensure(current.phase !== 'ready' && current.game === 'cave', 'Cave round is not active.')
   const payouts = Object.fromEntries(state.teams.map((team) => [team.id, current.banked[team.id] ?? '0']))
@@ -51,6 +51,18 @@ function finishCave(state: EngineState, events: EngineEvent[], reason: 'collapse
   finishRound(state, payouts, { reason, tick: current.tick, banked: { ...current.banked }, collapsed: current.collapsed }, events, false)
   current.stage = 'ended'
   current.nextTickAt = null
+}
+
+function bankCaveTeam(state: EngineState, teamId: string, events: EngineEvent[], automatic = false) {
+  const current = state.current
+  ensure(current.phase !== 'ready' && current.game === 'cave', 'Cave round is not active.')
+  const team = teamById(state, teamId)
+  const banked = safeMoney(moneyAdd(current.banked[teamId] ?? '0', current.unbanked))
+  team.balance = safeMoney(moneyAdd(team.balance, current.unbanked))
+  current.banked[teamId] = banked
+  state.caveTotals[teamId] = safeMoney(moneyAdd(state.caveTotals[teamId] ?? '0', current.unbanked))
+  current.inside = current.inside.filter((id) => id !== teamId)
+  events.push({ type: 'cave.earnings', data: { teamId, amount: current.unbanked, banked, balance: team.balance, tick: current.tick, ...(automatic ? { automatic: true } : {}) } })
 }
 
 export function startEarlyGame(state: EngineState, env: EngineEnv): EngineEvent[] {
@@ -77,7 +89,7 @@ export function startEarlyGame(state: EngineState, env: EngineEnv): EngineEvent[
 
 export function actEarlyGame(state: EngineState, teamId: string, action: GameAction, _env: EngineEnv): EngineEvent[] {
   ensure(state.current.phase !== 'ready', 'The host has not started this round.')
-  const team = teamById(state, teamId)
+  teamById(state, teamId)
   if (action.type === 'bonus.take') {
     requirePhase(state, 'bonus', 'choices')
     const current = state.current
@@ -114,12 +126,7 @@ export function actEarlyGame(state: EngineState, teamId: string, action: GameAct
     current.decisions[teamId] = action.decision
     const events: EngineEvent[] = [{ type: 'cave.decision', data: { teamId, decision: action.decision, tick: current.tick } }]
     if (action.decision === 'leave') {
-      const banked = safeMoney(moneyAdd(current.banked[teamId] ?? '0', current.unbanked))
-      team.balance = safeMoney(moneyAdd(team.balance, current.unbanked))
-      current.banked[teamId] = banked
-      state.caveTotals[teamId] = safeMoney(moneyAdd(state.caveTotals[teamId] ?? '0', current.unbanked))
-      current.inside = current.inside.filter((id) => id !== teamId)
-      events.push({ type: 'cave.earnings', data: { teamId, amount: current.unbanked, banked, balance: team.balance, tick: current.tick } })
+      bankCaveTeam(state, teamId, events)
       if (current.inside.length === 0) finishCave(state, events, 'everyone-left')
     }
     return events
@@ -133,15 +140,23 @@ export function tickCave(state: EngineState, env: EngineEnv): EngineEvent[] {
   const current = state.current
   ensure(current.phase === 'cave' && current.game === 'cave', 'Cave round is not active.')
   if (current.stage === 'ended' || current.nextTickAt === null || env.now < current.nextTickAt) return []
+  const events: EngineEvent[] = current.stage === 'decisions' ? current.inside.filter((teamId) => current.decisions[teamId] === undefined)
+    .map((teamId) => ({ type: 'cave.default_stay', data: { teamId, tick: current.tick } })) : []
+  const maxTicks = state.config.cave.maxTicks ?? 10
+  if (current.tick >= maxTicks) {
+    for (const teamId of [...current.inside]) bankCaveTeam(state, teamId, events, true)
+    events.push({ type: 'cave.tick-limit', data: { tick: current.tick, maxTicks } })
+    finishCave(state, events, 'tick-limit')
+    return events
+  }
   // A safe opening decision window lets teams bank their starting money before the first risk check.
   const nextTick = current.tick + 1
   const departed = state.teams.length - current.inside.length
-  const risk = state.config.cave.collapseRisk[Math.min(departed, 4)]
+  const risks = state.config.cave.collapseRisk
+  const risk = risks[Math.min(departed, risks.length - 1)]
   ensure(Number.isFinite(risk) && risk >= 0 && risk <= 100, 'Cave collapse risk must be between 0 and 100.')
   const roll = env.random()
   ensure(Number.isFinite(roll) && roll >= 0 && roll < 1, 'Random source must return a value from 0 (inclusive) to 1 (exclusive).')
-  const events: EngineEvent[] = current.stage === 'decisions' ? current.inside.filter((teamId) => current.decisions[teamId] === undefined)
-    .map((teamId) => ({ type: 'cave.default_stay', data: { teamId, tick: current.tick } })) : []
   if (roll < risk / 100) {
     current.tick = nextTick
     current.collapsed = true

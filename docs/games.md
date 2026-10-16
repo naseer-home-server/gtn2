@@ -2,7 +2,7 @@
 
 ## Shared rules
 - Five games, three rounds each; potential winnings increase across rounds and games. Current order: Will we get bonus this year → High or low → Cave mining → What goes around comes around → Gamble bomb finale.
-- Admins assign two to five teams of two, with one solo team if needed. “Player” means team. The member with the earlier arrival order leads the team; only they can submit game decisions, make team money transfers, acknowledge a ranking reveal, or contribute to the reveal pot. Teammates discuss choices in person. A solo player is their own leader.
+- Admins assign two to seven teams of two, with one solo team if needed. “Player” means team. The member with the earlier arrival order leads the team; only they can submit game decisions, make team money transfers, acknowledge a ranking reveal, or contribute to the reveal pot. Teammates discuss choices in person. A solo player is their own leader.
 - Round winnings enter each team's accumulated balance. Any team may send a positive total to one or more other teams while play is active, including between rounds and after submitting its current game choice. Shares start as evenly as possible and the sender can edit each one; all shares must add up to the original total and each recipient must receive at least one cent. Transfers are immediate and preserve the combined balance. They are paused during public ranking reveals. Transfers and bombs affect team balances.
 - Start with each team's balance at 0. Rank teams by balance. Ranks are hidden unless revealed through one of the paid reveal pots; balances stay private.
 - Game information is limited to the visibility rules below. Each team can see only transfer receipts where it was the sender or recipient; other teams' transfers remain private.
@@ -35,7 +35,7 @@ Each team takes between zero and the bag amount. Its payout is the amount taken 
 | Parameter | Draft value |
 | --- | --- |
 | Base pool | 100 |
-| Stake multiplier | Round 1: 2; round 2: 5; round 3: 10 |
+| Stake multiplier | Round 1: 10; round 2: 50; round 3: 100 |
 | Stars awarded | 2 to the round-three winner (draft) |
 
 Each team chooses between zero and base pool × stake multiplier. The lowest team earns the highest chosen amount; every other team earns the lowest chosen amount. Use the shared tie order to select one lowest team.
@@ -46,17 +46,18 @@ Each team chooses between zero and base pool × stake multiplier. The lowest tea
 
 | Parameter | Draft value |
 | --- | --- |
-| Starting money | Round 1: 5; round 2: 10; round 3: 25 |
+| Starting money | Round 1: 5; round 2: 5; round 3: 5 |
 | Growth multiplier | Round 1: 2; round 2: 3; round 3: 4 |
 | Tick interval | 10 seconds |
-| Collapse risk by teams departed (0 / 1 / 2 / 3 / 4) | 5% / 20% / 40% / 60% / 80% |
+| Maximum ticks per round | 10 |
+| Collapse risk by teams departed (0 / 1 / 2 / 3 / 4 / 5 / 6) | 5% / 20% / 35% / 50% / 65% / 80% / 95% |
 | Stars awarded | 3 to the team with the most banked across all rounds (draft) |
 
 Each team begins with the starting money unbanked and immediately gets a decision window. The first window is safe: teams can leave and bank their starting money without a collapse check. If the window expires, the first collapse check uses the risk for teams already departed. Collapse ends the round; teams still inside earn zero. If the cave survives, multiply unbanked money by the growth multiplier and open the next decision window. No response means stay. Leaving banks the current amount and increases risk at the next check.
 
-Previously banked money is safe. There is no tick limit; play ends on collapse or when all teams leave.
+Previously banked money is safe. Each round has at most 10 decision windows by default (`cave.maxTicks`), counting the safe opening window as tick 1. Tick 10 is the final decision window. When it expires, everyone still inside automatically banks their current unbanked money and the round ends, without another collapse check or growth into tick 11. Play may end earlier on a random collapse or when all teams leave.
 
-**Visible:** only the team's current unbanked money for this tick. Other teams' decisions, balances, and the number still in the cave are hidden.
+**Visible:** the current tick, maximum ticks, and the team's current unbanked money. Other teams' decisions, balances, and the number still in the cave are hidden.
 
 ## What goes around comes around (second-last game)
 
@@ -64,7 +65,7 @@ Previously banked money is safe. There is no tick limit; play ends on collapse o
 | --- | --- |
 | Transfer multiplier | Round 1: 3; round 2: 5; round 3: 10 |
 
-Randomly reshuffle teams into one or more circles every round. Circles must have at least two teams; with five teams, valid group sizes include 5 or 3+2. Each sends any amount up to its balance and any number of stars up to its star balance to the next team in its circle. Multiply outgoing money and stars by the transfer multiplier. Each may return money and stars up to their current balances to their sender; returns are not multiplied. This game awards no new stars.
+Randomly reshuffle teams into one or more circles every round. Circles must have at least two teams; each valid combination of circle sizes is equally likely, then team assignments are shuffled. With six teams the options are 6, 4+2, 3+3, and 2+2+2; with seven teams they are 7, 5+2, 4+3, and 3+2+2. Each sends any amount up to its balance and any number of stars up to its star balance to the next team in its circle. Multiply outgoing money and stars by the transfer multiplier. Each may return money and stars up to their current balances to their sender; returns are not multiplied. This game awards no new stars.
 
 **Visible:** the team's sender and amounts received, including stars. Its recipient and the circle structure are hidden. Star totals remain public.
 

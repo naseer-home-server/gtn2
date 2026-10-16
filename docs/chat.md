@@ -1,10 +1,10 @@
 # Player chat
 
-Chat is available to invited players while a game session is active. Each player has their own inbox of conversations they belong to. A direct conversation is addressed to another team, so every player on both teams sees the same thread; opening it from either team reuses that conversation. A group includes its creator and the two to nine other invited players they select, with a name up to 60 characters. A player can read or send messages only in conversations they belong to.
+Chat is available to invited players while a game session is active. Each player has their own inbox of conversations they belong to. A direct conversation is addressed to another team, so every player on both teams sees the same thread; opening it from either team reuses that conversation. A group includes its creator and the two to thirteen other invited players they select, with a name up to 60 characters. A player can read or send messages only in conversations they belong to.
 
 The inbox exposes the invited player list and team membership for choosing recipients. It does not expose balances, ranks, earnings, game state, or other private gameplay data. Conversation membership and messages belong to the session and remain available for the session's lifetime, independent of gameplay state and gameplay resets.
 
-The inbox refreshes every two seconds while the player is signed in, and messages refresh every two seconds while a conversation is open. Polling pauses in background tabs. With up to ten players, this keeps new messages reasonably prompt without creating a large request load. Message pages are returned in chronological order. To load older messages, pass the sequence number of the oldest message currently shown; the next page contains only earlier messages.
+The inbox refreshes every two seconds while the player is signed in, and messages refresh every two seconds while a conversation is open. Polling pauses in background tabs. With up to fourteen players, this keeps new messages reasonably prompt without creating a large request load. Message pages are returned in chronological order. To load older messages, pass the sequence number of the oldest message currently shown; the next page contains only earlier messages.
 
 Each send includes a client-generated message ID. Retrying the same ID with the same conversation and text returns the original message, so a lost response does not create a duplicate. Reusing that ID for different content is rejected.
 

@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { z } from 'zod'
 import { defaultOptions, providerConfig } from './config.js'
 import type { PlayerGameView, GameAction } from 'backend/game'
-import type { RunOptions, RunEvent } from './types.js'
+import type { ReasoningEffort, RunOptions, RunEvent } from './types.js'
 import type { GameConfig } from 'backend/game'
 import { currentRuleCard, PLAYER_OBJECTIVE, PRIZE_ELIGIBILITY_RULE } from './rules.js'
 import { modelHistory } from './history.js'
@@ -90,7 +90,7 @@ const responseTool = {
   },
 } as const
 
-async function complete<T>(model: string, system: string, user: string, options: RunOptions, validate: (args: unknown) => T, externalSignal?: AbortSignal, hooks: ModelTurnHooks = {}, contextTokens = 0, outputTokens = 0, messagingAllowed = true, customTool?: FunctionTool): Promise<T & { tokens: number }> {
+async function complete<T>(model: string, system: string, user: string, options: RunOptions, validate: (args: unknown) => T, externalSignal?: AbortSignal, hooks: ModelTurnHooks = {}, contextTokens = 0, outputTokens = 0, messagingAllowed = true, customTool?: FunctionTool, reasoningEffort: ReasoningEffort = 'high'): Promise<T & { tokens: number }> {
   const tool = customTool ?? (messagingAllowed ? responseTool : { ...responseTool, function: { ...responseTool.function,
     description: 'Submit one permitted game or financial action, or pass. Messaging is reserved for discussion turns.',
     parameters: { ...responseTool.function.parameters, properties: { ...responseTool.function.parameters.properties,
@@ -122,7 +122,7 @@ async function complete<T>(model: string, system: string, user: string, options:
           body: JSON.stringify({
             model, messages, tools: [tool],
             tool_choice: { type: 'function', function: { name: toolName } }, parallel_tool_calls: false,
-            max_completion_tokens: request.reservedOutputTokens, reasoning_effort: 'high'
+            max_completion_tokens: request.reservedOutputTokens, reasoning_effort: reasoningEffort, usage: { include: true }
           }),
         })
         phase = 'response-body'
@@ -145,8 +145,13 @@ async function complete<T>(model: string, system: string, user: string, options:
       const promptTokens = count(payload.usage?.prompt_tokens)
       const completionTokens = count(payload.usage?.completion_tokens)
       const reasoningTokens = count(payload.usage?.completion_tokens_details?.reasoning_tokens)
+      const costUsd = count(payload.usage?.cost)
+      const estimatedCostUsd = costUsd === undefined && promptTokens !== undefined && completionTokens !== undefined &&
+        context.promptPriceUsdPerToken !== undefined && context.completionPriceUsdPerToken !== undefined
+        ? promptTokens * context.promptPriceUsdPerToken + completionTokens * context.completionPriceUsdPerToken
+        : undefined
       const finishReason = typeof payload.choices?.[0]?.finish_reason === 'string' ? payload.choices[0].finish_reason : undefined
-      await hooks.onUsage?.(used, attempt, { ...request, promptTokens, completionTokens, totalTokens: used, finishReason, reasoningTokens })
+      await hooks.onUsage?.(used, attempt, { ...request, promptTokens, completionTokens, totalTokens: used, finishReason, reasoningTokens, costUsd, estimatedCostUsd })
       if (promptTokens !== undefined) {
         calibration = { promptTokens, requestBytes: request.requestBytes }
         checkContext(request, promptTokens, true)
@@ -239,7 +244,7 @@ export async function playerTurn(view: PlayerGameView, transcript: RunEvent[], o
       privateMessage = parsed.data
     }
     return { message: args.message || undefined, privateMessage, action }
-  }, signal, hooks, options.playerContextTokens || providerConfig.playerContextTokens, providerConfig.playerMaxOutputTokens, !decision)
+  }, signal, hooks, options.playerContextTokens || providerConfig.playerContextTokens, providerConfig.playerMaxOutputTokens, !decision, undefined, options.playerReasoningEffort)
 }
 export async function hostLine(observation: Record<string, unknown>, options: RunOptions, signal?: AbortSignal, hooks?: ModelTurnHooks, transcript: RunEvent[] = []): Promise<{ text: string; continueDiscussion: boolean; tokens: number }> {
   const model = options.hostModel || providerConfig.hostModel
@@ -247,7 +252,7 @@ export async function hostLine(observation: Record<string, unknown>, options: Ru
     const args = parseSubmission(raw)
     if (args.actionJson !== null || args.privateMessageJson !== null || typeof args.message !== 'string') throw new TurnValidationError(['Host returned an invalid response: provide a public message and continueDiscussion; actionJson and privateMessageJson must be null.'])
     return { text: args.message, continueDiscussion: args.continueDiscussion }
-  }, signal, hooks, options.hostContextTokens || providerConfig.hostContextTokens, providerConfig.hostMaxOutputTokens)
+  }, signal, hooks, options.hostContextTokens || providerConfig.hostContextTokens, providerConfig.hostMaxOutputTokens, true, undefined, options.hostReasoningEffort)
 }
 export async function hostDiscussionSwaps(initialOrder: readonly DiscussionTeam[], observation: Record<string, unknown>, options: RunOptions,
   signal?: AbortSignal, hooks?: ModelTurnHooks, transcript: RunEvent[] = []): Promise<{ swaps: DiscussionSwap[]; tokens: number }> {
@@ -273,7 +278,7 @@ export async function hostDiscussionSwaps(initialOrder: readonly DiscussionTeam[
     const swaps = parseDiscussionSwaps(raw, teamCount)
     applyDiscussionSwaps(initialOrder.map(team => team.id), swaps)
     return { swaps }
-  }, signal, hooks, options.hostContextTokens || providerConfig.hostContextTokens, providerConfig.hostMaxOutputTokens, true, tool)
+  }, signal, hooks, options.hostContextTokens || providerConfig.hostContextTokens, providerConfig.hostMaxOutputTokens, true, tool, options.hostReasoningEffort)
 }
 
 export function scriptedTurn(view: PlayerGameView, seed: number): AgentResponse {

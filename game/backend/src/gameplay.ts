@@ -3,6 +3,7 @@ import { and, asc, eq, sql } from 'drizzle-orm'
 import { TRPCError } from '@trpc/server'
 import { ZodError } from 'zod'
 import { GameRuleError } from './engine/errors.js'
+import { MIN_TEAMS, MAX_TEAMS, MAX_TEAM_MEMBERS } from './engine/limits.js'
 import type { AppDb } from './db/index.js'
 import { appSettings, gameSessions, sessionEvents, sessionPlayers } from './db/schema.js'
 import { advanceEngine, applyAction, resetCurrentGame, startEngine, startRoundEngine, tickEngine } from './engine/index.js'
@@ -16,7 +17,9 @@ const environment = (): EngineEnv => ({ now: Date.now(), random: () => randomInt
 function readState(row: SessionRow): EngineState | null {
   if (!Object.keys(row.state).length) return null
   if (row.state.version !== 1) throw new Error('Unsupported game state version.')
-  return structuredClone(row.state) as unknown as EngineState
+  const state = structuredClone(row.state) as unknown as EngineState
+  state.config.cave.maxTicks ??= 10
+  return state
 }
 function canonical(value: unknown): string {
   if (value === null || typeof value !== 'object') return JSON.stringify(value)
@@ -91,11 +94,11 @@ export class DbGameplayRepository implements GameplayRepository {
         const row = await lockedSession(tx, sessionId)
         ensure((row.simulation as Record<string, unknown> | null)?.owner !== 'simulation' || actorId === 'simulation:runner', 'Simulation sessions must be controlled through the runner bridge.')
         ensure(!readState(row), 'This playthrough has already started.')
-        ensure(assignments.length >= 2 && assignments.length <= 5, 'Create between two and five teams.')
+        ensure(assignments.length >= MIN_TEAMS && assignments.length <= MAX_TEAMS, `Create between ${MIN_TEAMS} and ${MAX_TEAMS} teams.`)
         const players = await tx.select().from(sessionPlayers).where(eq(sessionPlayers.sessionId, sessionId))
         const ids = assignments.flatMap((team) => team.playerIds)
         ensure(new Set(ids).size === ids.length, 'Each person can belong to only one team.')
-        ensure(assignments.every((team) => team.playerIds.length >= 1 && team.playerIds.length <= 2), 'Teams contain one or two people.')
+        ensure(assignments.every((team) => team.playerIds.length >= 1 && team.playerIds.length <= MAX_TEAM_MEMBERS), 'Teams contain one or two people.')
         ensure(assignments.filter((team) => team.playerIds.length === 1).length <= 1, 'Only one solo team is allowed.')
         ensure(new Set(assignments.map((team) => team.name.trim().toLowerCase())).size === assignments.length, 'Team names must be unique.')
         const teams = assignments.map((assignment) => {

@@ -18,9 +18,12 @@ export async function loadStore() {
       const { maxTokens: _legacyTokenBudget, ...options } = run.options as typeof run.options & { maxTokens?: unknown }
       run.options = options
       run.elapsedMs ??= 0
+      run.config.cave.maxTicks ??= 10
       run.options.maxToolAttempts ??= defaultOptions.maxToolAttempts
       run.options.hostContextTokens ??= defaultOptions.hostContextTokens
       run.options.playerContextTokens ??= defaultOptions.playerContextTokens
+      run.options.hostReasoningEffort ??= defaultOptions.hostReasoningEffort
+      run.options.playerReasoningEffort ??= defaultOptions.playerReasoningEffort
       restoreUsage(run)
       if (run.status === 'running' || run.status === 'stopping' || run.status === 'created') run.status = 'paused'
     }

@@ -1,5 +1,6 @@
 import { and, asc, desc, eq, inArray, lt } from 'drizzle-orm'
 import { TRPCError } from '@trpc/server'
+import { MAX_SESSION_PLAYERS } from './engine/limits.js'
 import type { AppDb } from './db/index.js'
 import { appSettings, chatConversationMembers, chatConversations, chatMessages, gameSessions, sessionPlayers } from './db/schema.js'
 import type { AdminChatAudit, ChatConversation, ChatInbox, ChatMessage, ChatMessagePage, ChatPlayer, ChatTeam, ChatsRepository } from './chat-types.js'
@@ -185,7 +186,7 @@ export class DbChatsRepository implements ChatsRepository {
       const { row, player } = await activeParticipant(tx, email)
       const normalizedName = typeof name === 'string' ? name.trim() : ''
       if (!normalizedName || normalizedName.length > 60) badRequest('Group names must contain 1 to 60 characters.')
-      if (!Array.isArray(playerIds) || playerIds.length < 2 || playerIds.length > 9) badRequest('Choose between two and nine other players for a group chat.')
+      if (!Array.isArray(playerIds) || playerIds.length < 2 || playerIds.length > MAX_SESSION_PLAYERS - 1) badRequest(`Choose between two and ${MAX_SESSION_PLAYERS - 1} other players for a group chat.`)
       if (new Set(playerIds).size !== playerIds.length) badRequest('Choose each group member once.')
       if (playerIds.includes(player.id)) badRequest('The group creator is included automatically; choose other players.')
       const ids = [player.id, ...playerIds]

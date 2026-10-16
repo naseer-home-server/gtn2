@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { actEarlyGame, startEarlyGame, tickCave } from './early-games.js'
+import { DEFAULT_CONFIG, gameConfigSchema } from './config.js'
+import { tickEngine } from './index.js'
 import type { CaveRound, EngineEnv, EngineState, Team } from './types.js'
 
 const teams = (): Team[] => [
@@ -11,7 +13,7 @@ const config = () => ({
   initialBalance: 0, revealPotMultiplier: 1,
   bonus: { bag: [100, 100, 100] as [number, number, number], threshold: [100, 100, 100] as [number, number, number], multiplier: [3, 5, 10] as [number, number, number], stars: 1 },
   highLow: { pool: [100, 100, 100] as [number, number, number], multiplier: [2, 5, 10] as [number, number, number], stars: 2 },
-  cave: { startingMoney: [5, 10, 25] as [number, number, number], growth: [2, 3, 4] as [number, number, number], tickSeconds: 10, collapseRisk: [0, 0, 0, 0, 0] as [number, number, number, number, number], stars: 3 },
+  cave: { startingMoney: [5, 10, 25] as [number, number, number], growth: [2, 3, 4] as [number, number, number], tickSeconds: 10, maxTicks: 10, collapseRisk: [0, 0, 0, 0, 0] as [number, number, number, number, number], stars: 3 },
   circle: { multiplier: [3, 5, 10] as [number, number, number] },
   bomb: { minChits: 1, maxChits: 20, advantageChits: 60, factor: [2, 5, 10] as [number, number, number] },
 })
@@ -157,6 +159,55 @@ test('cave round-three award uses cumulative banked totals and tie order', () =>
   assert.ok([...events, ...ending].some((event) => event.type === 'round.completed'))
 })
 
+test('the final cave window banks remaining teams once without another risk check or growth', () => {
+  const s = state('cave', 3)
+  startEarlyGame(s, env())
+  const cave = s.current as CaveRound
+  actEarlyGame(s, 'a', { type: 'cave.decide', decision: 'leave' }, env())
+  for (let tick = 1; tick < 10; tick++) tickCave(s, env(tick * 10_000))
+  assert.equal(cave.tick, 10)
+  assert.equal(cave.unbanked, String(2500n * 4n ** 9n))
+  assert.equal(s.current.phase, 'cave')
+  assert.deepEqual(tickCave(s, env(99_999)), [])
+  s.config.cave.collapseRisk = [100, 100, 100, 100, 100]
+  actEarlyGame(s, 'b', { type: 'cave.decide', decision: 'stay' }, env())
+  const finalAmount = cave.unbanked
+  const events = tickCave(s, env(100_000, () => { throw new Error('No risk roll is allowed at the limit') }))
+  assert.equal(cave.tick, 10)
+  assert.equal(cave.unbanked, finalAmount)
+  assert.equal(cave.collapsed, false)
+  assert.equal(cave.nextTickAt, null)
+  assert.deepEqual(cave.inside, [])
+  assert.equal(s.current.phase, 'complete')
+  assert.deepEqual(s.history[0].payouts, { a: '2500', b: finalAmount })
+  assert.equal(s.history[0].details.reason, 'tick-limit')
+  assert.equal(s.teams[1].balance, finalAmount)
+  assert.equal(s.caveTotals.b, finalAmount)
+  assert.equal(s.teams[1].stars, 3)
+  assert.ok(events.some(event => event.type === 'cave.earnings' && event.data.automatic === true && event.data.teamId === 'b'))
+  assert.equal(events.some(event => event.type === 'cave.survived' || event.type === 'cave.collapsed'), false)
+  assert.deepEqual(tickEngine(s, env(110_000)), [])
+  assert.equal(s.teams[1].balance, finalAmount)
+})
+
+test('a configured one-tick cave banks unanswered teams after its safe opening window', () => {
+  const s = state('cave')
+  s.config.cave.maxTicks = 1
+  startEarlyGame(s, env())
+  tickCave(s, env(10_000, () => { throw new Error('The opening window must remain safe') }))
+  assert.deepEqual(s.history[0].payouts, { a: '500', b: '500' })
+  assert.equal(s.history[0].details.tick, 1)
+})
+
+test('cave limits default older configurations to ten and reject invalid window counts', () => {
+  const legacy = structuredClone(DEFAULT_CONFIG)
+  delete (legacy.cave as Partial<typeof legacy.cave>).maxTicks
+  assert.equal(gameConfigSchema.parse(legacy).cave.maxTicks, 10)
+  for (const maxTicks of [0, -1, 1.5, 1001]) {
+    assert.equal(gameConfigSchema.safeParse({ ...legacy, cave: { ...legacy.cave, maxTicks } }).success, false)
+  }
+})
+
 test('invalid ranges, duplicate choices, overdue cave ticks, and cent overflow are rejected safely', () => {
   const bonus = state('bonus')
   startEarlyGame(bonus, env())
@@ -177,6 +228,7 @@ test('invalid ranges, duplicate choices, overdue cave ticks, and cent overflow a
 
 test('cave completes all three rounds, grows beyond safe integers, and awards cumulative tie by arrival order', () => {
   const s = state('cave', 1)
+  s.config.cave.maxTicks = 100
   s.config.cave.collapseRisk = [0, 0, 0, 0, 0]
   const playRound = (round: number, ticks: number) => {
     s.round = round

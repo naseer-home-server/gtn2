@@ -1,5 +1,6 @@
 import { cents, chooseWinner, ensure, integer, moneyAdd, moneyCompare, moneyDivide, moneyMultiply, moneySub, safeMoney, teamById, units } from './helpers.js'
 import type { BombChoice, CircleRound, EngineEnv, EngineEvent, EngineState, GameAction, Team, Transfer } from './types.js'
+import { MIN_TEAMS, MAX_TEAMS } from './limits.js'
 
 const circleGameIndex = 3
 const bombGameIndex = 4
@@ -21,9 +22,23 @@ function shuffle<T>(items: T[], env: EngineEnv): T[] {
 }
 
 function circleGroups(teams: Team[], env: EngineEnv): Team[][] {
-  ensure(teams.length >= 2 && teams.length <= 5, 'Circle requires two to five teams.')
+  ensure(teams.length >= MIN_TEAMS && teams.length <= MAX_TEAMS, `Circle requires ${MIN_TEAMS} to ${MAX_TEAMS} teams.`)
   const shuffled = shuffle(teams, env)
   if (shuffled.length <= 3) return [shuffled]
+  if (shuffled.length > 5) {
+    const partitions = (remaining: number, minimum = 2): number[][] => {
+      const result: number[][] = [[remaining]]
+      for (let size = minimum; size <= Math.floor(remaining / 2); size++) {
+        for (const rest of partitions(remaining - size, size)) result.push([size, ...rest])
+      }
+      return result
+    }
+    const sizes = partitions(shuffled.length)
+    const selected = sizes[randomIndex(env, sizes.length)]
+    let offset = 0
+    return selected.map(size => { const group = shuffled.slice(offset, offset + size); offset += size; return group })
+  }
+  // Keep the seeded grouping behavior of existing two- to five-team runs.
   const split = randomIndex(env, 2) === 0
   if (!split) return [shuffled]
   const firstSize = shuffled.length === 4 ? 2 : 3
@@ -49,7 +64,7 @@ function finishSignedRound(state: EngineState, payouts: Record<string, string>, 
 
 export function startFinalGame(state: EngineState, env: EngineEnv): EngineEvent[] {
   ensure(state.status === 'playing', 'Session is not playing.')
-  ensure(state.teams.length >= 2 && state.teams.length <= 5, 'Final games require two to five teams.')
+  ensure(state.teams.length >= MIN_TEAMS && state.teams.length <= MAX_TEAMS, `Final games require ${MIN_TEAMS} to ${MAX_TEAMS} teams.`)
   const token = env.token()
   if (state.gameIndex === circleGameIndex) {
     const groups = circleGroups(state.teams, env)

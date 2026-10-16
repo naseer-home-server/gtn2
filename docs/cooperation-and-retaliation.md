@@ -30,7 +30,7 @@ The new default public price is average current balance ÷ 3, rounded to the nea
 
 **Detection:** A collapse is a random outcome, not evidence of an early departure. Teams cannot see who left or how many remain. Their own payout and paid ranks generally cannot establish who broke a stay-together promise. The final cave star identifies the largest total banked, not departure timing.
 
-**Response if the culprit is known:** Cooperators can leave early next round to bank safely and raise the next collapse risk for a culprit that remains. With five teams and four departures, that risk is 80% at the next check under the defaults.
+**Response if the culprit is known:** Cooperators can leave early next round to bank safely and raise the next collapse risk for a culprit that remains. With five teams and four departures, that risk is 65% at the next check under the defaults. With seven teams, six departures raise it to 95%.
 
 **Limit:** The culprit can leave in the same safe opening window or another open window before the check. Already banked money cannot be harmed. The response also exposes any remaining innocent teams and gives up the cooperators' growth opportunities. Cave therefore has a weak, avoidable in-game punishment; denying later support or targeting the finale is more selective.
 

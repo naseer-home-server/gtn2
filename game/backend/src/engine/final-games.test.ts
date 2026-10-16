@@ -14,7 +14,7 @@ function fixture(gameIndex = 3, teamCount = 4): EngineState {
       initialBalance: 0, revealPotMultiplier: 1,
       bonus: { bag: [1, 1, 1], threshold: [1, 1, 1], multiplier: [1, 1, 1], stars: 0 },
       highLow: { pool: [1, 1, 1], multiplier: [1, 1, 1], stars: 0 },
-      cave: { startingMoney: [1, 1, 1], growth: [2, 2, 2], tickSeconds: 10, collapseRisk: [0, 0, 0, 0, 0], stars: 0 },
+      cave: { startingMoney: [1, 1, 1], growth: [2, 2, 2], tickSeconds: 10, maxTicks: 10, collapseRisk: [0, 0, 0, 0, 0], stars: 0 },
       circle: { multiplier: [3, 5, 10] },
       bomb: { minChits: 1, maxChits: 20, advantageChits: 60, factor: [2, 5, 10] },
     },

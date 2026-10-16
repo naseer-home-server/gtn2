@@ -113,7 +113,7 @@ test('discussion cadence respects zero, consensus, shared round boundaries, and 
     prompts.length = 0; reviews.length = 0; orderRequests.length = 0; orderResponse = undefined; keepDiscussing = false; contribute = false; discussionAction = undefined; rejectTransferOnce = false
     const run: RunRecord = {
       id: 'cadence-' + ++counter, name: 'Discussion cadence', status: 'paused', createdAt: '', updatedAt: '',
-      options: { teamCount: 2, seed: 41, mode: 'openai', hostModel: 'mock-host', playerModel: 'mock-player',
+      options: { teamCount: 2, seed: 41, mode: 'openai', hostModel: 'mock-host', playerModel: 'mock-player', hostReasoningEffort: 'high', playerReasoningEffort: 'high',
         minDiscussionBeats: 1, maxDiscussionBeats: 4, caveDiscussionBeats: 0, maxToolAttempts: 2,
         hostContextTokens: 128000, playerContextTokens: 128000, maxSteps: 100, maxWallTimeMs: 60_000, ...overrides },
       config: structuredClone(DEFAULT_CONFIG), sessionId: 'session',

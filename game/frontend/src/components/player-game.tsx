@@ -99,6 +99,7 @@ export function PlayerGame() {
       {view.teams.length > 0 && <Card><CardHeader><CardTitle><h2>Teams and stars</h2></CardTitle><CardDescription>Star totals are public. Other teams’ balances and ranks stay private.</CardDescription></CardHeader><CardContent className="space-y-2">{view.teams.map((item) => <div key={item.id} className="flex justify-between rounded-md border px-3 py-2"><span>{item.name}{item.id === team.id ? ' (you)' : ''}</span><span>{item.stars} ★</span></div>)}</CardContent></Card>}
       {view.status === 'playing' && round && view.game && <>
         {view.rules && <RoundSettings game={view.game} rules={view.rules} />}
+        {view.game === 'cave' && round.tick !== undefined && round.phase !== 'ready' && <p className="text-sm text-muted-foreground">Tick {round.tick} of {Number(view.rules?.maxTicks ?? 10)}. Teams still inside automatically bank their money when the final window expires.</p>}
         {view.game === 'bomb' && view.finaleAdvantage && <Card><CardHeader><CardTitle><h2>Finale advantage revealed</h2></CardTitle></CardHeader><CardContent><p>{view.teams.find((item) => item.id === view.finaleAdvantage?.teamId)?.name ?? 'The most-starred team'} can allocate up to {view.finaleAdvantage.maxChitsPerPile} chits per pile. Other teams can allocate up to {view.finaleAdvantage.standardMaxChits}.</p></CardContent></Card>}
         <Card><CardHeader><CardTitle><h2>{gameNames[view.game]}</h2></CardTitle><CardDescription>{phaseDescription(view.game, round.phase, round.unbanked, round.nextTickAt, can('cave.decide'), round.hasLeft)}</CardDescription>{view.game === 'cave' && round.nextTickAt != null && <CaveTickCountdown nextTickAt={round.nextTickAt} />}</CardHeader><CardContent className="space-y-4">
         {view.game === 'bonus' && can('bonus.take') && !isSubmitted && <><NumberField id="bonus-take" label="Amount to take" value={amount} onChange={setAmount} max={round.choiceLimit} /><Button disabled={submissionDisabled || (cents(amount) ?? -1n) < 0n || (round.choiceLimit !== undefined && !lessOrEqualMoney(amount, round.choiceLimit))} onClick={() => submitAction({ type: 'bonus.take', amount })}>Submit take</Button></>}
@@ -150,6 +151,7 @@ function RoundSettings({ game, rules }: { game: GameId; rules: Record<string, un
   if (game === 'high-low') rows.push(['Base pool', String(value('pool') ?? '—')], ['Stake multiplier', `${String(value('multiplier') ?? '—')}×`], ['Round-three stars', String(value('roundThreeStars') ?? '—')])
   if (game === 'cave') {
     const risks = Array.isArray(value('collapseRisk')) ? value('collapseRisk') as number[] : []
+    rows.push(['Maximum ticks', String(value('maxTicks') ?? 10)])
     rows.push(['Starting money', String(value('startingMoney') ?? '—')], ['Growth multiplier', `${String(value('growth') ?? '—')}×`], ['Tick interval', `${String(value('tickSeconds') ?? '—')} seconds`], ['Collapse risk by departures', risks.map((risk, i) => `${i}: ${risk}%`).join(' · ') || '—'], ['Game stars', String(value('gameStars') ?? '—')])
   }
   if (game === 'circle') rows.push(['Transfer multiplier', `${String(value('multiplier') ?? '—')}×`])

@@ -33,8 +33,10 @@ test('real admins bypass invitations; email test users never bypass them', async
   await assert.rejects(fixture({ ...admin, isTestLogin: true }, false).caller.hello(), { code: 'FORBIDDEN' })
   await assert.rejects(fixture(player, true).caller.admin.sessions.list(), { code: 'FORBIDDEN' })
 })
-test('session creation rejects duplicate normalized emails and more than ten attendees', async () => {
-  const { caller } = fixture(admin, false)
+test('session creation accepts fourteen attendees and rejects duplicate emails or a fifteenth attendee', async () => {
+  const { caller, sessions } = fixture(admin, false)
+  sessions.create = async (name, emails) => ({ id: 'night', name, players: emails.map((email, index) => ({ id: String(index), email, arrivalOrder: null })), createdAt: '', isActive: false, currentGame: null, currentRound: null })
+  assert.equal((await caller.admin.sessions.create({ name: 'Seven teams', emails: Array.from({ length: 14 }, (_, i) => `p${i}@example.com`) })).players.length, 14)
   await assert.rejects(caller.admin.sessions.create({ name: 'Night', emails: ['A@example.com', ' a@example.com '] }), { code: 'BAD_REQUEST' })
-  await assert.rejects(caller.admin.sessions.create({ name: 'Night', emails: Array.from({ length: 11 }, (_, i) => `p${i}@example.com`) }), { code: 'BAD_REQUEST' })
+  await assert.rejects(caller.admin.sessions.create({ name: 'Night', emails: Array.from({ length: 15 }, (_, i) => `p${i}@example.com`) }), { code: 'BAD_REQUEST' })
 })

@@ -4,7 +4,7 @@ Status: core web app implemented and verified, 14 October 2026. Updated after ap
 
 ## Recommended design
 
-Build a local simulation console with a shared conversation between one host agent and two to five competitive team agents. A deterministic orchestrator controls scheduling, credentials, tool execution, persistence, and time. The existing game backend remains authoritative for game rules and player visibility.
+Build a local simulation console with a shared conversation between one host agent and two to seven competitive team agents. A deterministic orchestrator controls scheduling, credentials, tool execution, persistence, and time. The existing game backend remains authoritative for game rules and player visibility.
 
 Use one agent per team initially. Each agent acts through its team leader's player account. Provision two invited accounts per team (with at most one solo team), as required by the existing backend; the second member does not need a separate model. Randomize arrival order and pairings using a recorded setup seed, then freeze the game's tie order. Use a separate seed for conversation ordering so speaking order is independent of tie priority.
 
@@ -189,7 +189,7 @@ Recorded model outputs and game draws permit deterministic replay. Rerunning mod
 5. **Conversation console.** Add the basic functional UI, live event stream, controls, privileged observer panels, team views, and export/replay. Keep styling at the current simple shadcn/ui stage.
 6. **Balance experiments.** Add repeated headless runs, multiple seeds, rotated tie positions, tunable configurations, and comparisons against scripted baselines. Report position advantage, per-game earnings distributions, final win rates, star advantage, cave exit behavior, cooperation/defection, transfer and reveal spending, usage, and failed/intervened runs.
 
-Meaningful automated checks should include all five games, 2–5 teams with valid rosters, privacy of each game's hidden information, nonleader rejection, retries without duplicate money movement/chat, public/private reveal behavior, and shared-engine parity using the same accepted commands and random draws. Differential privacy fixtures should vary a hidden field and verify it does not appear through prompts, public announcements, response metadata, or shared summaries.
+Meaningful automated checks should include all five games, 2–7 teams with valid rosters, privacy of each game's hidden information, nonleader rejection, retries without duplicate money movement/chat, public/private reveal behavior, and shared-engine parity using the same accepted commands and random draws. Differential privacy fixtures should vary a hidden field and verify it does not appear through prompts, public announcements, response metadata, or shared summaries.
 
 When browser end-to-end testing is requested, follow the repository instruction to divide browser cases among multiple sub-agents and consolidate outcomes in `docs/testcase.md`.
 

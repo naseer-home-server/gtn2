@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { applyAction, refreshPotTarget, startEngine, startRoundEngine } from './index.js'
+import { advanceEngine, applyAction, refreshPotTarget, startEngine, startRoundEngine } from './index.js'
 import { DEFAULT_CONFIG } from './config.js'
-import { cents, moneyDivide, moneyMultiply, moneyMultiplyMany, moneyScale, units } from './money.js'
+import { cents, moneyDivide, moneyMultiply, moneyMultiplyMany, units } from './money.js'
 import type { EngineEnv, Team } from './types.js'
 
 function env(): EngineEnv {
@@ -50,21 +50,59 @@ test('fractional bonus multiplier and zero-taker factor compound before rounding
   assert.equal(state.teams[0].balance, '3')
 })
 
-test('reveal pot targets round the public price to hundreds and keep the private price at one fifth', () => {
+test('reveal prices use one third of average balances, round once to hundreds, and retain a positive-balance minimum', () => {
+  for (const count of [2, 3, 4, 5]) {
+    const { teams, config } = fixture(count)
+    const { state } = startEngine(teams, config, env())
+    for (const [balance, target] of [
+      ['0', '0'], ['1', '10000'], ['44999', '10000'], ['45000', '20000'],
+      ['104999', '30000'], ['105000', '40000'], ['120000', '40000'],
+      ['900719925474099150000', '300239975158033050000'],
+    ]) {
+      for (const team of state.teams) team.balance = balance
+      refreshPotTarget(state)
+      assert.equal(state.pot.target, target, `${count} teams with ${balance} cents each`)
+      for (const team of state.teams) assert.equal(state.privatePots?.[team.id]?.target, (BigInt(target) / 5n).toString())
+    }
+    // Unequal balances must use the group average, not one team's balance.
+    for (const team of state.teams) team.balance = '0'
+    state.teams[0].balance = String(120000 * count)
+    refreshPotTarget(state)
+    assert.equal(state.pot.target, '40000')
+  }
+})
+
+test('reveal pot tuning scales one third of the average before rounding', () => {
   const { teams, config } = fixture(2)
   config.revealPotMultiplier = 1.5
   const { state } = startEngine(teams, config, env())
-  state.teams[0].balance = '1'
-  state.teams[1].balance = '2'
+  for (const team of state.teams) team.balance = '120000'
   refreshPotTarget(state)
-  // Three cents across two teams, scaled by 1.5, is 2.25 cents; after rounding to hundreds the positive-earnings minimum is $100.
-  assert.equal(moneyScale('3', 1.5, 2), '2')
+  assert.equal(state.pot.target, '60000')
+  assert.equal(state.privatePots?.a?.target, '12000')
+})
+
+test('both reveal pots reduce the next game price basis while prices stay fixed throughout a game', () => {
+  const { teams, config } = fixture(2)
+  config.initialBalance = 1050
+  const e = env()
+  const { state } = startEngine(teams, config, e)
   assert.equal(state.pot.target, '10000')
   assert.equal(state.privatePots?.a?.target, '2000')
-  applyAction(state, 'a', state.current.token, { type: 'pot.contribute', amount: '0.01' }, env())
-  assert.equal(state.pot.amount, '1')
-  assert.equal(state.pot.target, '10000')
-  // Pot spending is excluded from balances but restored into the earnings basis.
-  refreshPotTarget(state)
-  assert.equal(state.pot.target, '10000')
+  applyAction(state, 'a', state.current.token, { type: 'pot.contribute', scope: 'self', amount: 20 }, e)
+  applyAction(state, 'b', state.current.token, { type: 'pot.contribute', scope: 'public', amount: 100 }, e)
+  for (const team of state.teams) applyAction(state, team.id, state.current.token, { type: 'reveal.acknowledge' }, e)
+  assert.deepEqual(state.potSpent, { a: '2000', b: '10000' })
+
+  for (let round = 1; round <= 3; round++) {
+    startRoundEngine(state, e)
+    for (const team of state.teams) applyAction(state, team.id, state.current.token, { type: 'bonus.take', amount: 0 }, e)
+    assert.equal(state.pot.target, '10000')
+    assert.equal(state.privatePots?.a?.target, '2000')
+    advanceEngine(state, e, true)
+  }
+  assert.equal(state.current.game, 'high-low')
+  // Current average is $990: /3 = $330 -> $300. Adding spending back would give $400.
+  assert.equal(state.pot.target, '30000')
+  for (const team of state.teams) assert.equal(state.privatePots?.[team.id]?.target, '6000')
 })

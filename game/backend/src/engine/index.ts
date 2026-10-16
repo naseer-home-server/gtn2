@@ -13,10 +13,10 @@ export function rankings(state: EngineState): Ranking[] {
     .map((team, index) => ({ teamId: team.id, rank: index + 1 }))
 }
 export function refreshPotTarget(state: EngineState) {
-  const earned = moneyAdd(...state.teams.map((team) => moneyAdd(team.balance, state.potSpent?.[team.id] ?? '0')))
-  const exact = BigInt(moneyScale(earned, state.config.revealPotMultiplier, state.teams.length))
-  let target = ((exact + 5_000n) / 10_000n) * 10_000n
-  if (moneyCompare(earned, '0') > 0 && target === 0n) target = 10_000n
+  const balances = moneyAdd(...state.teams.map((team) => team.balance))
+  // Round directly to hundreds to avoid rounding a fraction of a cent first.
+  let target = BigInt(moneyScale(balances, state.config.revealPotMultiplier, state.teams.length * 3 * 10_000)) * 10_000n
+  if (moneyCompare(balances, '0') > 0 && target === 0n) target = 10_000n
   state.pot.target = target.toString()
   state.privatePots ??= Object.fromEntries(state.teams.map((team) => [team.id, { amount: '0', target: '0' }]))
   for (const team of state.teams) {

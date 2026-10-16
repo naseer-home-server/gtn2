@@ -35,7 +35,7 @@ type ConfigGroup = { id: string; title: string; description: string; fields: Fie
 const configGroups: ConfigGroup[] = [
   { id: 'general', title: 'Night settings', description: 'Shared balance and ranking reveal economics.', fields: [
     { path: 'initialBalance', label: 'Starting balance', min: 0, max: 1e12, step: 0.01, hint: 'Starting balance per team.' },
-    { path: 'revealPotMultiplier', label: 'Reveal pot multiplier', min: 0.001, max: 1000, step: 0.1, hint: 'Used when the next game’s public reveal price is calculated.' },
+    { path: 'revealPotMultiplier', label: 'Reveal pot multiplier', min: 0.001, max: 1000, step: 0.1, hint: 'Scales average balance ÷ 3 before rounding to the nearest 100 at the next game. Default: 1.' },
   ] },
   { id: 'bonus', title: 'Will we get bonus this year', description: 'Bag, collective threshold, bonus multiplier, and round-three award.', rows: 'rounds', fields: [
     { path: 'bonus.bag', label: 'Bag amount', min: 0, max: 1e12, step: 0.01 },

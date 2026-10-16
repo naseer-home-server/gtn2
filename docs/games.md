@@ -12,7 +12,7 @@
 - Tune game defaults and round overrides through playtesting; share configuration with simulations. Values below are drafts; “TBD” means unset.
 - Round fractional money to two decimal places. High-or-low stake multipliers and the bomb factor use the round values below.
 
-In the first game, the public reveal price is fixed at 100 and each private self-rank price is 20. At the start of games 2–5, calculate the public price from average accumulated balances plus past reveal-pot spending, multiplied by the configured reveal-pot multiplier, then round to the nearest 100 (with a 100 minimum after positive earnings). The private price is one fifth of that public price. Prices stay fixed for all three rounds of a game and change only when the next game starts. Spending on either pot does not shrink the basis for a later game's public price.
+In the first game, the public reveal price is fixed at 100 and each private self-rank price is 20. At the start of games 2–5, calculate the public price as average current team balance ÷ 3, then round to the nearest 100 (halfway rounds up, with a 100 minimum when the combined balance is positive). The configured `revealPotMultiplier` scales this amount before rounding and defaults to 1. Do not add past reveal-pot spending back into balances. The private price is one fifth of the rounded public price. Prices stay fixed for all three rounds of a game and change only when the next game starts. Spending on either pot therefore reduces the balance basis for later games. For example, an average balance of 1,200 gives a public price of 400 and a private price of 80.
 
 ## Will we get bonus this year
 

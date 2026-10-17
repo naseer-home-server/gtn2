@@ -24,17 +24,11 @@ The UI dev server runs on port 5185 and proxies its API to the simulation server
 
 Generate each secret separately, for example with `openssl rand -hex 32`. Never put the provider key or simulation service key in frontend environment variables. The operator token grants access to all simulation observations, including private audit views.
 
-## Docker Compose
+## Run locally
 
-Set the root `.env` using `.env.example`, including the existing game/database settings, `SIMULATION_SERVICE_KEY`, and `SIMULATION_OPERATOR_TOKEN`. Add provider settings if using AI mode. Then:
+The simulation console is a local development tool and is not part of the deployed Docker Compose services. Start PostgreSQL and the game app with the root setup instructions, then run `pnpm simulation:dev` in a second terminal. Configure `GAME_API_BASE_URL` to point at the local game backend and set the simulation secrets in `ai-simulation/.env` and `game/backend/.env` as described above.
 
-```sh
-docker compose up --build -d
-```
-
-Open [the simulation console](http://localhost:3010). `SIMULATION_PORT` changes the host port. The console is published on loopback by default. If deploying behind a reverse proxy, use TLS and forward the original host consistently for the same-origin checks.
-
-The `ai-simulation` service connects to `http://game:3000`, waits for the game's health check, and stores run data in the `simulation-data` named volume. Both services use the same service key. The existing PostgreSQL database stores authoritative gameplay, virtual clock/RNG state, invitations, and private chats. No second game service or database is required.
+The simulation API serves on port 3010 by default, and the Vite UI serves on port 5185. Run records are stored in `ai-simulation/data/`; gameplay, virtual clock/RNG state, invited accounts, and private chats are stored in the existing PostgreSQL database. Preserve both the run data directory and database volume if you need to resume a run after restarting local services.
 
 Only one game session is active. Starting a simulation activates its generated session; do not run human play concurrently. Existing saved sessions are retained and can be reactivated in the game admin app later.
 

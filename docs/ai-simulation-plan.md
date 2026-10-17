@@ -1,6 +1,6 @@
 # AI simulation implementation plan
 
-Status: core web app implemented and verified, 14 October 2026. Updated after approval: deliver a configurable web app in Docker Compose; use the existing game environment because human play and simulation will not run concurrently. See [verification results](ai-simulation-verification.md). Automated bulk balance experiments remain a future extension to the individual-run console.
+Status: core web app implemented and verified, 14 October 2026. The simulation console is run locally with `pnpm simulation:dev`; it is not included in the deployed Docker Compose services. It uses the existing game environment because human play and simulation will not run concurrently. See [verification results](ai-simulation-verification.md). Automated bulk balance experiments remain a future extension to the individual-run console.
 
 ## Recommended design
 
@@ -216,7 +216,7 @@ The simulation must be operable from its own web app, including configuring and 
 
 Provide restore defaults and configuration import/export. Capture immutable configuration at run creation; editing the form affects only future runs. The app includes run history, group conversation, phase/tick progress, private inspectors, run controls, errors, and export/replay from saved events. Provider keys and game service credentials remain server-side. A distinct operator token protects the privileged web console.
 
-Add an `ai-simulation` service to the root Docker Compose file, serving the built web app and API on container port 3010, with configurable host port (default 3010), the existing `game` service as its backend, a health check, and a persistent run-data volume. Pass `SIMULATION_SERVICE_KEY` to both services. Model endpoint, API key and default models are environment variables; operator authentication uses `SIMULATION_OPERATOR_TOKEN`. Do not require Google login automation for synthetic agents: the opt-in bridge authenticates scoped machine identities for real invited session player records, while normal human SuperTokens authentication is unchanged.
+Run the simulation API and UI locally with `pnpm simulation:dev`, using `GAME_API_BASE_URL` to connect to the local game backend. Keep run records in the local simulation data directory and authoritative gameplay in the existing PostgreSQL database. Configure the model endpoint, API key, and default models in the server environment; operator authentication uses `SIMULATION_OPERATOR_TOKEN`. Do not require Google login automation for synthetic agents: the opt-in bridge authenticates scoped machine identities for real invited session player records, while normal human SuperTokens authentication is unchanged.
 
 ## Implementation assignments
 
@@ -225,6 +225,6 @@ The user explicitly requested GPT-6 Luna sub-agents. Three parallel workstreams 
 1. **Game bridge agent (GPT-6 Luna):** backend session/account creation, scoped authentication, virtual clock/RNG persistence, idempotent control, existing gameplay/private-chat integration, backend tests.
 2. **Simulation runner agent (GPT-6 Luna):** server APIs and storage, model adapter and scripted provider, scheduler and host/player roles, privacy filtering, recovery/run controls, tests.
 3. **Web interface agent (GPT-6 Luna):** complete tuning form, run configuration, operator login, live conversation and inspectors, history/controls/export, functional shadcn/ui interface.
-4. **Parent integration:** workspace/dependencies, Docker Compose and images, environment examples, documentation, contract integration, build/test and browser verification, fixes across boundaries.
+4. **Parent integration:** workspace/dependencies, local run scripts, environment examples, documentation, contract integration, build/test and browser verification, fixes across boundaries.
 
 Tests should include a scripted complete night through the actual game bridge, all configuration fields flowing into the engine, delayed cave responses, audience filtering, persistence/recovery, and ordinary game regression tests. Real model calls require a configured operator-provided API key; report explicitly if unavailable. Run only against test data during verification, without overwriting existing preview sessions.

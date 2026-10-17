@@ -4,9 +4,9 @@ A night for friends inspired by Tom Scott’s **Money**: five games, three round
 
 - `presentation/`: future HTML presentation.
 - `game/`: Vite + React + TypeScript app for player login and gameplay.
-- `ai-simulation/`: future multi-agent chat interface for playtesting and balance.
+- `ai-simulation/`: local web console for multi-agent playtesting and balance; run it with `pnpm simulation:dev` alongside the game app.
 
-Use pnpm. Keep the unimplemented folders empty until requested. Read [rules, tuning, and visibility](docs/games.md) before gameplay work. Potential winnings increase across rounds and games. Treat values and star awards as drafts; star counts are tunable for every game except the circle game and finale. Gamble bomb is the finale; most stars grant a significant advantage revealed only then. Share rules/configuration between live play and simulations. Ranks are hidden until a team pays for a private self-rank reveal or all teams pay toward a public reveal. A private reveal shows only that team's rank; a public reveal shows every team's rank to everyone. Ranks hide after acknowledgment, and balances/earnings stay private.
+Use pnpm. Keep the unimplemented `presentation/` folder empty until requested. The AI simulation runs locally and is not part of the deployed Docker Compose services. Read [rules, tuning, and visibility](docs/games.md) before gameplay work. Potential winnings increase across rounds and games. Treat values and star awards as drafts; star counts are tunable for every game except the circle game and finale. Gamble bomb is the finale; most stars grant a significant advantage revealed only then. Share rules/configuration between live play and simulations. Ranks are hidden until a team pays for a private self-rank reveal or all teams pay toward a public reveal. A private reveal shows only that team's rank; a public reveal shows every team's rank to everyone. Ranks hide after acknowledgment, and balances/earnings stay private.
 
 When asked to run an end-to-end test, spawn multiple sub-agents and divide the browser cases in [docs/testcase.md](docs/testcase.md) among them. Have each report the cases attempted, outcomes, and any failures; consolidate the results in the testcase document.
 

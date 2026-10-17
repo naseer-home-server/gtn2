@@ -53,6 +53,6 @@ Run `pnpm --filter game build` to build both parts. The root `docker-compose.yml
 
 ## Run the simulation web app
 
-See [ai-simulation/README.md](ai-simulation/README.md) for configuration, local development, and Docker instructions. The console exposes all shared game tuning fields, saves each run's configuration, and supports scripted testing or an OpenAI-compatible Chat Completions provider.
+See [ai-simulation/README.md](ai-simulation/README.md) for local simulation setup and configuration. Run `pnpm simulation:dev` alongside `pnpm dev` to start the console locally. It exposes the shared game tuning fields, saves each run's configuration, and supports scripted testing or an OpenAI-compatible Chat Completions provider.
 
 The simulation uses the existing game service and database. Starting a simulation activates its generated session; run human games and simulations at different times. Ordinary game sessions retain real-time cave ticks, while simulation sessions use a persisted virtual clock.

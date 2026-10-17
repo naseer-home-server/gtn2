@@ -63,4 +63,4 @@ Configure a `SIMULATION_SERVICE_KEY` of at least 32 characters to enable `/api/s
 
 Simulation-owned sessions persist their clock and seeded random state atomically with accepted gameplay mutations. The automatic wall-clock timer skips them; ordinary human sessions retain existing timing. Starting a simulation changes the shared active session, so human play and simulations must run at different times. Old saved sessions are retained.
 
-See [the simulation README](../ai-simulation/README.md) for console setup, environment variables, run controls, and Docker Compose.
+See [the simulation README](../ai-simulation/README.md) for local console setup, environment variables, and run controls.

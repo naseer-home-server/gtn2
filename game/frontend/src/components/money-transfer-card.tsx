@@ -1,40 +1,25 @@
-import type { GameAction, PlayerGameView } from 'backend/game'
-import { useMoneyTransfer } from '@/hooks/use-money-transfer'
-import { usePlayerGame } from '@/hooks/use-gameplay'
+import type { PlayerGameView } from 'backend/game'
+import type { useMoneyTransfer } from '@/hooks/use-money-transfer'
 import { ErrorMessage } from '@/components/page-feedback'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-type PlayerActionMutation = ReturnType<typeof usePlayerGame>['action']
+export function MoneyTransferCard({ view, transfer }: { view: PlayerGameView; transfer: ReturnType<typeof useMoneyTransfer> }) {
+  const { action } = transfer
+  const blockedByUncertainTransfer = transfer.isUncertainTransferError
 
-export function MoneyTransferCard({
-  view,
-  action,
-  submit,
-  retry,
-  blockedByUncertainTransfer,
-}: {
-  view: PlayerGameView
-  action: PlayerActionMutation
-  submit: (action: GameAction) => void
-  retry: () => void
-  blockedByUncertainTransfer: boolean
-}) {
-  const transfer = useMoneyTransfer(view, action, submit, retry)
-  const receipts = view.moneyTransfers ?? []
-
-  return <Card>
+  return <Card className="transfer-panel">
     <CardHeader>
       <CardTitle><h2>Send money</h2></CardTitle>
-      <CardDescription>Split a positive total evenly among one or more teams, up to your available balance. Transfers are visible only to the teams involved.</CardDescription>
+      <CardDescription>Choose who to send to, then set their shares. Transfers stay between the teams involved.</CardDescription>
     </CardHeader>
     <CardContent className="space-y-4">
       {transfer.canTransfer && transfer.otherTeams.length > 0 && <div className="space-y-4">
         <div className="flex flex-wrap items-end gap-3">
-          <div className="w-44 space-y-1">
-            <Label htmlFor="money-transfer-total">Original amount to send</Label>
+          <div className="w-full space-y-2">
+            <Label htmlFor="money-transfer-total">Total amount to send</Label>
             <Input id="money-transfer-total" type="text" inputMode="decimal" placeholder="0.00" value={transfer.total} disabled={transfer.isPending || transfer.isTransferError} onChange={(event) => transfer.changeTotal(event.target.value)} aria-describedby="money-transfer-balance-hint" />
             <p id="money-transfer-balance-hint" className="text-xs text-muted-foreground">Maximum total: {transfer.team?.balance ?? '0.00'}</p>
           </div>
@@ -76,7 +61,7 @@ export function MoneyTransferCard({
       {!view.isTeamLeader && transfer.isClosed && <p className="text-sm text-muted-foreground">Transfers are closed because the game has finished. You can view your team’s transfer history here.</p>}
       {!view.isTeamLeader && !transfer.isClosed && transfer.isPausedForReveal && <p className="text-sm text-muted-foreground">Transfers are paused until play resumes. You can view your team’s transfer history here.</p>}
       {!view.isTeamLeader && !transfer.isClosed && !transfer.isPausedForReveal && <p className="text-sm text-muted-foreground">Your team leader can send transfers during active play when your team has a positive balance. You can view your team’s transfer history here.</p>}
-      {transfer.successNotice && <p role="status" className="text-sm font-medium text-green-700 dark:text-green-400">{transfer.successNotice}</p>}
+      {transfer.successNotice && <p role="status" className="text-sm font-medium text-foreground">{transfer.successNotice}</p>}
       {transfer.isDefiniteTransferError && <div className="space-y-2 rounded-md border border-destructive/40 p-3" role="alert">
         <ErrorMessage message={action.error?.message ?? 'The transfer was rejected.'} />
         <p className="text-sm">The server rejected this transfer, so no money was sent. Edit the recipients or total before trying again.</p>
@@ -89,18 +74,6 @@ export function MoneyTransferCard({
         <Button variant="outline" size="sm" disabled={transfer.isPending} onClick={transfer.retry}>Retry the same transfer</Button>
       </div>}
 
-      {receipts.length > 0 && <div className="space-y-2 border-t pt-3">
-        <p className="text-sm font-medium">Transfer history</p>
-        {[...receipts].reverse().map((receipt) => {
-          const sent = receipt.fromTeamId === view.team?.id
-          const otherTeamId = sent ? receipt.toTeamId : receipt.fromTeamId
-          const otherTeamName = view.teams.find((team) => team.id === otherTeamId)?.name ?? 'Another team'
-          return <div key={receipt.id} className="flex justify-between gap-3 border-b py-2 text-sm last:border-0">
-            <span>{sent ? `Sent to ${otherTeamName}` : `Received from ${otherTeamName}`}</span>
-            <span className="font-medium">{receipt.amount}</span>
-          </div>
-        })}
-      </div>}
     </CardContent>
   </Card>
 }

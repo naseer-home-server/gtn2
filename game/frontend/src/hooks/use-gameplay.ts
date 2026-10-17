@@ -9,18 +9,25 @@ export function isDefiniteActionError(error: unknown) {
   return ['BAD_REQUEST', 'UNAUTHORIZED', 'FORBIDDEN', 'NOT_FOUND', 'METHOD_NOT_SUPPORTED', 'CONFLICT', 'PRECONDITION_FAILED'].includes(code ?? '')
 }
 
-export function usePlayerGame() {
+export function usePlayerGame(scope?: { sessionId: string; playerId: string }) {
+  const playerKey = ['game', 'player', scope?.sessionId ?? '', scope?.playerId ?? '']
   const state = useQuery({
-    queryKey: ['game', 'player'],
-    queryFn: () => trpc.game.state.query(),
+    queryKey: playerKey,
+    queryFn: async () => {
+      const view = await trpc.game.state.query()
+      if (scope && view.sessionId !== scope.sessionId) throw new Error('Your active session changed. Refresh to rejoin your table.')
+      return view
+    },
     refetchInterval: (query) => query.state.data?.game === 'cave' ? 1_000 : 2_000,
   })
   const retryCommand = useRef<{ requestId: string; token: string; action: GameAction } | null>(null)
   const action = useMutation({
     mutationFn: (command: { requestId: string; token: string; action: GameAction }) => trpc.game.action.mutate(command),
-    onSuccess: (view) => {
+    onSuccess: async (view) => {
       retryCommand.current = null
-      queryClient.setQueryData<PlayerGameView>(['game', 'player'], view)
+      // A delayed poll must not restore an acknowledged rank snapshot or stale balance.
+      await queryClient.cancelQueries({ queryKey: playerKey })
+      queryClient.setQueryData<PlayerGameView>(playerKey, view)
     },
   })
   const blockedByUncertainTransfer = Boolean(
@@ -33,7 +40,7 @@ export function usePlayerGame() {
     action,
     blockedByUncertainTransfer,
     submit: (next: GameAction) => {
-      if (blockedByUncertainTransfer) return
+      if (blockedByUncertainTransfer || action.isPending) return
       const current = state.data
       if (!current?.token) return
       retryCommand.current = { requestId: crypto.randomUUID(), token: current.token, action: next }

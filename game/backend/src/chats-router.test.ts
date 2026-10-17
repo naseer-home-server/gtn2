@@ -29,7 +29,7 @@ class MemoryChats implements ChatsRepository {
   constructor(private readonly selfPlayerId = ids.sender) {}
   async inbox(email: string): Promise<ChatInbox> {
     this.calls.push({ method: 'inbox', email, args: [] })
-    return { sessionId: 'session-1', selfPlayerId: this.selfPlayerId, players: [], teams: [], conversations: [conversation] }
+    return { sessionId: 'session-1', selfPlayerId: this.selfPlayerId, players: [], teams: [], conversations: [{ ...conversation, lastIncomingSequence: null }] }
   }
   async adminAudit(sessionId: string) {
     this.calls.push({ method: 'adminAudit', email: 'admin', args: [sessionId] })

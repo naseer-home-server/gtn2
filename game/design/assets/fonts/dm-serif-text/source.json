@@ -1,0 +1,23 @@
+{
+  "retrieved": "2026-10-16",
+  "family": "DM Serif Text",
+  "style": "Regular",
+  "weight": 400,
+  "files": [
+    {
+      "file": "DMSerifText-Regular.ttf",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/dmseriftext/DMSerifText-Regular.ttf",
+      "sha256": "94b5fa7bac0f406cb3149512037f37ea21b55cecd732c3fd3a076260441399cd"
+    },
+    {
+      "file": "OFL.txt",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/dmseriftext/OFL.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "file": "DESCRIPTION.en_us.html",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/dmseriftext/DESCRIPTION.en_us.html",
+      "sha256": "aa2210f9084db96583620960d5ce7cec155f694de54570e7881808c0f4fb14a7"
+    }
+  ]
+}

@@ -98,13 +98,15 @@ test('a public reveal waits for all seven acknowledgments and each snapshot hide
   assert.equal(state.current.phase, 'choices')
 })
 
-test('cave risk increases by fifteen percentage points through six departures; legacy tables retain their cap', () => {
+test('cave uses configured departure risks through six departures; legacy tables retain their cap', () => {
   for (const departed of [0, 1, 2, 3, 4, 5, 6]) {
     const { state } = startEngine(teams(7), structuredClone(DEFAULT_CONFIG), env, 'cave')
     startRoundEngine(state, env)
     for (const team of state.teams.slice(0, departed)) applyAction(state, team.id, state.current.token, { type: 'cave.decide', decision: 'leave' }, env)
     const events = tickEngine(state, { ...env, now: 10_000 })
-    assert.equal(events.find(event => event.type === 'cave.survived')!.data.risk, 5 + departed * 15)
+    const riskCheck = events.find(event => event.type === 'cave.survived' || event.type === 'cave.collapsed')!
+    assert.equal(riskCheck.data.risk, DEFAULT_CONFIG.cave.collapseRisk[departed])
+    assert.equal(riskCheck.type, env.random() < DEFAULT_CONFIG.cave.collapseRisk[departed] / 100 ? 'cave.collapsed' : 'cave.survived')
   }
   const legacy = structuredClone(DEFAULT_CONFIG)
   legacy.cave.collapseRisk = [5, 20, 40, 60, 80]

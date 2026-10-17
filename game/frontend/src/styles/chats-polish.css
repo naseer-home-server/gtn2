@@ -1,0 +1,251 @@
+/* The page chat gets its own palette and rhythm; the floating launcher keeps its compact UI. */
+.chat-page {
+  --chat-paper: #f4f0e8;
+  --chat-white: #fffdFA;
+  --chat-ink: #000;
+  --chat-red: #b80712;
+  --chat-line: #e3ddd3;
+  --chat-muted: #70695f;
+  background: var(--chat-paper);
+  color: var(--chat-ink);
+  font-family: 'Geist Variable', sans-serif;
+}
+
+.chat-page .chat-page-header {
+  min-height: 94px;
+  gap: 14px;
+  padding: 18px 22px;
+  border-color: var(--chat-line);
+  background: var(--chat-paper);
+}
+
+.chat-page .chat-page-title {
+  font-family: 'Bodoni Moda', Georgia, serif;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -.035em;
+  line-height: 1.05;
+}
+
+.chat-page .chat-conversation-title {
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -.025em;
+  line-height: 1.25;
+}
+
+.chat-page .chat-subtitle {
+  margin-top: 4px;
+  color: var(--chat-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.chat-page .chat-brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--chat-red);
+  color: white;
+}
+
+.chat-page .chat-back-button {
+  border: 1px solid var(--chat-line);
+  border-radius: 50%;
+  background: var(--chat-white);
+}
+
+.chat-page .chat-compose-actions {
+  gap: 10px;
+  padding: 16px 22px;
+  border-color: var(--chat-line);
+}
+
+.chat-page .chat-action-button {
+  min-height: 44px;
+  border-color: #d8cfc3;
+  border-radius: 7px;
+  background: var(--chat-white);
+  color: var(--chat-ink);
+  font-size: 14px;
+  font-weight: 550;
+  box-shadow: none;
+}
+
+.chat-page .chat-action-button:hover {
+  border-color: var(--chat-red);
+  background: #fff8f5;
+}
+
+.chat-page .chat-conversation-list {
+  padding: 0 12px 20px;
+}
+
+.chat-page .chat-conversation-row {
+  min-height: 82px;
+  padding: 14px 10px;
+  border-color: var(--chat-line);
+  background: transparent;
+  transition: background-color 120ms ease;
+}
+
+.chat-page .chat-conversation-row:hover,
+.chat-page .chat-conversation-row:focus-visible {
+  background: #ebe5da;
+}
+
+.chat-page .chat-conversation-row > span:nth-child(2) > span:first-child {
+  color: var(--chat-ink);
+  font-size: 15px;
+  font-weight: 620;
+  line-height: 1.35;
+}
+
+.chat-page .chat-conversation-avatar {
+  width: 46px;
+  height: 46px;
+  border: 1px solid #e5d9cd;
+  background: #eee4d8;
+  color: #5b4135;
+}
+
+.chat-page .chat-group-avatar {
+  border-color: #e7c8c4;
+  background: #f5e3e0;
+  color: var(--chat-red);
+}
+
+.chat-page .chat-row-preview {
+  color: var(--chat-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.chat-page .chat-row-chevron {
+  color: #9b9389;
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.chat-page .chat-members {
+  padding: 10px 22px;
+  border-color: var(--chat-line);
+  color: var(--chat-ink);
+  font-size: 14px;
+}
+
+.chat-page .chat-members summary {
+  color: var(--chat-muted);
+  font-size: 13px;
+}
+
+.chat-page .chat-thread {
+  padding: 20px 18px;
+  background: var(--chat-paper);
+}
+
+.chat-page .chat-message-meta {
+  gap: 8px;
+  margin-bottom: 5px;
+  padding: 0 4px;
+  color: var(--chat-muted);
+  font-size: 12px;
+}
+
+.chat-page .chat-message-bubble {
+  border-radius: 16px 16px 16px 5px;
+  background: var(--chat-white);
+  color: var(--chat-ink);
+  box-shadow: 0 1px 2px rgb(36 25 13 / 7%);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.chat-page .chat-message-row.items-end .chat-message-bubble {
+  border-radius: 16px 16px 5px 16px;
+  background: var(--chat-red);
+  color: white;
+}
+
+.chat-page .chat-thread-empty {
+  padding-top: clamp(34px, 12vh, 90px);
+  color: var(--chat-muted);
+}
+
+.chat-page .chat-thread-empty p:first-of-type {
+  color: var(--chat-ink);
+  font-size: 15px;
+}
+
+.chat-page .chat-empty-icon {
+  border: 1px solid #e5d9cd;
+  background: var(--chat-white);
+  color: var(--chat-red);
+}
+
+.chat-page .chat-composer {
+  padding: 14px 18px max(14px, env(safe-area-inset-bottom));
+  border-color: var(--chat-line);
+  background: var(--chat-white);
+}
+
+.chat-page .chat-composer textarea {
+  min-height: 48px;
+  max-height: 128px;
+  border-color: #d9d1c6;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--chat-ink);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.chat-page .chat-composer textarea::placeholder {
+  color: #8c857c;
+}
+
+.chat-page .chat-composer button[aria-label='Send message'],
+.chat-page .chat-composer button[aria-label='Retry sending message'] {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--chat-red);
+  color: white;
+}
+
+.chat-page .chat-composer button[aria-label='Send message']:hover,
+.chat-page .chat-composer button[aria-label='Retry sending message']:hover {
+  background: #99030c;
+}
+
+.chat-page .chat-composer > div:last-of-type {
+  color: var(--chat-muted);
+  font-size: 12px;
+}
+
+@media (max-width: 420px) {
+  .chat-page .chat-page-header { min-height: 82px; padding: 14px 16px; }
+  .chat-page .chat-compose-actions { padding: 12px 16px; }
+  .chat-page .chat-conversation-list { padding-right: 8px; padding-left: 8px; }
+  .chat-page .chat-thread { padding: 16px 12px; }
+  .chat-page .chat-composer { padding-right: 12px; padding-left: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-page .chat-conversation-row { transition: none; }
+}
+
+/* Inbox follows the same page grid as Play, Wallet, and Teams. */
+.chat-page-inbox .chat-page-header { padding: 0 0 24px; min-height: 90px; border: 0; }
+.chat-page-inbox .chat-brand-mark { display: none; }
+.chat-page-inbox .chat-page-title { font-size: 36px; line-height: 1.12; }
+.chat-page-inbox .chat-subtitle { font-size: 14px; margin-top: 8px; }
+.chat-page-inbox .chat-compose-actions { display: grid; grid-template-columns: 1fr 1fr; padding: 0 0 20px; border: 0; gap: 10px; }
+.chat-page-inbox .chat-action-button { width: 100%; border-radius: 11px; min-height: 48px; }
+.chat-page-inbox .chat-conversation-list { flex: 0 1 auto; padding: 0; background: var(--chat-white); border: 1px solid var(--chat-line); border-radius: 18px; }
+.chat-page-inbox .chat-conversation-row { padding: 18px; border: 0; border-bottom: 1px solid var(--chat-line); }
+.chat-page-inbox .chat-conversation-row:last-child { border-bottom: 0; }
+.chat-page-inbox .chat-conversation-avatar { border-radius: 13px; width: 42px; height: 42px; }
+.chat-page-inbox .chat-conversation-list > p { padding: 24px; font-size: 14px; line-height: 1.7; }
+@media (max-width:360px) { .chat-page-inbox .chat-page-title { font-size: 32px; } .chat-page-inbox .chat-action-button { font-size: 13px; } }

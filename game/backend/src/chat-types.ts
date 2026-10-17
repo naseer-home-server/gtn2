@@ -10,7 +10,8 @@ export type ChatConversation = {
 }
 export type ChatInbox = {
   sessionId: string; selfPlayerId: string; players: ChatPlayer[]; teams: ChatTeam[]
-  conversations: ChatConversation[]
+  // Latest message from someone else, independent of the latest preview/sender.
+  conversations: Array<ChatConversation & { lastIncomingSequence: number | null }>
 }
 export type ChatMessagePage = { messages: ChatMessage[]; hasMore: boolean }
 export type AdminChatAudit = {

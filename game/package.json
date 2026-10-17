@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm --parallel --filter frontend --filter backend dev",
-    "build": "pnpm --filter frontend build && pnpm --filter backend build",
+    "build": "pnpm --filter backend build && pnpm --filter frontend build",
     "start": "pnpm --filter backend start"
   }
 }

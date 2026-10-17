@@ -1,3 +1,4 @@
+import { getPlayerRoster, resolveRosterPlayers } from './player-roster.js'
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { DEFAULT_CONFIG, gameConfigSchema, playerCommandSchema } from './engine/config.js'
@@ -77,22 +78,30 @@ export const appRouter = router({
         return ctx.gameplay.adminView(input.sessionId)
       }),
       start: adminProcedure.input(z.object({ sessionId: z.uuid(), config: gameConfigSchema, startingGame: z.enum(GAME_ORDER).default('bonus'),
-        teams: z.array(z.object({ name: z.string().trim().min(1).max(60), playerIds: z.array(z.uuid()).min(1).max(MAX_TEAM_MEMBERS) })).min(MIN_TEAMS).max(MAX_TEAMS),
+        teams: z.array(z.object({ name: z.string().trim().max(100).default(''), playerIds: z.array(z.uuid()).min(1).max(MAX_TEAM_MEMBERS) })).min(MIN_TEAMS).max(MAX_TEAMS),
       })).mutation(({ ctx, input }) => {
         if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
         return ctx.gameplay.start(input.sessionId, input.teams, input.config, ctx.user.id, input.startingGame)
       }),
-      startRound: adminProcedure.input(z.object({ sessionId: z.uuid() })).mutation(({ ctx, input }) => {
+      startRound: adminProcedure.input(z.object({ sessionId: z.uuid(), control: z.object({ requestId: z.uuid(), expectedRevision: z.number().int().nonnegative(), config: gameConfigSchema.optional() }).optional() })).mutation(({ ctx, input }) => {
         if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
-        return ctx.gameplay.startRound(input.sessionId, ctx.user.id)
+        return ctx.gameplay.startRound(input.sessionId, ctx.user.id, input.control)
+      }),
+      adjustAccount: adminProcedure.input(z.object({
+        sessionId: z.uuid(), requestId: z.uuid(), expectedRevision: z.number().int().nonnegative(), teamId: z.uuid(),
+        balance: z.string().max(1000).regex(/^\d+(\.\d{1,2})?$/, 'Enter a nonnegative amount with at most two decimal places.'),
+        stars: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER), reason: z.string().trim().max(300).optional(),
+      })).mutation(({ ctx, input }) => {
+        if (!ctx.gameplay?.adjustAccount) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
+        return ctx.gameplay.adjustAccount(input.sessionId, ctx.user.id, input)
       }),
       reset: adminProcedure.input(z.object({ sessionId: z.uuid() })).mutation(({ ctx, input }) => {
         if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
         return ctx.gameplay.reset(input.sessionId, ctx.user.id)
       }),
-      advance: adminProcedure.input(z.object({ sessionId: z.uuid() })).mutation(({ ctx, input }) => {
+      advance: adminProcedure.input(z.object({ sessionId: z.uuid(), control: z.object({ requestId: z.uuid(), expectedRevision: z.number().int().nonnegative(), config: gameConfigSchema.optional() }).optional() })).mutation(({ ctx, input }) => {
         if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
-        return ctx.gameplay.advance(input.sessionId, ctx.user.id)
+        return ctx.gameplay.advance(input.sessionId, ctx.user.id, input.control)
       }),
     }),
     chats: router({
@@ -104,11 +113,15 @@ export const appRouter = router({
     sessions: router({
       list: adminProcedure.query(({ ctx }) => ctx.sessions.list()),
       get: adminProcedure.input(z.object({ id: z.uuid() })).query(({ ctx, input }) => ctx.sessions.get(input.id)),
+      roster: adminProcedure.query(() => getPlayerRoster()),
       create: adminProcedure.input(z.object({
         name: z.string().trim().min(1).max(100),
-        emails: z.array(z.string().trim().toLowerCase().pipe(z.email().max(254))).min(1).max(MAX_SESSION_PLAYERS)
-          .refine((emails) => new Set(emails).size === emails.length, 'Each email must be unique.'),
-      })).mutation(({ ctx, input }) => ctx.sessions.create(input.name, input.emails, ctx.user.id)),
+        rosterIds: z.array(z.string().min(1).max(100)).min(1).max(MAX_SESSION_PLAYERS)
+          .refine((ids) => new Set(ids).size === ids.length, 'Select each person once.'),
+      })).mutation(async ({ ctx, input }) => {
+        const profiles = await resolveRosterPlayers(input.rosterIds)
+        return ctx.sessions.create(input.name, profiles.map((player) => player.email), ctx.user.id, profiles)
+      }),
       setActive: adminProcedure.input(z.object({ id: z.uuid().nullable() })).mutation(({ ctx, input }) => ctx.sessions.setActive(input.id, ctx.user.id)),
       arrive: adminProcedure.input(z.object({ sessionId: z.uuid(), playerId: z.uuid() })).mutation(({ ctx, input }) => ctx.sessions.arrive(input.sessionId, input.playerId, ctx.user.id)),
       reorder: adminProcedure.input(z.object({ sessionId: z.uuid(), playerIds: z.array(z.uuid()).max(MAX_SESSION_PLAYERS) })).mutation(({ ctx, input }) => ctx.sessions.reorder(input.sessionId, input.playerIds, ctx.user.id)),

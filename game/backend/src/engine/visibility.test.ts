@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { advanceEngine, applyAction, startEngine, tickEngine } from './index.js'
+import { advanceEngine, applyAction, startEngine, startRoundEngine, tickEngine } from './index.js'
 import { DEFAULT_CONFIG } from './config.js'
 import { playerView } from './views.js'
 import type { CaveRound, EngineEnv, EngineState, Team } from './types.js'
@@ -14,6 +14,39 @@ let tokenSerial = 0
 const env = (now = 1_000): EngineEnv => ({ now, random: () => 0.5, token: () => `token-${++tokenSerial}` })
 const start = () => startEngine(teams(), structuredClone(DEFAULT_CONFIG), env()).state
 const view = (state: EngineState, playerId: string) => playerView('session', 'Test night', state, playerId)
+
+test('prepared first rounds withhold all game rules and the unrevealed finale advantage', () => {
+  for (const game of ['bonus', 'high-low', 'cave', 'circle', 'bomb'] as const) {
+    const state = startEngine(teams(), structuredClone(DEFAULT_CONFIG), env(), game).state
+    const preparedView = view(state, 'alice')
+    assert.equal(preparedView.rules, undefined, `${game} rules leaked before round one started`)
+    assert.equal(preparedView.finaleAdvantage, undefined, `${game} finale advantage leaked before start`)
+    assert.ok(!('rules' in preparedView))
+    assert.ok(!('finaleAdvantage' in preparedView))
+
+    startRoundEngine(state, env())
+    const activeView = view(state, 'alice')
+    assert.ok(activeView.rules, `${game} rules are missing after round one started`)
+    if (game === 'bomb') assert.ok(activeView.finaleAdvantage, 'Finale advantage should appear after it is awarded')
+  }
+})
+
+test('later-round ready states retain current-game rules, but never expose an unrevealed finale advantage', () => {
+  const state = start()
+  state.round = 2
+  state.current = { game: 'bonus', phase: 'ready', token: 'ready-round-two' }
+  const laterRound = view(state, 'alice')
+  assert.deepEqual(laterRound.rules, {
+    bag: DEFAULT_CONFIG.bonus.bag[1], threshold: DEFAULT_CONFIG.bonus.threshold[1],
+    multiplier: DEFAULT_CONFIG.bonus.multiplier[1], roundThreeStars: DEFAULT_CONFIG.bonus.stars,
+  })
+
+  state.gameIndex = 4
+  state.current = { game: 'bomb', phase: 'ready', token: 'ready-finale-round-two' }
+  const finale = view(state, 'alice')
+  assert.deepEqual(finale.rules, { factor: DEFAULT_CONFIG.bomb.factor[1] })
+  assert.equal(finale.finaleAdvantage, undefined)
+})
 
 test('players see their own balance and public stars, with ranks hidden until a paid reveal', () => {
   const state = start()

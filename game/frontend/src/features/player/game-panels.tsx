@@ -58,12 +58,12 @@ function CircleDecision() {
   const stars = returning ? draft.returnStars : draft.stars
   const valid = parseMoney(money) !== null && withinMoney(money, team.balance) && validCount(stars) && Number(stars) <= team.stars
   return <>
-    {round.sender && <div className="paper-panel my-6 space-y-2"><p className="text-sm text-muted-foreground">Your sender</p><p className="section-heading">{round.sender.name}</p><p>Received {formatMoney(round.received?.money ?? '0.00')} and {round.received?.stars ?? 0} stars</p>{round.returned && <p className="text-sm">Received back {formatMoney(round.returned.money)} and {round.returned.stars} stars</p>}</div>}
+    {round.sender && <div className="paper-panel my-6 space-y-2"><p className="text-sm text-muted-foreground">Your sender</p><p className="section-heading">{round.sender.name}</p><p>You received {formatMoney(round.received?.money ?? '0.00')} and {round.received?.stars ?? 0} {round.received?.stars === 1 ? 'star' : 'stars'} from {round.sender.name}.</p>{round.returned && <p className="text-sm">You also received back {formatMoney(round.returned.money)} and {round.returned.stars} {round.returned.stars === 1 ? 'star' : 'stars'} in returns.</p>}</div>}
     {can && <form className="task-panel space-y-6" onSubmit={event => { event.preventDefault(); if (valid && !action.isPending && !blockedByUncertainTransfer) submit({ type, money, stars: Number(stars) }) }}>
       <p className="text-sm text-muted-foreground">{returning ? 'Returns are not multiplied.' : `Outgoing money and stars are multiplied ${String(view.rules?.multiplier ?? '—')}×.`}</p>
       <MoneyField id={returning ? 'circle-return-money' : 'circle-send-money'} label={returning ? 'Money to return' : 'Money to send'} value={money} onChange={value => updateDraft(returning ? { returnMoney: value } : { money: value })} limit={team.balance} disabled={action.isPending || blockedByUncertainTransfer} />
       <Counter id={returning ? 'circle-return-stars' : 'circle-send-stars'} label={returning ? 'Stars to return' : 'Stars to send'} value={stars} onChange={value => updateDraft(returning ? { returnStars: value } : { stars: value })} max={team.stars} disabled={action.isPending || blockedByUncertainTransfer} />
-      <Button type="submit" disabled={!valid || action.isPending || blockedByUncertainTransfer}>{action.isPending ? 'Sending…' : returning ? 'Return money and stars' : 'Send money and stars'}</Button>
+      <Button type="submit" disabled={!valid || action.isPending || blockedByUncertainTransfer}>{action.isPending ? 'Sending…' : returning ? `Return to ${round.sender?.name ?? 'your sender'}` : 'Send money and stars'}</Button>
     </form>}
   </>
 }

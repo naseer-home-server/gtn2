@@ -151,3 +151,37 @@
 
 .admin-main .admin-destinations { position: static; margin-bottom: 30px; }
 .admin-main .admin-destinations > a { flex: 0 1 auto; padding-inline: 18px; }
+
+/* A desktop host workspace: controls and diagrams beside editable accounts. */
+.admin-main { max-width: 1600px; }
+.app-header:has(+ .admin-main) .header-inner { max-width: 1600px; }
+.admin-tool { padding: 26px; border: 1px solid var(--border); border-radius: 16px; background: var(--card); min-width: 0; }
+.admin-live-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(350px, 1fr); align-items: start; gap: 24px; }
+.admin-setup-grid { display: grid; grid-template-columns: minmax(320px, .9fr) minmax(0, 1.2fr); gap: 32px; align-items: start; }
+.admin-arrivals-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.admin-accounts-column { min-width: 0; position: sticky; top: 24px; }
+.admin-recent-events { max-height: 510px; overflow: auto; }
+.admin-event-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; }
+.admin-event-list .game-activity { margin: 0; }
+.circle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 16px; margin-top: 20px; }
+.circle-group { min-width: 0; padding: 18px; border: 1px solid var(--border); border-radius: 12px; }
+.circle-diagram-scroll { overflow: auto; color: var(--primary); }
+.circle-diagram-scroll svg { width: 100%; min-width: 380px; max-height: 410px; }
+.circle-node-name { display: flex; align-items: center; justify-content: center; height: 100%; font: 600 13px/1.2 var(--font-sans); text-align: center; overflow-wrap: anywhere; color: var(--foreground); }
+.circle-text-chain { font-size: .8125rem; line-height: 1.7; margin: 8px 0 18px; overflow-wrap: anywhere; }
+.circle-receipts { width: 100%; min-width: 420px; font-size: .75rem; text-align: left; border-collapse: collapse; }
+.circle-receipts th, .circle-receipts td { padding: 10px 8px; border-top: 1px solid var(--border); vertical-align: top; }
+.circle-receipts thead { color: var(--muted-foreground); }
+.circle-receipts td { font-variant-numeric: tabular-nums; }
+@media (max-width: 1100px) {
+  .admin-live-grid, .admin-setup-grid { grid-template-columns: minmax(0, 1fr); }
+  .admin-accounts-column { position: static; }
+}
+@media (max-width: 700px) {
+  .admin-arrivals-grid, .admin-event-list { grid-template-columns: minmax(0, 1fr); }
+  .admin-tool { padding: 20px 16px; }
+}
+@media (max-width: 700px) {
+  .admin-main .admin-tool .section-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+  .admin-main .admin-tool .section-tabs > [data-slot=button] { min-width: 0; padding-inline: 6px; white-space: normal; font-size: .8rem; }
+}

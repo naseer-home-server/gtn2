@@ -43,6 +43,13 @@
       "when": 1791909527870,
       "tag": "0005_simulation_sessions",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792219255328,
+      "tag": "0006_living_slayback",
+      "breakpoints": true
     }
   ]
 }

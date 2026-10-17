@@ -6,7 +6,8 @@
   "files": [
     "dist",
     "public",
-    "drizzle"
+    "drizzle",
+    "data"
   ],
   "scripts": {
     "dev": "tsx watch src/index.ts",

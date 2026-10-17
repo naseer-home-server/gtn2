@@ -70,3 +70,37 @@ pnpm db:seed --reset
 ```
 
 Reset recreates only seed-owned fixtures, including their invitations and gameplay/chat history. User-created sessions are preserved. Stop the app before resetting to avoid in-flight requests from old fixture IDs; refresh open session pages afterward. The seed command requires `LOCAL=true`, rejects production mode and remote database hosts, and never operates on the forwarded PostgreSQL connection through the local wrapper.
+
+## Player roster and host controls
+
+New human sessions select people from the approved roster at
+`game/backend/data/player-roster.json`. This committed file contains only numeric
+IDs, names, and email addresses for the selected invitees. Keep contact details
+and other export fields out of it. The server derives first names from the
+trimmed name's first word and validates unique IDs and normalized email
+addresses. The roster is read when the admin requests it, so refresh the picker
+after editing the file. No roster environment variable or Docker bind mount is
+needed.
+
+The host selects at most fourteen people from the catalog for each session.
+Session membership snapshots their names/emails; later roster changes do not
+rewrite an existing session. Team names are generated from selected first names
+(`First & Second`, or `First` for a solo). Selection order controls the displayed
+name; arrival order still determines leadership and tie order. Repeated team
+labels are permitted and all operations address distinct team IDs.
+
+The production image includes this minimal roster. The AI simulation remains
+local-only.
+
+The host can edit each prepared team's money and stars in Live play, including
+during reveals and after the finale. Updates are absolute values, revision-checked,
+and audited. An edit opened before another payout/change may be rejected as stale;
+refresh and reopen the account editor to use current values. Retry an uncertain
+save with **Retry same update**. Current-game reset restores its start checkpoint,
+including undoing account edits made since it. Existing rank snapshots and the
+current game's fixed reveal price do not change after an account correction.
+
+Before preparation, all configuration is editable through labeled fields. At a
+prepared first round or completed game boundary, only the upcoming game's fields
+and reveal multiplier are editable. Starting applies tuning atomically and locks
+it for that game's three rounds. The effective configuration is retained for reset.

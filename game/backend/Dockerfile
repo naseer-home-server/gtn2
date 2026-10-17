@@ -17,8 +17,9 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
 COPY game ./game
-RUN pnpm --filter frontend build
+# The frontend imports backend/engine from its compiled package export.
 RUN pnpm --filter backend build
+RUN pnpm --filter frontend build
 RUN pnpm --filter backend --prod deploy --legacy /app/deploy
 
 FROM node:22.23.1-alpine AS runner

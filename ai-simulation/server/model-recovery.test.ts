@@ -179,7 +179,9 @@ test('exhausted corrections pause without dispatching any batch decisions; a lat
     }
     await stepPausedRun(run)
     assert.equal(run.events.filter(event => event.type === 'rules.correction').length, 1)
-    assert.ok(bombPrompts.every(prompt => prompt.gameHistory.some((event: any) => event.type === 'rules.correction')))
+    assert.ok(bombPrompts.every(prompt => prompt.rulesCard.includes('There are exactly TWO piles')
+      && prompt.rulesCard.includes('one direction pile containing up and down chits together')),
+    'the authoritative player rules card supersedes a legacy correction event in model history')
     exhaustedOutput = true
     await assert.rejects(stepPausedRun(run), /Model output limit reached/)
     assert.equal(run.status, 'paused')

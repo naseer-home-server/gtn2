@@ -202,3 +202,84 @@ All 7 frontend regression tests, frontend TypeScript/production build, and lint 
 - Merged the game UI refactor with main's seven-team support, fourteen-player invitations/group chats, and configured cave tick limit. Carried the cave tick count, automatic banking explanation, and maximum-ticks setting into the refactored player screens.
 - Preserved main's engine tuning and simulation changes. Updated the stale seven-team cave test to use the configured departure risks and cover the guaranteed-collapse value.
 - Validation: game frontend/backend build passed; all 17 frontend tests passed, including the cave merge regression; all 81 backend/database tests passed with no skips using main's isolated local PostgreSQL. Frontend lint has only the existing two Fast Refresh warnings; Vite retains its existing large-chunk warning. No browser end-to-end run was performed for this merge.
+
+
+## Feedback implementation verification — 17 October 2026
+
+Branch `codex/game-ui-feedback`; isolated worktree database/project
+`gtn2-e25e1a0bd2` (PostgreSQL 55226), app 5226/backend 3226, Node 22.23.1.
+Three GPT-6 Luna workers implemented and independently checked scoped changes;
+the primary integrated shared storage/API/layout and consolidated this report.
+The bundled human-player roster contains only the fourteen explicitly approved
+players and their IDs, names, and email addresses; the full export and contact
+details remain outside Git.
+
+### Automated checks
+
+- [x] Game production build (frontend/backend TypeScript and Vite).
+- [x] Frontend: 57 tests passed across 10 files, including holding screens, circle receipt copy, typed config, pairing, account inputs/revision capture, graph partitions, chat, and reveal/draft/stale-poll behavior.
+- [x] Backend with this checkout's PostgreSQL: 95 tests passed, none skipped. Includes full deterministic five-/six-/seven-team playthroughs, roster API rejection, authoritative names, account audit/retry/stale-revision/privacy, config start/checkpoint/reset, and existing auth/chat/transfer tests.
+- [x] Simulation: 77 tests passed. Two failing assertions reproduced on a clean HEAD archive: one incorrectly expected correction events in filtered model history rather than the authoritative rules card; another hard-coded obsolete cave defaults. Only those assertions were aligned; runtime defaults/provider behavior were preserved.
+- [x] Frontend lint passes with the two pre-existing Fast Refresh export warnings in button/badge. Existing large main JavaScript chunk warning remains.
+- [x] `git diff --check`.
+
+### Divided browser cases and outcomes
+
+| Owner | Cases attempted | Outcome |
+| --- | --- | --- |
+| Luna player worker | E2E holding screen, Wallet/Teams privacy and leadership, current rules after host starts Bonus round one | Passed. Existing Chrome identity was player09/Team 5; it was kept for coordination. No decisions submitted. Its surface lacked viewport control, so primary covered exact widths. |
+| Luna chat/reveal worker | Group cancel/search/creator/count/create/message; private pot cap/cancelled draft/contribute/snapshot/acknowledge; public dialog inspection | Passed. Created a local test group and message. Private target 20 filled once, balance 500→480, acknowledgment removed rank; public pot was not filled. |
+| Luna admin worker | Separate browser admin access; source/API concurrency review | Browser correctly denied its player-authenticated Chrome tab; IAB was unavailable to that worker. No auth/session switching. Source review found no concrete regression. Primary performed admin cases below. |
+| Primary | Real roster picker; inactive session creation/arrivals; pair+solo automatic labels; invalid config blocking; prepare and scoped tuning at start; account edit and two-tab stale rejection/recovery; admin transcript; live circle arrows; wide/narrow visuals | Passed. New inactive session stayed inactive, and E2E stayed active. Manual edits/config events appeared in host activity review. |
+
+### Feedback acceptance results
+
+- [x] Rules/finale advantage withheld server-side in all five prepared first rounds; frontend neutral hold and complete-third-round boundary covered by component tests. Browser observed hold→active Bonus rules (bag 100, threshold 100, multiplier 3, star 1).
+- [x] Group creator uses an accessible focused surface with search, count, fixed creator inclusion, cancellation, and min/max validation. Browser selected two peers, created a 3-member group, and sent a test message.
+- [x] Reveal contribution dialogs distinguish private/public effects and show progress/remaining/balance/cap. Private success closed the dialog and acknowledgment hid its rank. Public dialog/result modal close-without-acknowledgment and stale rank suppression are covered by component/engine tests.
+- [x] Admin renders the same shared transcript/header/bubble components, with explicit sender and read-only host label; browser reviewed the worker-created group.
+- [x] Host workspace uses meaningful two-column desktop layout. Primary inspected 1440px desktop and 390px narrow admin review, and 320/390px player dialogs, with document scroll width no greater than viewport width. Portaled group palette/field sizing and narrow review tabs were corrected after screenshots.
+- [x] Roster source has 70 unique IDs/emails; local browser creation selected three listed people only. Server rejects forged/duplicate IDs; normalized identity snapshots preserve existing membership/history. Raw contact fields are neither stored nor bundled.
+- [x] Two selected members produced the exact first-name pair label; solo produced its first name. Server ignored forged names in the DB regression and supports identical generated labels using distinct IDs.
+- [x] Prepared and active account edits worked. A competing tab saved 60.00/2 stars; the older 70.00/3-star draft was rejected, refresh closed it, and reopening loaded 60.00/2. Idempotence, reveal/finished allowance, exact large money, privacy, and reset semantics passed automated checks.
+- [x] Admin circle preview displayed the actual reciprocal chain and correct host-only arrows/text. Graph topology tests cover every 2–7-team partition. Historical outcomes are matched to the selected start event, including reset boundaries.
+- [x] Friendly config covers all fields and validates ranges/combined chit limits. Browser rejected an invalid pool, prepared with 43, then started with a scoped pool edit to 44; audit confirmed 44/100/100. Engine tests reject out-of-window/other-game edits; effective config persists for reset.
+- [x] Circle receipt wording explicitly names the incoming sender and separates return-to-sender and returned receipts; component/server visibility tests pass.
+
+### Limits and local fixture state
+
+This was feedback-focused browser verification, not a repeated full fifteen-round,
+seven-team browser run. The earlier pending full-browser cases above remain pending.
+Public reveal completion/all acknowledgments, complete circle send/return gameplay,
+and arbitrary 1280/1920 desktop widths were not repeated in this browser pass;
+engine/component/database coverage passed for the relevant rules and visibility.
+
+E2E remains active in Bonus round one, with no gameplay choice submitted. Team 5
+has 480.00 and 7 stars after a temporary host correction and one private reveal.
+The group `TEST - Chat QA (player09)` contains player09 plus player01/player02 and
+message `TEST: chat UI verification only.` Chat persists independently of reset.
+The Circle UX preview was started while inactive for graph inspection. A new
+inactive `Feedback verification — inactive` session contains three roster people,
+a pair and solo, at High/Low round one with a tuned first-round pool and one local
+account correction. Run seed reset only when you intend to restore seed fixtures;
+it preserves the separately created inactive session.
+
+
+## Dialog and circle-selector regressions — 17 October 2026
+
+Follow-up to the supplied screenshots on `codex/game-ui-feedback`:
+
+- [x] Group creation: selected chips now keep their natural wrapped height in a scrolling flex body; count/guidance use normal margins. At 414×896 with four selected people, chip bottom 591.36px precedes count top 603.36px and picker top 633.95px. At 320×568 with all fourteen selected, chips/count/picker remain ordered, the body scrolls, and the action footer stays visible.
+- [x] Public reveal: acknowledgment is inside a padded, nonshrinking footer. At 414×896 its left/right bounds are 19/395px, inside the 0–414px dialog, and its bottom is 877px inside the 896px viewport. At 320×568 with seven teams, the list scrolls and acknowledgment remains fully inside the sheet/viewport. Existing acknowledgment/retry/privacy behavior is unchanged.
+- [x] Circle selector: only starts after the latest circle-game reset are shown. The full audit is retained. A repeated Round 1/reset history yielded exactly `Latest round` and one `Round 1`; resetting a selected round changed the selection to `latest`. Three new regression tests also cover stale selection and unrelated-game resets.
+
+Browser layout checks used temporary, isolated fixtures: the real public reveal
+component, the actual group dialog markup/styles, and the real circle component
+with repeated reset events. Fixtures made no API calls or changes to the active
+game and were removed afterward. Review images are
+`game/design/review/group-creation-fixed-414.jpg` and
+`game/design/review/public-reveal-fixed-414.jpg`.
+
+Frontend production build, all 60 frontend tests, lint (the existing button/badge
+Fast Refresh warnings only), and diff whitespace checks passed. No backend code
+changed in this follow-up, so the backend/simulation suites were not repeated.

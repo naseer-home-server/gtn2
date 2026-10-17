@@ -24,7 +24,11 @@ test('PostgreSQL chats enforce active-session membership, team DMs, group member
         const gameplay = new DbGameplayRepository(connection)
         const chats = new DbChatsRepository(connection)
         const emails = ['alice@example.test', 'alex@example.test', 'bea@example.test', 'ben@example.test', 'guest@example.test']
-        const session = await sessions.create('Chat database test', emails, 'chat-test-admin')
+        const profiles = emails.map((email, index) => ({
+          id: String(index + 1), email, name: ['Alice', 'Alex', 'Bea', 'Ben', 'Guest'][index]!,
+          firstName: ['Alice', 'Alex', 'Bea', 'Ben', 'Guest'][index]!,
+        }))
+        const session = await sessions.create('Chat database test', emails, 'chat-test-admin', profiles)
         const playerFor = (email: string) => {
           const player = session.players.find((item) => item.email === email)
           assert.ok(player, `missing fixture player ${email}`)
@@ -40,6 +44,7 @@ test('PostgreSQL chats enforce active-session membership, team DMs, group member
 
         const aliceInbox = await chats.inbox(emails[0]!)
         assert.equal(aliceInbox.sessionId, session.id)
+        assert.equal(aliceInbox.players.find(({ email }) => email === emails[0])?.firstName, 'Alice')
         assert.deepEqual(aliceInbox.players.map(({ id }) => id).sort(), [...session.players].map(({ id }) => id).sort())
         assert.deepEqual(aliceInbox.teams.map(({ playerIds }) => playerIds.length), [2, 2])
         assert.ok(aliceInbox.players.every((player) => !('balance' in player) && !('rank' in player) && !('earnings' in player)))
@@ -62,6 +67,7 @@ test('PostgreSQL chats enforce active-session membership, team DMs, group member
         assert.ok((await chats.inbox(emails[1]!)).conversations.some(({ id }) => id === directFromLeader.id), 'a nonleader teammate shares their team inbox')
 
         const group = await chats.createGroup(emails[0]!, 'Friends', [beaId, guestId])
+        assert.equal((await chats.adminAudit(session.id)).players.find(({ email }) => email === emails[2])?.firstName, 'Bea')
         assert.equal(group.kind, 'group')
         assert.equal(group.name, 'Friends')
         assert.deepEqual(new Set(group.playerIds), new Set([aliceId, beaId, guestId]))

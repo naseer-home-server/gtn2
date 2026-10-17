@@ -64,3 +64,42 @@ Configure a `SIMULATION_SERVICE_KEY` of at least 32 characters to enable `/api/s
 Simulation-owned sessions persist their clock and seeded random state atomically with accepted gameplay mutations. The automatic wall-clock timer skips them; ordinary human sessions retain existing timing. Starting a simulation changes the shared active session, so human play and simulations must run at different times. Old saved sessions are retained.
 
 See [the simulation README](../ai-simulation/README.md) for local console setup, environment variables, and run controls.
+
+## Roster-backed setup and host corrections
+
+`admin.sessions.roster` returns the bundled approved-player catalog to authenticated
+admins only: `{id, name, firstName, email}[]`. `admin.sessions.create` takes
+`{name, rosterIds: string[]}` (one to fourteen unique IDs), resolves every ID on
+the server, and snapshots minimal identity metadata in `session_players`. It no
+longer accepts arbitrary email invitations. Trusted internal seed/simulation
+repositories retain their synthetic setup paths. Team setup generates display
+names server-side from roster first names and player selection order; IDs remain
+authoritative even if two generated team labels match. Existing legacy sessions
+without name snapshots retain their original naming compatibility.
+
+`admin.game.adjustAccount` takes `{sessionId, requestId, expectedRevision,
+teamId, balance, stars, reason?}`. Balance is a nonnegative decimal string with up
+to two decimal places; stars is a nonnegative safe integer; note is at most 300
+characters. Any prepared account can be changed in any game phase, including
+reveals/finished. Session locking serializes this with player actions and timers.
+Stale revisions return `CONFLICT`. `admin.command` deduplicates request IDs with
+an actor/payload signature, and `team.account_adjusted` records before/after
+integer-cent balances, stars, actor, game/round and revision. Reusing an ID for a
+different payload is rejected. Retries return success without applying again.
+Snapshots of ranks and fixed current-game pot prices are preserved. Resetting the
+current game undoes corrections made since the checkpoint.
+
+`admin.game.startRound` and `admin.game.advance` optionally take
+`control: {requestId, expectedRevision, config?}`. The host UI supplies this for
+safe retries and stale-state protection. A config is accepted only for the
+current prepared round-one game or the next game at completed round three, and
+can change only that game's section plus `revealPotMultiplier`. Starting balance
+and other game sections are locked. Validation, `config.updated`, the lifecycle
+transition and checkpoint are persisted together. Optional control preserves
+legacy repository clients; the simulation bridge keeps its own existing control
+protocol and automatic progression behavior.
+
+Prepared first-round player views omit `rules` and `finaleAdvantage`; the latter
+appears only after the engine awards it when the finale starts. This gate applies
+to all player routes and clients, independently of the holding screen. Circle
+maps/graph data remain exclusively in the admin view/audit.

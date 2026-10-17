@@ -5,6 +5,8 @@ import { MIN_TEAMS, MAX_TEAMS } from './limits.js'
 import { cents, ensure, moneyAdd, moneyCompare, moneyMin, moneyScale, moneySub, safeMoney, teamById } from './helpers.js'
 import { GAME_ORDER, type CurrentRound, type EngineEnv, type EngineEvent, type EngineState, type GameAction, type GameConfig, type GameId, type Ranking, type Team } from './types.js'
 export { DEFAULT_CONFIG, gameActionSchema, gameConfigSchema } from './config.js'
+export { adjustTeamAccount, applyUpcomingConfig } from './admin.js'
+export type { TeamAccountUpdate } from './admin.js'
 export * from './limits.js'
 export { playerView } from './views.js'
 export { cents } from './money.js'
@@ -37,9 +39,10 @@ function startRound(state: EngineState, env: EngineEnv): EngineEvent[] {
   state.current = { ...state.current, game: GAME_ORDER[state.gameIndex] } as CurrentRound
   return state.gameIndex < 3 ? startEarlyGame(state, env) : startFinalGame(state, env)
 }
-function captureGameStart(state: EngineState) {
+export function captureGameStart(state: EngineState) {
   state.gameStart = {
     gameIndex: state.gameIndex,
+    config: structuredClone(state.config),
     accounts: Object.fromEntries(state.teams.map((team) => [team.id, { balance: team.balance, stars: team.stars }])),
     historyLength: state.history.length,
     caveTotals: structuredClone(state.caveTotals),
@@ -113,6 +116,7 @@ export function resetCurrentGame(state: EngineState, env: EngineEnv): EngineEven
   ensure(checkpoint.gameIndex === state.gameIndex, 'The saved start point does not match the current game.')
   const game = GAME_ORDER[state.gameIndex] as GameId
   const previousRound = state.round
+  if (checkpoint.config) state.config = structuredClone(checkpoint.config)
   for (const team of state.teams) {
     const account = checkpoint.accounts[team.id]
     ensure(account, 'The saved start point is missing a team account.')

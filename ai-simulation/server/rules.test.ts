@@ -25,7 +25,8 @@ test('cave player views and simulation rules expose the configured deadline and 
 test('simulation rules describe all seven departure risks and equal circle-size groupings', () => {
   const cave = gameRuleCard('cave', 1, DEFAULT_CONFIG)
   assert.match(cave, /0 \/ 1 \/ 2 \/ 3 \/ 4 \/ 5 \/ 6 teams already departed/)
-  assert.match(cave, /5% \/ 20% \/ 35% \/ 50% \/ 65% \/ 80% \/ 95%/)
+  const configuredRisks = DEFAULT_CONFIG.cave.collapseRisk.map(risk => `${risk}%`).join(' / ')
+  assert.ok(cave.includes(configuredRisks), 'the simulation card reflects the shared engine config')
   assert.match(gameRuleCard('circle', 1, DEFAULT_CONFIG), /Each valid combination of circle sizes is equally likely/)
   assert.match(gameRuleCard('circle', 1, DEFAULT_CONFIG), /7, 5\+2, 4\+3, or 3\+2\+2/)
 })

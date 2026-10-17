@@ -1,5 +1,4 @@
 import { cents, moneyMultiply, units } from './helpers.js'
-import { rankings } from './index.js'
 import type { EngineState, PlayerGameView, PublicTeam, Team } from './types.js'
 
 const publicTeam = (team: Team): PublicTeam => ({ id: team.id, name: team.name, stars: team.stars })
@@ -25,13 +24,16 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
   base.earnings = state.history.map((result) => ({ game: result.game, round: result.round, amount: units(result.payouts[team.id] ?? '0') }))
   const current = state.current
   const i = state.round - 1
-  if (current.game === 'bonus') base.rules = { bag: state.config.bonus.bag[i], threshold: state.config.bonus.threshold[i], multiplier: state.config.bonus.multiplier[i], roundThreeStars: state.config.bonus.stars }
-  if (current.game === 'high-low') base.rules = { pool: state.config.highLow.pool[i], multiplier: state.config.highLow.multiplier[i], roundThreeStars: state.config.highLow.stars }
-  if (current.game === 'cave') base.rules = { startingMoney: state.config.cave.startingMoney[i], growth: state.config.cave.growth[i], tickSeconds: state.config.cave.tickSeconds, maxTicks: state.config.cave.maxTicks ?? 10, collapseRisk: state.config.cave.collapseRisk, gameStars: state.config.cave.stars }
-  if (current.game === 'circle') base.rules = { multiplier: state.config.circle.multiplier[i] }
-  if (current.game === 'bomb') {
-    base.rules = { factor: state.config.bomb.factor[i] }
-    base.finaleAdvantage = { teamId: state.advantagedTeamId!, maxChitsPerPile: state.config.bomb.advantageChits, standardMaxChits: state.config.bomb.maxChits }
+  const awaitingFirstRoundStart = current.phase === 'ready' && state.round === 1
+  if (!awaitingFirstRoundStart) {
+    if (current.game === 'bonus') base.rules = { bag: state.config.bonus.bag[i], threshold: state.config.bonus.threshold[i], multiplier: state.config.bonus.multiplier[i], roundThreeStars: state.config.bonus.stars }
+    if (current.game === 'high-low') base.rules = { pool: state.config.highLow.pool[i], multiplier: state.config.highLow.multiplier[i], roundThreeStars: state.config.highLow.stars }
+    if (current.game === 'cave') base.rules = { startingMoney: state.config.cave.startingMoney[i], growth: state.config.cave.growth[i], tickSeconds: state.config.cave.tickSeconds, maxTicks: state.config.cave.maxTicks ?? 10, collapseRisk: state.config.cave.collapseRisk, gameStars: state.config.cave.stars }
+    if (current.game === 'circle') base.rules = { multiplier: state.config.circle.multiplier[i] }
+    if (current.game === 'bomb') base.rules = { factor: state.config.bomb.factor[i] }
+  }
+  if (current.game === 'bomb' && state.advantagedTeamId !== null) {
+    base.finaleAdvantage = { teamId: state.advantagedTeamId, maxChitsPerPile: state.config.bomb.advantageChits, standardMaxChits: state.config.bomb.maxChits }
   }
   if (current.phase === 'ready') {
     base.roundState = { phase: 'ready', submitted: false }

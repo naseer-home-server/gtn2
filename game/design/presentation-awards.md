@@ -1,0 +1,16 @@
+# Cartoon presentation awards
+
+Current assets are simplified cartoon illustrations generated with the built-in imagegen tool. The supplied photos are shape references only. Award names remain live HTML on the slides so the drawings stay uncluttered.
+
+- Silver: `game/frontend/public/brand/awards/ai-silver-cartoon.png`, based on IMG_5306.HEIC.
+- Gold: `game/frontend/public/brand/awards/most-devious-gold-cartoon.png`, based on IMG_5305.HEIC.
+- Preserve the PNG alpha channel and use object-fit contain to show each complete portrait illustration.
+- Earlier realistic renders are replaced in the deck and are not shipped as unused public assets.
+
+## Final silver prompt
+
+Create a NEW simplified cartoon trophy asset based on this silver trophy reference. This is an illustration redesign, NOT a photo cutout or realistic render. Style: clean 2D vector-like cartoon, bold smooth near-black outlines, large flat shapes, minimal detail, consistent line weight, at most three flat silver-grey tones plus ivory. Absolutely no photographic texture, chrome reflection, glitter, gradients, bevel rendering, 3D realism, room or table. Preserve just the memorable silhouette: slanted flared silver shield top, two diagonal cutouts, central circular medallion with three simple curved bands, open teardrop beneath, short patterned stem simplified to two chevrons, small flared foot, rectangular silver plinth. Keep the circular rim plain. The entire object must look like a friendly bespoke flat illustration used alongside simple game icons. Straight-on frontal view, full trophy, large single object in a TALL PORTRAIT canvas, narrow transparent margins, genuinely transparent background. No shadow. No black or white backdrop. No text or lettering anywhere, leave the plinth face blank; the slide will label the award with live text. One trophy only. Reference photo supplies only the trophy shape. Do not reproduce the photo.
+
+## Final gold prompt
+
+Create a NEW simplified cartoon trophy asset based on this gold-and-red trophy reference. This is an illustration redesign, NOT a photo cutout or realistic render. Style: clean 2D vector-like cartoon, bold smooth near-black outlines, large flat shapes, minimal detail, consistent line weight, flat warm gold yellow, one darker ochre accent, deep crimson red, light silver-grey, near-black and ivory. Absolutely no photographic texture, metal reflections, glitter, gradients, bevel rendering, or 3D realism. Preserve only the memorable silhouette: tall pointed open diamond/spear gold head with a central long blade and two large triangular side cutouts, crossing angular gold rails narrowing toward a collar; a short tapering grey lower stem with two broad crimson curved ribbon stripes, a thin gold foot, a simple black stepped octagonal plinth with blank ivory front plaque. Reduce engraving and pattern to zero. Straight-on frontal view. Full trophy, large single object in a TALL PORTRAIT canvas, narrow transparent margins. Genuinely transparent background, no shadow, no environment, no room or table. No lettering or text anywhere; the slide labels the award separately. Make it a friendly flat graphic that matches simple illustrated game icons. One trophy only. Reference photo supplies only the shape and colour regions. Do not reproduce the photo.

@@ -148,3 +148,6 @@
 @media (prefers-reduced-motion: reduce) {
   .admin-main .session-list-item { transition: none; }
 }
+
+.admin-main .admin-destinations { position: static; margin-bottom: 30px; }
+.admin-main .admin-destinations > a { flex: 0 1 auto; padding-inline: 18px; }

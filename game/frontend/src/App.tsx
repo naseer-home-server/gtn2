@@ -17,6 +17,8 @@ import { CaveBanner } from '@/features/player/round-status'
 import { RevealInterruption } from '@/features/player/reveal-interruption'
 
 const AdminPage = lazy(() => import('@/pages/AdminPage').then(module => ({ default: module.AdminPage })))
+const AdminPresentationPage = lazy(() => import('@/pages/AdminPresentationPage').then(module => ({ default: module.AdminPresentationPage })))
+const PresentationPage = lazy(() => import('@/pages/PresentationPage').then(module => ({ default: module.PresentationPage })))
 const SessionPage = lazy(() => import('@/pages/SessionPage').then(module => ({ default: module.SessionPage })))
 const SignInAndUpCallback = lazy(() => import('supertokens-auth-react/recipe/thirdparty/prebuiltui').then(module => ({ default: module.SignInAndUpCallback })))
 
@@ -78,7 +80,7 @@ function PlayerLayout({ sessionId, playerId }: { sessionId: string; playerId: st
 }
 function AdminLayout() {
   const auth = useAuth(), identity = auth.data?.gameSession
-  return <><header className="app-header"><div className="header-inner"><Brand to="/admin" /><div className="flex items-center gap-3"><span className="text-sm text-muted-foreground">Host desk</span><AccountMenu /></div></div></header><main id="main-content" className="admin-main"><Suspense fallback={<LoadingMessage />}><Outlet /></Suspense></main>{identity && <Chats key={`${identity.sessionId}:${identity.playerId}`} sessionId={identity.sessionId} playerId={identity.playerId} />}</>
+  return <><header className="app-header"><div className="header-inner"><Brand to="/admin" /><div className="flex items-center gap-3"><span className="text-sm text-muted-foreground">Host desk</span><AccountMenu /></div></div></header><main id="main-content" className="admin-main"><nav className="section-tabs admin-destinations" aria-label="Admin navigation"><NavLink to="/admin" end>Sessions</NavLink><NavLink to="/admin/presentation">Presentation</NavLink></nav><Suspense fallback={<LoadingMessage />}><Outlet /></Suspense></main>{identity && <Chats key={`${identity.sessionId}:${identity.playerId}`} sessionId={identity.sessionId} playerId={identity.playerId} />}</>
 }
 function LoginLayout() {
   return <main id="main-content" className="login-page"><div className="invitation-frame"><div className="login-brand"><img src="/brand/die.svg" alt="" /><h1>Game Theory<br />Night 2</h1><p>Do you trust your friends?</p></div><LoginPage /><p className="login-footer">Five games. Three rounds each. Decide together.</p></div></main>
@@ -94,7 +96,8 @@ export default function App() {
     <Route element={<RequireLogin><PlayerIdentity /></RequireLogin>}>
       <Route path="/play" element={<PlayerGame />} /><Route path="/wallet" element={<WalletPage />} /><Route path="/teams" element={<TeamsPage />} /><Route path="/chats" element={null} /><Route path="/chats/:conversationId" element={null} />
     </Route>
-    <Route element={<RequireLogin admin><AdminLayout /></RequireLogin>}><Route path="/admin" element={<AdminPage />} /><Route path="/admin/sessions/:sessionId" element={<SessionPage />} /></Route>
+    <Route element={<RequireLogin admin><AdminLayout /></RequireLogin>}><Route path="/admin" element={<AdminPage />} /><Route path="/admin/presentation" element={<AdminPresentationPage />} /><Route path="/admin/sessions/:sessionId" element={<SessionPage />} /></Route>
+    <Route path="/admin/presentation/present" element={<RequireLogin admin><Suspense fallback={<LoadingMessage />}><PresentationPage /></Suspense></RequireLogin>} />
     <Route path="/login" element={<LoginLayout />} /><Route path="/login/callback/:provider" element={<main id="main-content"><Suspense fallback={<LoadingMessage />}><SignInAndUpCallback /></Suspense></main>} />
     <Route path="*" element={<main id="main-content" className="player-main"><h1 className="display-title">That seat is empty.</h1><p className="my-4 text-muted-foreground">We couldn’t find this page.</p><Button asChild><Link to="/"><ArrowLeft />Back to the table</Link></Button></main>} />
   </Routes></BrowserRouter></SuperTokensWrapper>

@@ -2,11 +2,10 @@
 
 A monorepo for a game theory night inspired by Tom Scott's **Money**: five planned games, three rounds per game, and increasing stakes.
 
-- `presentation/` — future HTML presentation.
-- `game/` — Vite, React, and TypeScript player app.
+- `game/` — Vite, React, and TypeScript player app, admin desk, and presentation.
 - `ai-simulation/` — web console for AI-hosted simulations, game tuning, and playtesting.
 
-See [docs/games.md](docs/games.md) for draft game concepts and unresolved rules. The presentation folder remains reserved for future work.
+See [docs/games.md](docs/games.md) for draft game concepts and unresolved rules. The presentation is part of the game app; the root `presentation/` folder is unused.
 
 ## Run the game app
 
@@ -24,6 +23,12 @@ Setup assigns available ports and a unique Compose project/volume, writes ignore
 `APP_URL` is the browser's origin and must match the configured frontend port. The backend applies checked-in Drizzle migrations during startup; create new migrations with `pnpm --filter backend db:generate`.
 
 The frontend proxies `/auth`, `/trpc`, and `/api` to this checkout's configured backend port. tRPC shares API types through the `backend` workspace package; React Query hooks own requests and state. The functionality-phase UI uses shadcn/ui with Tailwind CSS; add components with `pnpm --filter frontend exec shadcn add <component>`.
+
+## Presentation
+
+In the admin view, choose **Presentation** to choose and preview a slide, then **Open presentation** to launch a separate browser tab. Share only that tab on the TV while keeping the host desk on your laptop. The presentation uses the same admin login but renders without host navigation, account details, or chats. Use **Right**, **Space**, or **Page Down** to reveal one visual at a time, then advance to the next slide. **Left/Page Up** reverse the reveals, returning to the previous slide’s final reveal. **Home/End** jump to the beginning/end of the deck. The host preview has matching Previous/Next step controls, and opening the TV tab preserves the selected reveal. Click **Fullscreen** (or press **F**); press **Escape** to exit. The host preview has private presenter notes that never appear in the TV view. Controls and the pointer hide when idle and return on movement or keyboard use.
+
+Slides live in `game/frontend/src/features/presentation`, with the same 16:9 composition in preview and on the TV. The welcome, Prisoner’s Dilemma introduction, real-world examples, plan for today, temptation, AI simulations, prizes, and eligibility slides are static. Keep slide wording minimal and prefer visual explanations. Future live slides must use a server-filtered public projection, never raw admin game state. Balances, choices, earnings, private ranks, and chat remain private under `docs/games.md`.
 
 ## Authentication
 

@@ -7,6 +7,9 @@ export function modelHistory(transcript: RunEvent[], actorId = 'host', privateEv
     .filter(event => {
       if (seen.has(event.id)) return false
       seen.add(event.id)
+      // Current prompts include the authoritative rules card separately. Replaying
+      // every prior card and briefing in gameHistory only duplicates that context.
+      if (event.type === 'rules.card' || event.type === 'rules.correction' || event.type === 'host.briefing') return false
       const ownRecoveredAction = event.type === 'command.accepted' && event.data?.recovered === true && event.data?.agentId === actorId
       return event.audience === 'public' || (actorId !== 'host' && (event.audience === actorId || ownRecoveredAction))
     })

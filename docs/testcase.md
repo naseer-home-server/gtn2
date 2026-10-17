@@ -64,7 +64,7 @@ This run covers local setup and the browser smoke above. A fresh run of the full
 ## Shared rules and reveal pots
 
 - [ ] Verify teams see their own balance, public team names and stars, but no rank before a paid reveal.
-- [ ] Verify public and private pot prices start at 100 and 20, stay fixed during game 1, then recalculate only at the start of games 2–5: public = average current balance ÷ 3 × configured multiplier, rounded to the nearest 100 (halfway up; minimum 100 for positive combined balances); private = public ÷ 5. Verify past pot spending is not added back.
+- [ ] Verify public and private pot prices start at 100 and 20, stay fixed during game 1, then recalculate only at the start of games 2–5: public = median current balance ÷ 3 × configured multiplier, rounded to the nearest 100 (halfway up; minimum 100 for positive combined balances); for an even team count, use the mean of the two middle balances. Private = public ÷ 5. Verify past pot spending is not added back.
 - [ ] Partially fund both pots; verify their targets stay fixed within a game and private-pot progress is visible only to that team.
 - [ ] Complete the public pot; verify every team sees every rank, contributions debit balances, the pot resets, and play waits for all acknowledgments.
 - [ ] Complete a private pot; verify only the contributing team sees its rank, other teams continue playing, and its snapshot hides after acknowledgment.

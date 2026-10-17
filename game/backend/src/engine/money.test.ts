@@ -50,7 +50,7 @@ test('fractional bonus multiplier and zero-taker factor compound before rounding
   assert.equal(state.teams[0].balance, '3')
 })
 
-test('reveal prices use one third of average balances, round once to hundreds, and retain a positive-balance minimum', () => {
+test('reveal prices use one third of the median balance, round once to hundreds, and retain a positive-balance minimum', () => {
   for (const count of [2, 3, 4, 5]) {
     const { teams, config } = fixture(count)
     const { state } = startEngine(teams, config, env())
@@ -64,15 +64,27 @@ test('reveal prices use one third of average balances, round once to hundreds, a
       assert.equal(state.pot.target, target, `${count} teams with ${balance} cents each`)
       for (const team of state.teams) assert.equal(state.privatePots?.[team.id]?.target, (BigInt(target) / 5n).toString())
     }
-    // Unequal balances must use the group average, not one team's balance.
-    for (const team of state.teams) team.balance = '0'
-    state.teams[0].balance = String(120000 * count)
+    // Equal balances have the same median regardless of team count.
+    for (const team of state.teams) team.balance = '120000'
     refreshPotTarget(state)
     assert.equal(state.pot.target, '40000')
   }
 })
 
-test('reveal pot tuning scales one third of the average before rounding', () => {
+test('odd and even team counts use the median, including the mean of the two middle balances', () => {
+  for (const balances of [
+    ['0', '120000', '900000'],
+    ['0', '100000', '500000', '1000000'],
+  ]) {
+    const { teams, config } = fixture(balances.length)
+    const { state } = startEngine(teams, config, env())
+    state.teams.forEach((team, index) => { team.balance = balances[index]! })
+    refreshPotTarget(state)
+    assert.equal(state.pot.target, balances.length === 3 ? '40000' : '100000')
+  }
+})
+
+test('reveal pot tuning scales one third of the median before rounding', () => {
   const { teams, config } = fixture(2)
   config.revealPotMultiplier = 1.5
   const { state } = startEngine(teams, config, env())
@@ -102,7 +114,7 @@ test('both reveal pots reduce the next game price basis while prices stay fixed 
     advanceEngine(state, e, true)
   }
   assert.equal(state.current.game, 'high-low')
-  // Current average is $990: /3 = $330 -> $300. Adding spending back would give $400.
+  // The two-team median is $990: /3 = $330 -> $300. Adding spending back would give $400.
   assert.equal(state.pot.target, '30000')
   for (const team of state.teams) assert.equal(state.privatePots?.[team.id]?.target, '6000')
 })

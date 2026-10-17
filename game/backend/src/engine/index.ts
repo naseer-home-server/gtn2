@@ -16,8 +16,15 @@ export function rankings(state: EngineState): Ranking[] {
 }
 export function refreshPotTarget(state: EngineState) {
   const balances = moneyAdd(...state.teams.map((team) => team.balance))
-  // Round directly to hundreds to avoid rounding a fraction of a cent first.
-  let target = BigInt(moneyScale(balances, state.config.revealPotMultiplier, state.teams.length * 3 * 10_000)) * 10_000n
+  const sorted = state.teams.map((team) => team.balance).sort(moneyCompare)
+  const middle = Math.floor(sorted.length / 2)
+  // Keep an even-team median exact until the final rounding to hundreds.
+  const medianNumerator = sorted.length % 2
+    ? sorted[middle]!
+    : (BigInt(sorted[middle - 1]!) + BigInt(sorted[middle]!)).toString()
+  const medianDenominator = sorted.length % 2 ? 1 : 2
+  // Compute median ÷ 3 × multiplier directly in hundred-dollar units.
+  let target = BigInt(moneyScale(medianNumerator, state.config.revealPotMultiplier, medianDenominator * 3 * 10_000)) * 10_000n
   if (moneyCompare(balances, '0') > 0 && target === 0n) target = 10_000n
   state.pot.target = target.toString()
   state.privatePots ??= Object.fromEntries(state.teams.map((team) => [team.id, { amount: '0', target: '0' }]))

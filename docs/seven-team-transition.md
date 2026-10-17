@@ -32,7 +32,7 @@ The existing five-request model concurrency limit queues the extra requests safe
 ## Balance effects to review in playtesting
 
 - Bonus: six zero-takers can multiply one designated taker's round-three payout to 6,000 with the current bag/threshold/multiplier, versus 4,000 with five teams.
-- Reveal pots: private price remains one fifth of public price. With seven teams, an equal public contribution is public price divided by seven, cheaper per team than a private reveal. The public price still derives from average balances.
+- Reveal pots: private price remains one fifth of public price. With seven teams, an equal public contribution is public price divided by seven, cheaper per team than a private reveal. The public price derives from the median team balance.
 - Bomb: at maximum allocations, the 60-chit star leader supplies 60/180 = 33.3% of each combined pile, versus 60/140 = 42.9% with five teams. Raising the advantage to 90 would preserve the former share against six standard 20-chit teams; this is a separate balance choice.
 - Circle: multiple smaller circles change the range of cooperation opportunities. The equal-size-grouping policy is explicit so future balance experiments can compare it consistently.
 

@@ -75,10 +75,10 @@ export class DbChatsRepository implements ChatsRepository {
   async inbox(email: string): Promise<ChatInbox> {
     return this.db.transaction(async (tx) => {
       const { row, player, teams } = await activeParticipant(tx, email)
-      const players = await tx.select({ id: sessionPlayers.id, email: sessionPlayers.email }).from(sessionPlayers)
+      const players = await tx.select({ id: sessionPlayers.id, email: sessionPlayers.email, firstName: sessionPlayers.firstName }).from(sessionPlayers)
         .where(eq(sessionPlayers.sessionId, row.id)).orderBy(asc(sessionPlayers.email))
       const teamByPlayerId = new Map(teams.flatMap((team) => team.playerIds.map((playerId) => [playerId, team.id] as const)))
-      const chatPlayers: ChatPlayer[] = players.map((item) => ({ id: item.id, email: item.email, teamId: teamByPlayerId.get(item.id) ?? null }))
+      const chatPlayers: ChatPlayer[] = players.map((item) => ({ id: item.id, email: item.email, firstName: item.firstName, teamId: teamByPlayerId.get(item.id) ?? null }))
       const chatTeams: ChatTeam[] = teams.map((team) => ({ id: team.id, name: team.name, playerIds: [...team.playerIds] }))
       const conversationRows = await tx.select({ id: chatConversations.id, kind: chatConversations.kind,
         name: chatConversations.name, createdAt: chatConversations.createdAt }).from(chatConversations)
@@ -126,7 +126,7 @@ export class DbChatsRepository implements ChatsRepository {
     return this.db.transaction(async (tx) => {
       const [session] = await tx.select().from(gameSessions).where(eq(gameSessions.id, sessionId))
       if (!session) throw new TRPCError({ code: 'NOT_FOUND', message: 'Game session not found.' })
-      const players = await tx.select({ id: sessionPlayers.id, email: sessionPlayers.email }).from(sessionPlayers)
+      const players = await tx.select({ id: sessionPlayers.id, email: sessionPlayers.email, firstName: sessionPlayers.firstName }).from(sessionPlayers)
         .where(eq(sessionPlayers.sessionId, sessionId)).orderBy(asc(sessionPlayers.email))
       const teamsByPlayer = new Map(teamsFromState(session.state).flatMap((team) => team.playerIds.map((id) => [id, team.id] as const)))
       const conversations = await tx.select({ id: chatConversations.id, kind: chatConversations.kind,

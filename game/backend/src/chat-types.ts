@@ -1,4 +1,4 @@
-export type ChatPlayer = { id: string; email: string; teamId: string | null }
+export type ChatPlayer = { id: string; email: string; firstName?: string | null; teamId: string | null }
 export type ChatTeam = { id: string; name: string; playerIds: string[] }
 export type ChatMessage = {
   id: string; sequence: number; conversationId: string; senderPlayerId: string

@@ -70,3 +70,46 @@ pnpm db:seed --reset
 ```
 
 Reset recreates only seed-owned fixtures, including their invitations and gameplay/chat history. User-created sessions are preserved. Stop the app before resetting to avoid in-flight requests from old fixture IDs; refresh open session pages afterward. The seed command requires `LOCAL=true`, rejects production mode and remote database hosts, and never operates on the forwarded PostgreSQL connection through the local wrapper.
+
+## Player roster and host controls
+
+New human sessions select people from a private JSON export configured through
+`PLAYER_ROSTER_PATH` in `game/backend/.env`. The supplied export uses a top-level
+array of `{ id: number, name: string, email: string, ... }`. The server ignores
+contact/timestamp fields, derives the first name from the trimmed name's first
+word, and validates unique IDs and normalized email addresses. A missing or
+invalid roster blocks creation of new human sessions; existing sessions and
+synthetic E2E/UX fixtures remain usable. Do not place this file in `public/` or
+commit it to Git. Restart the backend after changing its environment. The roster
+itself is read when the admin requests it, so refresh the picker after file edits.
+
+The host selects at most fourteen people from the catalog for each session.
+Session membership snapshots their names/emails; later export changes do not
+rewrite an existing session. Team names are generated from selected first names
+(`First & Second`, or `First` for a solo). Selection order controls the displayed
+name; arrival order still determines leadership and tie order. Repeated team
+labels are permitted and all operations address distinct team IDs.
+
+For Docker deployment, securely provision the JSON file on the Docker host and
+set `PLAYER_ROSTER_FILE` to its absolute path. Include the provided read-only
+mount override with the deployment's usual options:
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.roster.yml up -d --build
+```
+
+The file is mounted at `/run/gtn2/player-roster.json`, outside the image. The normal
+Docker Compose services are unchanged; the AI simulation remains local-only.
+
+The host can edit each prepared team's money and stars in Live play, including
+during reveals and after the finale. Updates are absolute values, revision-checked,
+and audited. An edit opened before another payout/change may be rejected as stale;
+refresh and reopen the account editor to use current values. Retry an uncertain
+save with **Retry same update**. Current-game reset restores its start checkpoint,
+including undoing account edits made since it. Existing rank snapshots and the
+current game's fixed reveal price do not change after an account correction.
+
+Before preparation, all configuration is editable through labeled fields. At a
+prepared first round or completed game boundary, only the upcoming game's fields
+and reveal multiplier are editable. Starting applies tuning atomically and locks
+it for that game's three rounds. The effective configuration is retained for reset.

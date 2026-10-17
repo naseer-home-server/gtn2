@@ -17,6 +17,8 @@ export type GameConfig = {
 // API money values are decimal currency strings; action/config amounts use currency units.
 export type Team = { id: string; name: string; playerIds: string[]; leaderPlayerId?: string; tieOrder: number; balance: Money; stars: number }
 export type TeamAssignment = { name: string; playerIds: string[] }
+export type AdminControl = { requestId: string; expectedRevision: number; config?: GameConfig }
+export type AccountCommand = { requestId: string; expectedRevision: number; teamId: string; balance: string; stars: number; reason?: string }
 export type RoundResult = { game: GameId; round: number; payouts: Record<string, Money>; details: Record<string, unknown> }
 export type Ranking = { teamId: string; rank: number }
 export type Reveal = { id: string; rankings: Ranking[]; acknowledged: string[] }
@@ -24,6 +26,7 @@ export type PrivateRevealPot = { amount: Money; target: Money }
 export type PrivateRankReveal = { id: string; rank: number }
 export type GameStartCheckpoint = {
   gameIndex: number
+  config?: GameConfig
   accounts: Record<string, { balance: Money; stars: number }>
   historyLength: number
   caveTotals: Record<string, Money>
@@ -102,8 +105,9 @@ export interface GameplayRepository {
   adminView(sessionId: string): Promise<AdminGameView>
   playerView(email: string): Promise<PlayerGameView>
   start(sessionId: string, teams: TeamAssignment[], config: GameConfig, actorId: string, startingGame?: GameId): Promise<void>
-  startRound(sessionId: string, actorId: string): Promise<void>
-  advance(sessionId: string, actorId: string): Promise<void>
+  startRound(sessionId: string, actorId: string, control?: AdminControl): Promise<void>
+  advance(sessionId: string, actorId: string, control?: AdminControl): Promise<void>
+  adjustAccount?(sessionId: string, actorId: string, command: AccountCommand): Promise<void>
   reset(sessionId: string, actorId: string): Promise<void>
   action(email: string, command: PlayerCommand, actorId: string): Promise<PlayerGameView>
   tick(): Promise<void>

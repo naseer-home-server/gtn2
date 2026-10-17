@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { LockKeyhole, ArrowUpRight, ArrowDownLeft } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { LockKeyhole, ArrowUpRight, ArrowDownLeft, X } from 'lucide-react'
+import { Dialog } from 'radix-ui'
 import { Button } from '@/components/ui/button'
 import { MoneyTransferCard } from '@/components/money-transfer-card'
 import { WaitingForTeam } from '@/components/player-game'
@@ -22,10 +23,12 @@ export function WalletPage() {
 }
 function RankPots() {
   const { view } = usePlayerSession()
-  return <div><h2 className="section-heading">Where do you stand?</h2><p className="mt-3 mb-6 text-sm text-muted-foreground">Pay to reveal a rank snapshot. Balances stay private. Reveal prices are fixed for the current game.</p><RankPot scope="self" amount={view.privatePot?.amount ?? '0.00'} target={view.privatePot?.target ?? '0.00'} /><RankPot scope="public" amount={view.pot.amount} target={view.pot.target} /></div>
+  return <div><h2 className="section-heading">Where do you stand?</h2><p className="mt-3 mb-6 text-sm text-muted-foreground">Rankings stay hidden unless teams contribute to a reveal. Balances stay private, and each price is fixed for the current game.</p><div className="rank-pot-list"><RankPot scope="self" amount={view.privatePot?.amount ?? '0.00'} target={view.privatePot?.target ?? '0.00'} /><RankPot scope="public" amount={view.pot.amount} target={view.pot.target} /></div></div>
 }
 function RankPot({ scope, amount, target }: { scope: 'self'|'public'; amount: string; target: string }) {
-  const { view, draft, updateDraft, submit, action, blockedByUncertainTransfer } = usePlayerSession()
+  const { view, draft, updateDraft, submit, retry, action, blockedByUncertainTransfer } = usePlayerSession()
+  const [open, setOpen] = useState(false)
+  const closeAfterContribution = useRef(false)
   const remaining = (parseMoney(target) ?? 0n) - (parseMoney(amount) ?? 0n)
   const balance = parseMoney(view.team?.balance ?? '0') ?? 0n
   const cap = moneyUnits(remaining > balance ? balance : remaining > 0n ? remaining : 0n)
@@ -34,9 +37,48 @@ function RankPot({ scope, amount, target }: { scope: 'self'|'public'; amount: st
   const can = view.allowedActions.includes('pot.contribute') && remaining > 0n && balance > 0n
   const total = parseMoney(target) ?? 0n
   const progress = total > 0n ? Number(((parseMoney(amount) ?? 0n) * 100n) / total) : 0
-  return <section className="wallet-pot"><h3>{scope === 'self' ? 'Your rank only' : 'Everyone’s ranks'}</h3><p className="mt-2 text-sm text-muted-foreground">{scope === 'self' ? 'A private snapshot for your team. Other teams keep playing.' : 'Reveal all ranks to everyone. Play pauses until every team acknowledges.'}</p><div className="pot-meter" aria-hidden="true"><span style={{ width: `${Math.min(100,Math.max(0,progress))}%` }} /></div><p className="mb-5 text-sm">{formatMoney(amount)} <span className="text-muted-foreground">of {formatMoney(target)}</span></p>
-    {can ? <form className="space-y-3" onSubmit={event => { event.preventDefault(); if (positive && withinMoney(value,cap) && !action.isPending && !blockedByUncertainTransfer) submit({ type: 'pot.contribute', scope, amount: value }) }}><MoneyField id={scope === 'self' ? 'private-pot-contribution' : 'public-pot-contribution'} label="Contribution" value={value} onChange={value => updateDraft(scope === 'self' ? { privatePot: value } : { pot: value })} limit={cap} disabled={action.isPending || blockedByUncertainTransfer} /><Button type="submit" className="w-full" variant={scope === 'self' ? 'default' : 'outline'} disabled={!positive || !withinMoney(value,cap) || action.isPending || blockedByUncertainTransfer}>{action.isPending ? 'Contributing…' : scope === 'self' ? 'Contribute privately' : 'Contribute to public reveal'}</Button></form> : <p className="text-sm text-muted-foreground">{!view.isTeamLeader ? 'Your team leader can contribute.' : total === 0n ? 'This reveal pot is not available yet.' : balance === 0n ? 'You need a positive balance to contribute.' : 'Contributions are unavailable while play is paused.'}</p>}
-  </section>
+  const title = scope === 'self' ? 'Your rank only' : 'Everyone’s ranks'
+  const actionLabel = scope === 'self' ? 'Contribute privately' : 'Contribute to public reveal'
+  const actionError = action.error && action.variables?.action.type === 'pot.contribute' && action.variables.action.scope === scope ? action.error : null
+  const canSubmit = can && positive && withinMoney(value, cap) && !action.isPending && !blockedByUncertainTransfer
+  const progressValue = Math.min(100, Math.max(0, progress))
+  const progressLabel = `${progressValue}% funded`
+  const progressWidth = `${progressValue}%`
+
+  useEffect(() => {
+    if (!closeAfterContribution.current) return
+    if (action.isSuccess && action.variables?.action.type === 'pot.contribute' && action.variables.action.scope === scope) {
+      closeAfterContribution.current = false
+      setOpen(false)
+    } else if (action.isError) {
+      closeAfterContribution.current = false
+    }
+  }, [action.isError, action.isSuccess, action.variables, scope])
+  return <>
+    <section className="wallet-pot" aria-label={`${title} pot`}>
+      <div className="wallet-pot-heading"><div><h3>{title}</h3><p>{scope === 'self' ? 'Only your team sees the snapshot. Other teams keep playing.' : 'Everyone sees the ranks. Play pauses until each team acknowledges.'}</p></div><span className="wallet-pot-scope">{scope === 'self' ? 'Private' : 'Public'}</span></div>
+      <div className="pot-meter" role="progressbar" aria-label={`${title} progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressValue} aria-valuetext={progressLabel}><span style={{ width: progressWidth }} /></div>
+      <div className="wallet-pot-amounts"><strong>{formatMoney(amount)}</strong><span>of {formatMoney(target)}</span></div>
+      <Button className="wallet-pot-open" variant={scope === 'self' ? 'default' : 'outline'} onClick={() => setOpen(true)}>{actionLabel}</Button>
+    </section>
+    <Dialog.Root open={open} onOpenChange={(isOpen) => { if (!isOpen && action.isPending) return; setOpen(isOpen) }}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="dialog-overlay reveal-dialog-overlay" />
+        <Dialog.Content className="pot-contribution-dialog" aria-describedby={`pot-contribution-description-${scope}`}>
+          <div className="pot-dialog-heading"><div><Dialog.Title className="section-heading">{actionLabel}</Dialog.Title><Dialog.Description id={`pot-contribution-description-${scope}`} className="pot-dialog-description">{scope === 'self' ? 'Your team can reveal its own current rank. Other teams continue play.' : 'When the pot fills, everyone sees the ranking snapshot and play pauses until all teams acknowledge.'}</Dialog.Description></div><Dialog.Close asChild><Button variant="ghost" size="icon" aria-label="Close contribution" disabled={action.isPending}><X /></Button></Dialog.Close></div>
+          <div className="pot-dialog-content">
+          <div className="pot-dialog-progress"><div className="pot-meter" role="progressbar" aria-label={`${title} progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressValue} aria-valuetext={progressLabel}><span style={{ width: progressWidth }} /></div><div className="pot-dialog-figures"><span><small>In the pot</small><strong>{formatMoney(amount)}</strong></span><span><small>Target</small><strong>{formatMoney(target)}</strong></span><span><small>Still needed</small><strong>{formatMoney(remaining > 0n ? moneyUnits(remaining) : '0')}</strong></span><span><small>Your balance</small><strong>{formatMoney(view.team?.balance ?? '0')}</strong></span></div></div>
+            {can ? <form className="space-y-4" onSubmit={event => { event.preventDefault(); if (canSubmit) { closeAfterContribution.current = true; submit({ type: 'pot.contribute', scope, amount: value }) } }}>
+              <MoneyField id={scope === 'self' ? 'private-pot-contribution' : 'public-pot-contribution'} label="Contribution" value={value} onChange={next => updateDraft(scope === 'self' ? { privatePot: next } : { pot: next })} limit={cap} disabled={action.isPending || blockedByUncertainTransfer} />
+              <p className="pot-dialog-hint">You can contribute up to {formatMoney(cap)} from your current balance.</p>
+              {actionError && <div className="pot-dialog-error" role="alert"><p>{actionError.message}</p><Button variant="outline" size="sm" disabled={action.isPending || blockedByUncertainTransfer} onClick={() => { closeAfterContribution.current = true; retry() }}>Retry same contribution</Button></div>}
+              <Button type="submit" className="w-full" disabled={!canSubmit}>{action.isPending ? 'Contributing…' : actionLabel}</Button>
+            </form> : <p className="pot-dialog-unavailable">{!view.isTeamLeader ? 'Your team leader can contribute.' : total === 0n ? 'This reveal pot is not available yet.' : balance === 0n ? 'Your team needs a positive balance to contribute.' : 'Contributions are unavailable while play is paused.'}</p>}
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  </>
 }
 function WalletActivity() {
   const { view } = usePlayerSession()

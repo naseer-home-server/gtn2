@@ -10,9 +10,10 @@ async function refreshSessions() {
 }
 export function useGameSessions() {
   const sessions = useQuery({ queryKey: ['admin', 'sessions'], queryFn: () => trpc.admin.sessions.list.query() })
-  const create = useMutation({ mutationFn: (input: { name: string; emails: string[] }) => trpc.admin.sessions.create.mutate(input), onSuccess: refreshSessions })
+  const roster = useQuery({ queryKey: ['admin', 'sessions', 'roster'], queryFn: () => trpc.admin.sessions.roster.query() })
+  const create = useMutation({ mutationFn: (input: { name: string; rosterIds: string[] }) => trpc.admin.sessions.create.mutate(input), onSuccess: refreshSessions })
   const activate = useMutation({ mutationFn: (id: string | null) => trpc.admin.sessions.setActive.mutate({ id }), onSuccess: refreshSessions })
-  return { sessions, create, activate }
+  return { sessions, roster, create, activate }
 }
 export function useGameSession(id: string) {
   const session = useQuery({ queryKey: ['admin', 'sessions', id], queryFn: () => trpc.admin.sessions.get.query({ id }) })

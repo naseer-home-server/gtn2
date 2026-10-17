@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Link, MemoryRouter, useLocation } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ChatInbox, ChatMessage } from 'backend/chats'
 import { Chats } from './chats'
 
-const { useChatsMock, useChatThreadMock, sendRequests, shouldFailNextSend } = vi.hoisted(() => ({
+const { useChatsMock, useChatThreadMock, createGroupAsync, sendRequests, shouldFailNextSend } = vi.hoisted(() => ({
   useChatsMock: vi.fn(),
   useChatThreadMock: vi.fn(),
+  createGroupAsync: vi.fn(),
   sendRequests: [] as Array<{ conversationId: string; text: string; clientMessageId: string }>,
   shouldFailNextSend: { value: false },
 }))
@@ -21,8 +22,10 @@ vi.mock('@/hooks/use-chats', () => ({
 const inbox: ChatInbox = {
   sessionId: 'session-1', selfPlayerId: 'player-1',
   players: [
-    { id: 'player-1', email: 'one@example.test', teamId: 'team-a' },
-    { id: 'player-2', email: 'two@example.test', teamId: 'team-b' },
+    { id: 'player-1', email: 'one@example.test', firstName: 'Alex', teamId: 'team-a' },
+    { id: 'player-2', email: 'two@example.test', firstName: 'Sam', teamId: 'team-b' },
+    { id: 'player-3', email: 'three@example.test', firstName: 'Casey', teamId: null },
+    { id: 'player-4', email: 'four@example.test', teamId: null },
   ],
   teams: [
     { id: 'team-a', name: 'Team A', playerIds: ['player-1'] },
@@ -60,6 +63,7 @@ beforeEach(() => {
   inboxSnapshot = inbox
   localStorage.clear()
   sendRequests.length = 0
+  createGroupAsync.mockReset()
   shouldFailNextSend.value = false
   useChatsMock.mockImplementation(() => {
     const [sendStatus, setSendStatus] = useState<'idle' | 'pending' | 'error'>('idle')
@@ -90,7 +94,7 @@ beforeEach(() => {
     return {
       inbox: { data: inboxSnapshot, isError: false, error: null },
       direct: { isPending: false, isError: false, error: null, mutateAsync: vi.fn() },
-      createGroup: { isPending: false, isError: false, error: null, mutateAsync: vi.fn() },
+      createGroup: { isPending: false, isError: false, error: null, mutateAsync: createGroupAsync, reset: vi.fn() },
       send,
     }
   })
@@ -151,6 +155,52 @@ describe('Chats navigation state', () => {
       clientMessageId: expect.any(String),
     })
     await waitFor(() => expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).value).toBe(''))
+  })
+})
+
+describe('group chat creation', () => {
+  it('searches peers, includes the creator, and submits the selected players', async () => {
+    const user = userEvent.setup()
+    createGroupAsync.mockResolvedValue({
+      id: 'group-1', kind: 'group', name: 'Table talk', playerIds: ['player-1', 'player-2', 'player-3'],
+      createdAt: '2026-10-17T00:00:00.000Z', lastMessage: null,
+    })
+    render(<TestApp />)
+
+    await user.click(await screen.findByRole('button', { name: /New group/ }))
+    const dialog = await screen.findByRole('dialog', { name: 'New group chat' })
+    expect(within(dialog).getByText('You · included')).toBeTruthy()
+    expect(within(dialog).getByText('Alex · Team A')).toBeTruthy()
+    expect(within(dialog).queryByText(/@example.test/)).toBeNull()
+    expect(within(dialog).getByRole('checkbox', { name: /four/ })).toBeTruthy()
+    await user.type(within(dialog).getByRole('textbox', { name: 'Group name' }), 'Table talk')
+    await user.type(within(dialog).getByRole('textbox', { name: 'Find players' }), 'Casey')
+    await user.click(within(dialog).getByRole('checkbox', { name: /Casey/ }))
+    await user.clear(within(dialog).getByRole('textbox', { name: 'Find players' }))
+    await user.click(within(dialog).getByRole('checkbox', { name: /Sam/ }))
+
+    expect(within(dialog).getByRole('button', { name: 'Remove Sam · Team B' })).toBeTruthy()
+    expect(within(dialog).getByRole('button', { name: 'Remove Casey' })).toBeTruthy()
+    expect(within(dialog).getByText('3 of 14 people selected · choose at least 3 total')).toBeTruthy()
+    await user.click(within(dialog).getByRole('button', { name: 'Create group' }))
+    await waitFor(() => expect(createGroupAsync).toHaveBeenCalledWith({
+      name: 'Table talk', playerIds: ['player-3', 'player-2'],
+    }))
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'New group chat' })).toBeNull())
+  })
+
+  it('clears selected people when the creator cancels and reopens the picker', async () => {
+    const user = userEvent.setup()
+    render(<TestApp />)
+
+    await user.click(await screen.findByRole('button', { name: /New group/ }))
+    let dialog = await screen.findByRole('dialog', { name: 'New group chat' })
+    await user.click(within(dialog).getByRole('checkbox', { name: /Sam/ }))
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await user.click(screen.getByRole('button', { name: /New group/ }))
+    dialog = await screen.findByRole('dialog', { name: 'New group chat' })
+    expect(within(dialog).getByText('1 of 14 people selected · choose at least 3 total')).toBeTruthy()
+    expect((within(dialog).getByRole('checkbox', { name: /Sam/ }) as HTMLInputElement).checked).toBe(false)
   })
 })
 

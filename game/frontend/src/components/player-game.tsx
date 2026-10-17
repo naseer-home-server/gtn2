@@ -17,6 +17,20 @@ export function PlayerGame() {
   const phase = round?.phase
   const ready = phase === 'ready', complete = phase === 'complete'
   const gameIndex = game ? GAME_ORDER.indexOf(game) : -1
+  const waitingForFirstRound = ready && view.round === 1
+  const waitingForNextGame = complete && view.round === 3 && gameIndex >= 0 && gameIndex < GAME_ORDER.length - 1
+
+  if (waitingForFirstRound || waitingForNextGame) return <>
+    <PlayAccount />
+    {waitingForNextGame && <div className="task-panel" role="status"><div className="flex items-center gap-2 text-sm"><Check className="size-4" aria-hidden="true" />Game complete</div><p className="mt-5 text-sm text-muted-foreground">Your round-three earnings</p><p className="money-value mt-2 text-4xl">{formatMoney(result?.amount ?? '0.00')}</p><Link to="/wallet" className="mt-5 inline-block text-sm text-primary underline underline-offset-4">View your wallet</Link></div>}
+    <section className="my-8 border-y border-border py-8 text-center" aria-labelledby="host-wait-heading">
+      <Clock3 className="mx-auto mb-4 size-6 text-muted-foreground" aria-hidden="true" />
+      <h1 id="host-wait-heading" className="display-title text-3xl">Waiting for the host</h1>
+      <p className="mx-auto mt-3 max-w-sm text-sm text-muted-foreground">{waitingForNextGame ? 'Your next game will appear here when the host starts it.' : 'Your seat is ready. Your host will start the first round when everyone is set.'}</p>
+      <p className="mx-auto mt-4 max-w-sm text-sm text-muted-foreground">You can check your wallet, team, or chats while you wait.</p>
+    </section>
+  </>
+
   return <>
     <div className="round-meta"><span>Game <strong>{gameIndex + 1}</strong> of 5</span><span className="round-indicator"><span className="round-dot" aria-hidden="true" />Round {view.round} <span className="text-muted-foreground">/ 3</span></span></div><div className="night-progress" aria-hidden="true">{GAME_ORDER.map((item,index) => <span key={item} className={index === gameIndex ? 'current' : index < gameIndex ? 'past' : ''} />)}</div>
     <header className="game-heading"><div className="game-title-row"><h1 className={`display-title${game === 'bonus' || game === 'circle' ? ' game-title-long' : ''}`}>{game ? gameNames[game] : 'Your next game'}</h1><GameMark game={game} /></div>
@@ -30,7 +44,7 @@ export function PlayerGame() {
     {!complete && round?.submitted && !round.hasLeft && <div className="status-note" role="status"><Check aria-hidden="true" /><div><strong>Your decision is in.</strong><p>{game === 'cave' ? 'Waiting for the next cave check.' : 'Waiting for the round to continue.'}</p></div></div>}
     {!view.isTeamLeader && <div className="status-note"><ShieldCheck aria-hidden="true" /><div><strong>Decide together.</strong><p>Your teammate arrived first and is your team leader. Only they can submit decisions and money actions. You can both use Chats.</p></div></div>}
     {view.isTeamLeader && !ready && !complete && !round?.submitted && !view.allowedActions.some(type => ['bonus.take','high-low.choose','cave.decide','circle.send','circle.return','bomb.allocate'].includes(type)) && !round?.hasLeft && !view.reveal && <p className="my-6 text-sm text-muted-foreground" role="status">Waiting for play to continue.</p>}
-    {game && <RulesDisclosure key={`${game}-${view.round}`} game={game} rules={view.rules} />}
+    {game && view.rules && <RulesDisclosure key={`${game}-${view.round}`} game={game} rules={view.rules} />}
   </>
 }
 export function WaitingForTeam() {

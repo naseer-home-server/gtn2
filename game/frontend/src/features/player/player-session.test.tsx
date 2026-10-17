@@ -1,5 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query'
-import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Link, MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -124,27 +124,54 @@ describe('player session lifetime', () => {
     const user = userEvent.setup()
     render(<TestApp />)
     await user.click(await screen.findByRole('button', { name: 'Rank reveals' }))
+    await user.click(screen.getByRole('button', { name: 'Contribute privately' }))
     const contribution = await screen.findByLabelText('Contribution', { selector: '#private-pot-contribution' })
     await user.clear(contribution)
     await user.type(contribution, '7.25')
+    await user.click(screen.getByRole('button', { name: 'Close contribution' }))
     await user.click(screen.getByRole('button', { name: 'Activity' }))
     await user.click(screen.getByRole('button', { name: 'Rank reveals' }))
+    await user.click(screen.getByRole('button', { name: 'Contribute privately' }))
     expect((screen.getByLabelText('Contribution', { selector: '#private-pot-contribution' }) as HTMLInputElement).value).toBe('7.25')
 
     queryClient.setQueryData(['game', 'player', 'session-1', 'player-1'], { ...firstView, token: 'round-token-2' })
     await waitFor(() => expect((screen.getByLabelText('Contribution', { selector: '#private-pot-contribution' }) as HTMLInputElement).value).toBe('0'))
   })
 
+  it('closes a successful private contribution dialog to reveal the snapshot behind it', async () => {
+    const user = userEvent.setup()
+    actionMutate.mockResolvedValueOnce({
+      ...firstView,
+      privatePot: { amount: '10.00', target: '10.00' },
+      reveal: { id: 'private-reveal-1', scope: 'self', rankings: [{ teamId: 'team-a', rank: 1 }] },
+      allowedActions: ['reveal.acknowledge'],
+    })
+    render(<TestApp />)
+    await user.click(await screen.findByRole('button', { name: 'Rank reveals' }))
+    await user.click(screen.getByRole('button', { name: 'Contribute privately' }))
+    const dialog = screen.getByRole('dialog', { name: 'Contribute privately' })
+    const contribution = within(dialog).getByLabelText('Contribution')
+    await user.clear(contribution)
+    await user.type(contribution, '10.00')
+    await user.click(within(dialog).getByRole('button', { name: 'Contribute privately' }))
+
+    await screen.findByRole('heading', { name: 'Your rank revealed' })
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Contribute privately' })).toBeNull())
+    expect(actionMutate).toHaveBeenCalledWith(expect.objectContaining({ action: { type: 'pot.contribute', scope: 'self', amount: '10.00' } }))
+  })
+
   it('clears drafts when the signed-in player identity changes and the session provider remounts', async () => {
     const user = userEvent.setup()
     const { rerender } = render(<TestApp />)
     await user.click(await screen.findByRole('button', { name: 'Rank reveals' }))
+    await user.click(screen.getByRole('button', { name: 'Contribute privately' }))
     const contribution = await screen.findByLabelText('Contribution', { selector: '#private-pot-contribution' })
     await user.clear(contribution)
     await user.type(contribution, '4.00')
 
     rerender(<TestApp playerId="player-2" />)
     await user.click(await screen.findByRole('button', { name: 'Rank reveals' }))
+    await user.click(screen.getByRole('button', { name: 'Contribute privately' }))
     await waitFor(() => expect((screen.getByLabelText('Contribution', { selector: '#private-pot-contribution' }) as HTMLInputElement).value).toBe('0'))
   })
 
@@ -177,6 +204,29 @@ describe('player session lifetime', () => {
     resolveOldPoll?.(revealedView)
     await oldPoll
     await waitFor(() => expect(screen.queryByRole('heading', { name: 'Your rank revealed' })).toBeNull())
+  })
+
+  it('lets a team close and reopen the public ranks dialog without acknowledging it', async () => {
+    const user = userEvent.setup()
+    const revealedView: PlayerGameView = {
+      ...firstView,
+      reveal: { id: 'public-reveal-1', scope: 'public', rankings: [{ teamId: 'team-a', rank: 1 }, { teamId: 'team-b', rank: 2 }] },
+      allowedActions: [...firstView.allowedActions, 'reveal.acknowledge'],
+    }
+    stateQuery.mockResolvedValue(revealedView)
+    actionMutate.mockResolvedValue({ ...revealedView, reveal: null })
+    render(<TestApp />)
+
+    const dialog = await screen.findByRole('dialog', { name: 'Public ranks revealed' })
+    expect(within(dialog).getByText('Team A')).toBeTruthy()
+    await user.click(within(dialog).getByRole('button', { name: 'Close ranks' }))
+    expect(screen.queryByRole('dialog', { name: 'Public ranks revealed' })).toBeNull()
+    expect(actionMutate).not.toHaveBeenCalled()
+
+    await user.click(screen.getByRole('button', { name: 'View ranks' }))
+    await user.click(screen.getByRole('button', { name: 'Acknowledge and hide' }))
+    await waitFor(() => expect(actionMutate).toHaveBeenCalledWith(expect.objectContaining({ action: { type: 'reveal.acknowledge' } })))
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Public ranks revealed' })).toBeNull())
   })
 })
 

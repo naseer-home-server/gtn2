@@ -1,6 +1,7 @@
 # Game rules
 
 ## Shared rules
+- Before a game starts, players see a neutral holding screen; its rules/settings and any finale advantage appear only after the host starts round one.
 - Five games, three rounds each; potential winnings increase across rounds and games. Current order: Will we get bonus this year → High or low → Cave mining → What goes around comes around → Gamble bomb finale.
 - Admins assign two to seven teams of two, with one solo team if needed. “Player” means team. The member with the earlier arrival order leads the team; only they can submit game decisions, make team money transfers, acknowledge a ranking reveal, or contribute to the reveal pot. Teammates discuss choices in person. A solo player is their own leader.
 - Round winnings enter each team's accumulated balance. Any team may send a positive total to one or more other teams while play is active, including between rounds and after submitting its current game choice. Shares start as evenly as possible and the sender can edit each one; all shares must add up to the original total and each recipient must receive at least one cent. Transfers are immediate and preserve the combined balance. They are paused during public ranking reveals. Transfers and bombs affect team balances.

@@ -70,7 +70,7 @@ test('simulation setup, player capabilities, controls, and actions share the per
     await bootstrap.end()
   })
   const drizzleDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../drizzle')
-  for (const migration of ['0000_add_app_settings.sql', '0001_game_sessions.sql', '0002_arrival_order_constraints.sql', '0003_silly_crusher_hogan.sql', '0004_player_chats.sql', '0005_simulation_sessions.sql']) {
+  for (const migration of ['0000_add_app_settings.sql', '0001_game_sessions.sql', '0002_arrival_order_constraints.sql', '0003_silly_crusher_hogan.sql', '0004_player_chats.sql', '0005_simulation_sessions.sql', '0006_living_slayback.sql']) {
     const sql = (await readFile(path.join(drizzleDir, migration), 'utf8')).replaceAll('"public".', `"${schemaName}".`)
     for (const statement of sql.split('--> statement-breakpoint').map((part) => part.trim()).filter(Boolean)) await pool.query(statement)
   }

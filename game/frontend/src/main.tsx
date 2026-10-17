@@ -6,6 +6,7 @@ import { queryClient } from './lib/query-client'
 import './index.css'
 import './styles/admin-polish.css'
 import './styles/chats-polish.css'
+import './styles/reveals.css'
 import App from './App.tsx'
 
 initSuperTokens()

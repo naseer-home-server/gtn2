@@ -33,6 +33,29 @@ export function unitsToCents(value: unknown): string | undefined {
 const units = (value: unknown) => moneyCents(unitsToCents(value))
 const numeric = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? value : undefined
 const textId = (value: unknown) => typeof value === 'string' ? value : undefined
+const configMoneyKeys = new Set(['bag', 'threshold', 'pool', 'startingMoney'])
+
+function configValue(key: string, value: unknown): string {
+  const values = Array.isArray(value) ? value : [value]
+  const formatted = values.map(item => {
+    if (configMoneyKeys.has(key)) return units(item)
+    if (key === 'collapseRisk') return `${item}%`
+    if (['multiplier', 'growth', 'factor'].includes(key)) return `×${String(item)}`
+    if (key === 'tickSeconds') return `${String(item)}s`
+    return String(item)
+  })
+  return formatted.join(' / ')
+}
+
+function configLabel(key: string): string {
+  const labels: Record<string, string> = {
+    bag: 'Bag amounts', threshold: 'Thresholds', pool: 'Pools', startingMoney: 'Starting money',
+    multiplier: 'Multipliers', growth: 'Growth', collapseRisk: 'Collapse risk', tickSeconds: 'Tick interval',
+    maxTicks: 'Maximum ticks', stars: 'Stars', factor: 'Bomb factor', minChits: 'Minimum chits',
+    maxChits: 'Standard chits', advantageChits: 'Advantaged chits',
+  }
+  return labels[key] ?? key.replace(/[A-Z]/g, character => ` ${character.toLowerCase()}`).replace(/^./, character => character.toUpperCase())
+}
 
 // Project the audit into gameplay only. The unabridged audit remains available to the server/export.
 export function gameActivities(input: AuditEvent[], teams: ReviewTeam[]): GameActivity[] {
@@ -85,6 +108,23 @@ export function gameActivities(input: AuditEvent[], teams: ReviewTeam[]): GameAc
     if (event.type === 'cave.survived') return [{ ...base, kind: 'cave', title: 'Cave survived', metrics: [metric('Tick', String(data.tick)), metric('Unbanked / team', moneyCents(data.unbanked)), metric('Collapse risk', `${data.risk}%`)] }]
     if (event.type === 'pot.contributed') return [{ ...base, kind: 'pot', title: `${data.scope === 'self' ? 'Private' : 'Public'} reveal pot`, metrics: [metric('Contribution', moneyCents(data.amount)), metric('Pot', `${moneyCents(data.total)} / ${moneyCents(data.target)}`)], progress: Number(data.target) > 0 ? Math.min(1, Number(data.total) / Number(data.target)) : undefined }]
     if (event.type === 'money.transferred') return [{ ...base, teamId: textId(data.fromTeamId), kind: 'transfer', title: 'Money transfer', metrics: [metric('Sent', moneyCents(data.amount)), metric('→ To', name(String(data.toTeamId)))] }]
+    if (event.type === 'team.account_adjusted') {
+      const before = record(data.before), after = record(data.after)
+      return [{ ...base, kind: 'stars', title: 'Account adjusted', metrics: [
+        metric('Balance before', moneyCents(before.balance)), metric('Balance after', moneyCents(after.balance)),
+        metric('Stars before', `★ ${String(before.stars ?? '—')}`), metric('Stars after', `★ ${String(after.stars ?? '—')}`),
+      ], note: typeof data.reason === 'string' && data.reason.trim() ? data.reason.trim() : undefined }]
+    }
+    if (event.type === 'config.updated') {
+      const configGame = validGame(data.game) ? data.game : event.game
+      const settings = record(data.settings)
+      const metrics = Object.entries(settings).map(([key, value]) => metric(configLabel(key), configValue(key, value)))
+      if (typeof data.revealPotMultiplier === 'number' && Number.isFinite(data.revealPotMultiplier)) {
+        metrics.push(metric('Reveal price', `×${data.revealPotMultiplier}`))
+      }
+      return [{ ...base, game: configGame, teamId: undefined, kind: 'choice', title: 'Game settings applied', metrics,
+        note: configGame ? `${gameNames[configGame]} settings are effective for this game.` : 'Updated game settings are effective for this game.' }]
+    }
     if (event.type === 'stars.awarded') return [{ ...base, kind: 'stars', title: 'Stars awarded', metrics: [metric('Award', `★ ${data.count}`)] }]
     if (event.type === 'private-rank.revealed' || event.type === 'rankings.revealed') return [{ ...base, kind: 'reveal', title: event.type === 'private-rank.revealed' ? 'Private rank revealed' : 'Public ranks revealed', metrics: event.type === 'private-rank.revealed' ? [metric('Rank', `#${data.rank}`)] : (Array.isArray(data.rankings) ? data.rankings : []).map(value => { const ranking = record(value); return metric(name(String(ranking.teamId)), `#${ranking.rank}`) }) }]
     if (event.type === 'game.reset') return [{ ...base, kind: 'reset', title: 'Game restarted', metrics: [], note: 'This game’s earlier results have been reset.' }]

@@ -6,10 +6,10 @@ import { GameRuleError } from './engine/errors.js'
 import { MIN_TEAMS, MAX_TEAMS, MAX_TEAM_MEMBERS } from './engine/limits.js'
 import type { AppDb } from './db/index.js'
 import { appSettings, gameSessions, sessionEvents, sessionPlayers } from './db/schema.js'
-import { advanceEngine, applyAction, resetCurrentGame, startEngine, startRoundEngine, tickEngine } from './engine/index.js'
+import { advanceEngine, applyAction, resetCurrentGame, startEngine, startRoundEngine, tickEngine, applyUpcomingConfig, adjustTeamAccount, captureGameStart, refreshPotTarget } from './engine/index.js'
 import { playerView } from './engine/views.js'
 import { ensure } from './engine/helpers.js'
-import type { AdminGameView, EngineEnv, EngineEvent, EngineState, GameConfig, GameId, GameplayRepository, PlayerCommand, TeamAssignment } from './engine/types.js'
+import type { AccountCommand, AdminControl, AdminGameView, EngineEnv, EngineEvent, EngineState, GameConfig, GameId, GameplayRepository, PlayerCommand, TeamAssignment } from './engine/types.js'
 
 type Tx = Parameters<Parameters<AppDb['transaction']>[0]>[0]
 type SessionRow = typeof gameSessions.$inferSelect
@@ -100,37 +100,74 @@ export class DbGameplayRepository implements GameplayRepository {
         ensure(new Set(ids).size === ids.length, 'Each person can belong to only one team.')
         ensure(assignments.every((team) => team.playerIds.length >= 1 && team.playerIds.length <= MAX_TEAM_MEMBERS), 'Teams contain one or two people.')
         ensure(assignments.filter((team) => team.playerIds.length === 1).length <= 1, 'Only one solo team is allowed.')
-        ensure(new Set(assignments.map((team) => team.name.trim().toLowerCase())).size === assignments.length, 'Team names must be unique.')
         const teams = assignments.map((assignment) => {
           const members = assignment.playerIds.map((id) => players.find((player) => player.id === id))
           ensure(members.every((member) => member && member.arrivalOrder !== null), 'All assigned players must be invited and marked arrived.')
           const leader = [...members].sort((a, b) => a!.arrivalOrder! - b!.arrivalOrder!)[0]!
-          return { id: randomUUID(), name: assignment.name.trim(), playerIds: assignment.playerIds, leaderPlayerId: leader.id, tieOrder: leader.arrivalOrder!, balance: '0', stars: 0 }
+          const generatedName = members.map((member) => member!.firstName || member!.email.split('@')[0]).join(' & ')
+          const name = members.every(member => member!.firstName) ? generatedName : assignment.name.trim() || generatedName
+          return { id: randomUUID(), name, playerIds: assignment.playerIds, leaderPlayerId: leader.id, tieOrder: leader.arrivalOrder!, balance: '0', stars: 0 }
         })
         const { state, events } = startEngine(teams, config, this.environmentFor(row), startingGame)
         await persist(tx, sessionId, state, events, actorId, row.simulation)
       })
     } catch (error) { gameError(error) }
   }
-  async advance(sessionId: string, actorId: string) {
+  private async hostCommand(sessionId: string, actorId: string, operation: string,
+    command: { requestId: string; expectedRevision: number } | undefined,
+    payload: unknown, mutate: (state: EngineState, row: SessionRow) => EngineEvent[]) {
     try {
       await this.db.transaction(async (tx) => {
-        const row = await lockedSession(tx, sessionId); const state = readState(row)
+        const row = await lockedSession(tx, sessionId)
         ensure((row.simulation as Record<string, unknown> | null)?.owner !== 'simulation', 'Simulation sessions must be controlled through the runner bridge.')
-        ensure(state, 'Start the playthrough first.')
-        await persist(tx, sessionId, state, advanceEngine(state, this.environmentFor(row)), actorId, row.simulation)
+        const state = readState(row)
+        ensure(state, 'Prepare the playthrough first.')
+        const digest = createHash('sha256').update(canonical({ operation, payload })).digest('hex')
+        if (command) {
+          const [previous] = await tx.select().from(sessionEvents).where(and(eq(sessionEvents.sessionId, sessionId), eq(sessionEvents.type, 'admin.command'), sql`${sessionEvents.data}->>'requestId' = ${command.requestId}`)).limit(1)
+          if (previous) {
+            ensure(previous.actorId === actorId && previous.data.signature === digest, 'This request ID was already used for another host command.')
+            return
+          }
+          if (state.revision !== command.expectedRevision) throw new TRPCError({ code: 'CONFLICT', message: 'The game changed while you were editing. Refresh the current values and try again.' })
+        }
+        const events = mutate(state, row)
+        await persist(tx, sessionId, state, [
+          ...(command ? [{ type: 'admin.command', data: { operation, requestId: command.requestId, signature: digest } }] : []),
+          ...events,
+        ], actorId, row.simulation)
       })
     } catch (error) { gameError(error) }
   }
-  async startRound(sessionId: string, actorId: string) {
-    try {
-      await this.db.transaction(async (tx) => {
-        const row = await lockedSession(tx, sessionId); const state = readState(row)
-        ensure((row.simulation as Record<string, unknown> | null)?.owner !== 'simulation', 'Simulation sessions must be controlled through the runner bridge.')
-        ensure(state, 'Prepare the playthrough first.')
-        await persist(tx, sessionId, state, startRoundEngine(state, this.environmentFor(row)), actorId, row.simulation)
-      })
-    } catch (error) { gameError(error) }
+  async advance(sessionId: string, actorId: string, control?: AdminControl) {
+    await this.hostCommand(sessionId, actorId, 'advance', control, control, (state, row) => {
+      const events = control?.config ? applyUpcomingConfig(state, control.config) : []
+      return [...events, ...advanceEngine(state, this.environmentFor(row))]
+    })
+  }
+  async startRound(sessionId: string, actorId: string, control?: AdminControl) {
+    await this.hostCommand(sessionId, actorId, 'startRound', control, control, (state, row) => {
+      const events = control?.config ? applyUpcomingConfig(state, control.config) : []
+      if (events.length) {
+        // This path is a prepared first round. Capture effective tuning for reset.
+        if (state.gameIndex > 0) refreshPotTarget(state)
+        // Preserve the original financial checkpoint: account edits and pot spending
+        // since preparation are still undone by a current-game reset.
+        const checkpoint = state.gameStart
+        if (!checkpoint) captureGameStart(state)
+        else {
+          checkpoint.config = structuredClone(state.config)
+          checkpoint.pot.target = state.pot.target
+          for (const [id, pot] of Object.entries(state.privatePots ?? {})) {
+            if (checkpoint.privatePots?.[id]) checkpoint.privatePots[id].target = pot.target
+          }
+        }
+      }
+      return [...events, ...startRoundEngine(state, this.environmentFor(row))]
+    })
+  }
+  async adjustAccount(sessionId: string, actorId: string, command: AccountCommand) {
+    await this.hostCommand(sessionId, actorId, 'adjustAccount', command, command, (state) => adjustTeamAccount(state, command))
   }
   async reset(sessionId: string, actorId: string) {
     try {

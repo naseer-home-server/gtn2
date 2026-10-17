@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRef } from 'react'
-import type { GameAction, GameConfig, GameId, PlayerGameView, TeamAssignment } from 'backend/game'
+import type { AccountCommand, AdminControl, GameAction, GameConfig, GameId, PlayerGameView, TeamAssignment } from 'backend/game'
 import { queryClient } from '@/lib/query-client'
 import { trpc } from '@/trpc'
 
@@ -69,11 +69,11 @@ export function useAdminGame(sessionId: string) {
     ]),
   })
   const advance = useMutation({
-    mutationFn: () => trpc.admin.game.advance.mutate({ sessionId }),
+    mutationFn: (control: AdminControl | void) => trpc.admin.game.advance.mutate({ sessionId, control: control || undefined }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'game', sessionId] }),
   })
   const startRound = useMutation({
-    mutationFn: () => trpc.admin.game.startRound.mutate({ sessionId }),
+    mutationFn: (control: AdminControl | void) => trpc.admin.game.startRound.mutate({ sessionId, control: control || undefined }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'game', sessionId] }),
   })
   const reset = useMutation({
@@ -83,5 +83,9 @@ export function useAdminGame(sessionId: string) {
       queryClient.invalidateQueries({ queryKey: ['admin', 'sessions'] }),
     ]),
   })
-  return { defaults, state, start, startRound, advance, reset }
+  const adjustAccount = useMutation({
+    mutationFn: (command: AccountCommand) => trpc.admin.game.adjustAccount.mutate({ sessionId, ...command }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'game', sessionId] }),
+  })
+  return { defaults, state, start, startRound, advance, reset, adjustAccount }
 }

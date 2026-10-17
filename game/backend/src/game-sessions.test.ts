@@ -1,3 +1,6 @@
+import { mkdtemp, writeFile, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { appRouter } from './router.js'
@@ -33,10 +36,22 @@ test('real admins bypass invitations; email test users never bypass them', async
   await assert.rejects(fixture({ ...admin, isTestLogin: true }, false).caller.hello(), { code: 'FORBIDDEN' })
   await assert.rejects(fixture(player, true).caller.admin.sessions.list(), { code: 'FORBIDDEN' })
 })
-test('session creation accepts fourteen attendees and rejects duplicate emails or a fifteenth attendee', async () => {
+test('session creation uses the private roster, rejects outsiders/duplicates, and caps attendance at fourteen', async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), 'gtn-roster-api-'))
+  const previous = process.env.PLAYER_ROSTER_PATH
+  process.env.PLAYER_ROSTER_PATH = join(directory, 'roster.json')
+  t.after(async () => { if (previous === undefined) delete process.env.PLAYER_ROSTER_PATH; else process.env.PLAYER_ROSTER_PATH = previous; await rm(directory, { recursive: true }) })
+  await writeFile(process.env.PLAYER_ROSTER_PATH, JSON.stringify(Array.from({ length: 15 }, (_, i) => ({ id: i + 1, name: `Person ${i}`, email: `p${i}@example.com`, whatsapp_number: 'private-contact' }))))
   const { caller, sessions } = fixture(admin, false)
-  sessions.create = async (name, emails) => ({ id: 'night', name, players: emails.map((email, index) => ({ id: String(index), email, arrivalOrder: null })), createdAt: '', isActive: false, currentGame: null, currentRound: null })
-  assert.equal((await caller.admin.sessions.create({ name: 'Seven teams', emails: Array.from({ length: 14 }, (_, i) => `p${i}@example.com`) })).players.length, 14)
-  await assert.rejects(caller.admin.sessions.create({ name: 'Night', emails: ['A@example.com', ' a@example.com '] }), { code: 'BAD_REQUEST' })
-  await assert.rejects(caller.admin.sessions.create({ name: 'Night', emails: Array.from({ length: 15 }, (_, i) => `p${i}@example.com`) }), { code: 'BAD_REQUEST' })
+  sessions.create = async (name, emails, _actor, profiles) => ({ id: 'night', name, players: emails.map((email, index) => ({ id: String(index), email, arrivalOrder: null, firstName: profiles?.[index]?.firstName })), createdAt: '', isActive: false, currentGame: null, currentRound: null })
+  const roster = await caller.admin.sessions.roster()
+  assert.equal(roster.length, 15)
+  assert.ok(!JSON.stringify(roster).includes('private-contact'))
+  const session = await caller.admin.sessions.create({ name: 'Seven teams', rosterIds: Array.from({ length: 14 }, (_, i) => String(i + 1)) })
+  assert.equal(session.players.length, 14)
+  assert.equal(session.players[0].firstName, 'Person')
+  await assert.rejects(caller.admin.sessions.create({ name: 'Night', rosterIds: ['1', '1'] }), { code: 'BAD_REQUEST' })
+  await assert.rejects(caller.admin.sessions.create({ name: 'Night', rosterIds: ['999'] }), { code: 'BAD_REQUEST' })
+  await assert.rejects(caller.admin.sessions.create({ name: 'Night', rosterIds: Array.from({ length: 15 }, (_, i) => String(i + 1)) }), { code: 'BAD_REQUEST' })
+  await assert.rejects(fixture(player, true).caller.admin.sessions.roster(), { code: 'FORBIDDEN' })
 })

@@ -20,6 +20,9 @@ export const sessionPlayers = pgTable('session_players', {
   id: uuid('id').defaultRandom().primaryKey(),
   sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
   email: text('email').notNull(),
+  rosterId: text('roster_id'),
+  name: text('display_name'),
+  firstName: text('first_name'),
   arrivalOrder: integer('arrival_order'),
 }, (table) => [
   uniqueIndex('session_player_email_idx').on(table.sessionId, table.email),
@@ -39,6 +42,7 @@ export const sessionEvents = pgTable('session_events', {
   index('session_event_history_idx').on(table.sessionId, table.createdAt),
   index('session_event_sequence_idx').on(table.sessionId, table.sequence),
   uniqueIndex('session_event_request_idx').on(table.sessionId, sql`(${table.data}->>'requestId')`).where(sql`${table.type} = 'player.command'`),
+  uniqueIndex('session_event_admin_command_idx').on(table.sessionId, sql`(${table.data}->>'requestId')`).where(sql`${table.type} = 'admin.command'`),
   uniqueIndex('session_event_simulation_control_idx').on(table.sessionId, sql`(${table.data}->>'requestId')`).where(sql`${table.type} = 'simulation.control'`),
 ])
 

@@ -1,11 +1,13 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { ArrowLeft, MessageCircle, Plus, Send, Users, X } from 'lucide-react'
-import type { ChatConversation, ChatInbox, ChatMessage } from 'backend/chats'
+import { ArrowLeft, MessageCircle, Plus, Search, Send, Users, X } from 'lucide-react'
+import { Dialog } from 'radix-ui'
+import type { ChatConversation, ChatInbox } from 'backend/chats'
 import { useChatUnread } from '@/hooks/use-chat-unread'
 import { useChats, useChatThread } from '@/hooks/use-chats'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { ChatConversationHeader, ChatTranscript } from '@/features/chat/shared-thread'
 
 type Props = {
   sessionId: string
@@ -34,23 +36,16 @@ function playerLabel(playerId: string, inbox: ChatInbox) {
   return team ? `${player.email} · ${team.name}` : player.email
 }
 
-function formatTime(value: string) {
-  const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+function groupPlayerName(player: ChatInbox['players'][number]) {
+  return player.firstName?.trim() || player.email.split('@')[0] || 'Player'
 }
 
-function MessageRow({ message, inbox, pageMode }: { message: ChatMessage; inbox: ChatInbox; pageMode: boolean }) {
-  const own = message.senderPlayerId === inbox.selfPlayerId
-  const ownTeam = inbox.teams.find((team) => team.playerIds.includes(inbox.selfPlayerId))
-  return <article className={`chat-message-row flex flex-col ${own ? 'items-end' : 'items-start'}`}>
-    <div className="chat-message-meta mb-1 flex max-w-[90%] items-center gap-2 text-xs text-muted-foreground">
-      <span className="truncate">{own ? `You${ownTeam ? ` · ${ownTeam.name}` : ''}` : playerLabel(message.senderPlayerId, inbox)}</span>
-      <time dateTime={message.createdAt}>{formatTime(message.createdAt)}</time>
-    </div>
-    <div className={`chat-message-bubble max-w-[90%] rounded-lg px-3 py-2 text-base leading-6 ${own ? 'chat-own-message' : 'bg-muted text-foreground'} ${pageMode ? 'chat-page-bubble' : ''}`}>
-      <p className="whitespace-pre-wrap break-words">{message.text}</p>
-    </div>
-  </article>
+function groupPlayerLabel(playerId: string, inbox: ChatInbox) {
+  const player = inbox.players.find((item) => item.id === playerId)
+  if (!player) return 'Player'
+  const team = inbox.teams.find((item) => item.id === player.teamId)
+  const name = groupPlayerName(player)
+  return team ? `${name} · ${team.name}` : name
 }
 
 function conversationIdFromPath(pathname: string) {
@@ -68,6 +63,7 @@ export function Chats({ sessionId, playerId, mode = 'floating', active = true, o
   const [composeMode, setComposeMode] = useState<ComposeMode>(null)
   const [selectedPlayers, setSelectedPlayers] = useState<string[]>([])
   const [groupName, setGroupName] = useState('')
+  const [groupSearch, setGroupSearch] = useState('')
   const [drafts, setDrafts] = useState<Record<string, string>>({})
   const pendingSend = useRef<{ conversationId: string; text: string; clientMessageId: string } | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -95,6 +91,10 @@ export function Chats({ sessionId, playerId, mode = 'floating', active = true, o
   })
   const messages = thread.data?.messages ?? []
   const availablePlayers = useMemo(() => inbox?.players.filter((player) => player.id !== inbox.selfPlayerId) ?? [], [inbox])
+  const matchingGroupPlayers = availablePlayers.filter((player) => {
+    const team = inbox?.teams.find((item) => item.id === player.teamId)
+    return `${groupPlayerName(player)} ${team?.name ?? ''}`.toLowerCase().includes(groupSearch.trim().toLowerCase())
+  })
   const availableTeams = useMemo(() => inbox?.teams.filter((team) => !team.playerIds.includes(inbox.selfPlayerId)) ?? [], [inbox])
 
   useEffect(() => {
@@ -141,6 +141,7 @@ export function Chats({ sessionId, playerId, mode = 'floating', active = true, o
     setComposeMode(null)
     setSelectedPlayers([])
     setGroupName('')
+    setGroupSearch('')
   }
   const goToConversation = (id: string) => {
     if (unresolvedSend && unresolvedSend.conversationId !== id) return
@@ -171,6 +172,19 @@ export function Chats({ sessionId, playerId, mode = 'floating', active = true, o
       })
       goToConversation(conversation.id)
     } catch { /* The mutation error is shown in the group form. */ }
+  }
+  const openGroupDialog = () => {
+    chats.createGroup.reset()
+    setGroupSearch('')
+    setComposeMode('group')
+  }
+  const closeGroupDialog = () => {
+    if (chats.createGroup.isPending) return
+    setComposeMode(null)
+    setSelectedPlayers([])
+    setGroupName('')
+    setGroupSearch('')
+    chats.createGroup.reset()
   }
   const submitMessage = () => {
     if (!selected || !draft.trim() || draft.trim().length > 2_000 || chats.send.isPending) return
@@ -246,14 +260,16 @@ export function Chats({ sessionId, playerId, mode = 'floating', active = true, o
 
   return <>
     {(pageMode || open) && <section id="team-chat-panel" aria-label="Team chat" hidden={!panelVisible} className={`${panelClass} ${pageMode ? `chat-page ${selectedId ? 'chat-page-thread' : 'chat-page-inbox'}` : ''}`}>
-      <header className={`chat-page-header flex shrink-0 items-center gap-2 border-b px-3 py-3 ${pageMode ? 'bg-background' : ''}`}>
-        {selectedId ? <Button aria-label="Back to conversations" title={unresolvedSend ? 'Retry or discard the message before switching chats.' : undefined} disabled={Boolean(unresolvedSend)} variant="ghost" size="icon" className="chat-back-button size-11 shrink-0" onClick={backToInbox}><ArrowLeft /></Button> : <span className="chat-brand-mark grid size-10 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground"><MessageCircle className="size-5" /></span>}
-        <div className="min-w-0 flex-1">
-          <h2 className={`truncate ${pageMode ? selected ? 'chat-conversation-title' : 'chat-page-title' : 'section-heading'}`}>{selected && inbox ? conversationName(selected, inbox) : 'Chats'}{!selected && hasUnread && <span className="chat-heading-dot unread-dot" role="img" aria-label="Unread messages" />}</h2>
-          <p className="chat-subtitle truncate text-sm text-muted-foreground">{selected?.kind === 'direct' ? 'Direct chat with another team' : selected ? 'Group chat with fixed membership' : 'Players in this game session'}</p>
-        </div>
-        {!pageMode && <Button aria-label="Close chats" variant="ghost" size="icon" onClick={() => setOpen(false)}><X /></Button>}
-      </header>
+      <ChatConversationHeader
+        className={pageMode ? 'bg-background' : ''}
+        title={selected && inbox ? conversationName(selected, inbox) : 'Chats'}
+        titleClassName={pageMode && !selected ? 'chat-page-title' : !pageMode && !selected ? 'section-heading' : ''}
+        subtitle={selected?.kind === 'direct' ? 'Direct chat with another team' : selected ? 'Group chat with fixed membership' : 'Players in this game session'}
+        leading={selectedId
+          ? <Button aria-label="Back to conversations" title={unresolvedSend ? 'Retry or discard the message before switching chats.' : undefined} disabled={Boolean(unresolvedSend)} variant="ghost" size="icon" className="chat-back-button size-11 shrink-0" onClick={backToInbox}><ArrowLeft /></Button>
+          : <span className="chat-brand-mark grid size-10 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground"><MessageCircle className="size-5" /></span>}
+        trailing={<>{!selected && hasUnread && <span className="chat-heading-dot unread-dot" role="img" aria-label="Unread messages" />}{!pageMode && <Button aria-label="Close chats" variant="ghost" size="icon" onClick={() => setOpen(false)}><X /></Button>}</>}
+      />
       {unresolvedSend && <p role="status" className="shrink-0 border-b bg-muted/50 px-4 py-2 text-sm text-muted-foreground">Retry or discard this message before switching chats. Its message ID stays reserved until the result is confirmed.</p>}
 
       {!inbox && <div className="p-4 text-base text-muted-foreground">{chats.inbox.isError ? `Could not load chats: ${chats.inbox.error.message}` : 'Loading chats…'}</div>}
@@ -261,24 +277,12 @@ export function Chats({ sessionId, playerId, mode = 'floating', active = true, o
       {inbox && !selected && <div className="flex min-h-0 flex-1 flex-col">
         <div className="chat-compose-actions flex shrink-0 gap-2 border-b p-3">
           <Button size="sm" className="chat-action-button min-h-11" variant={composeMode === 'direct' ? 'secondary' : 'outline'} onClick={() => setComposeMode(composeMode === 'direct' ? null : 'direct')}><Plus /> Team chat</Button>
-          <Button size="sm" className="chat-action-button min-h-11" variant={composeMode === 'group' ? 'secondary' : 'outline'} onClick={() => setComposeMode(composeMode === 'group' ? null : 'group')}><Users /> New group</Button>
+          <Button size="sm" className="chat-action-button min-h-11" variant={composeMode === 'group' ? 'secondary' : 'outline'} onClick={openGroupDialog}><Users /> New group</Button>
         </div>
         {composeMode === 'direct' && <div className="max-h-48 shrink-0 space-y-2 overflow-y-auto border-b p-3">
           <p className="text-sm text-muted-foreground">Start a direct chat with another team</p>
           {availableTeams.length ? availableTeams.map((team) => <Button key={team.id} variant="outline" className="min-h-11 w-full justify-start" disabled={chats.direct.isPending} onClick={() => void createDirect(team.id)}>{team.name}</Button>) : <p className="text-base text-muted-foreground">No other teams are available yet.</p>}
           {chats.direct.isError && <p role="alert" className="text-base text-destructive">{chats.direct.error.message}</p>}
-        </div>}
-        {composeMode === 'group' && <div className="max-h-[55%] shrink-0 space-y-3 overflow-y-auto border-b p-3">
-          <Input aria-label="Group name" placeholder="Group name" maxLength={60} value={groupName} onChange={(event) => setGroupName(event.target.value)} />
-          <p className="text-sm text-muted-foreground">Choose at least two other players. You’ll be included automatically.</p>
-          <div className="max-h-36 space-y-1 overflow-y-auto">
-            {availablePlayers.map((player) => <label key={player.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md px-2 py-1.5 text-base hover:bg-muted">
-              <input className="size-5 accent-primary" type="checkbox" checked={selectedPlayers.includes(player.id)} onChange={(event) => setSelectedPlayers((current) => event.target.checked ? [...current, player.id] : current.filter((id) => id !== player.id))} />
-              <span className="truncate">{playerLabel(player.id, inbox)}</span>
-            </label>)}
-          </div>
-          <Button className="min-h-11 w-full" disabled={!groupName.trim() || selectedPlayers.length < 2 || chats.createGroup.isPending} onClick={() => void createGroup()}>{chats.createGroup.isPending ? 'Creating…' : 'Create group'}</Button>
-          {chats.createGroup.isError && <p role="alert" className="text-base text-destructive">{chats.createGroup.error.message}</p>}
         </div>}
         <div className="chat-conversation-list min-h-0 flex-1 overflow-y-auto overscroll-contain">
           {conversations.length ? conversations.map((conversation) => <button key={conversation.id} disabled={Boolean(unresolvedSend)} className="chat-conversation-row flex min-h-16 w-full items-center gap-3 border-b px-4 py-3 text-left hover:bg-muted/70 focus-visible:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60" onClick={() => goToConversation(conversation.id)}>
@@ -306,7 +310,13 @@ export function Chats({ sessionId, playerId, mode = 'floating', active = true, o
           {olderError && <p role="alert" className="text-center text-base text-destructive">Could not load older messages: {olderError}</p>}
           {thread.isError && <p role="alert" className="text-base text-destructive">Could not load messages: {thread.error.message}</p>}
           {!messages.length && !thread.isLoading && (pageMode ? <div className="chat-thread-empty py-8 text-center text-base text-muted-foreground"><span className="chat-empty-icon mx-auto mb-3 grid size-12 place-items-center rounded-full"><MessageCircle className="size-5" /></span><p className="font-medium text-foreground">A fresh conversation</p><p className="mt-1 text-sm">Send the first message to get things started.</p></div> : <p className="py-6 text-center text-base text-muted-foreground">No messages yet. Say hello.</p>)}
-          {messages.map((message) => <MessageRow key={message.id} message={message} inbox={inbox} pageMode={pageMode} />)}
+          <ChatTranscript
+            messages={messages}
+            authorFor={(message) => message.senderPlayerId === inbox.selfPlayerId
+              ? `You${inbox.teams.find((team) => team.playerIds.includes(inbox.selfPlayerId)) ? ` · ${inbox.teams.find((team) => team.playerIds.includes(inbox.selfPlayerId))?.name}` : ''}`
+              : playerLabel(message.senderPlayerId, inbox)}
+            sideFor={(message) => message.senderPlayerId === inbox.selfPlayerId ? 'own' : 'other'}
+          />
           {thread.isLoading && <p className="text-center text-base text-muted-foreground">Loading messages…</p>}
         </div>
         <div className="chat-composer shrink-0 border-t bg-background p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
@@ -324,6 +334,37 @@ export function Chats({ sessionId, playerId, mode = 'floating', active = true, o
         </div>
       </div>}
     </section>}
+    <Dialog.Root open={composeMode === 'group'} onOpenChange={(isOpen) => { if (!isOpen) closeGroupDialog() }}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="dialog-overlay chat-dialog-overlay" />
+        <Dialog.Content className="group-chat-dialog" aria-describedby="group-chat-description">
+          <div className="group-chat-dialog-heading">
+            <div><Dialog.Title className="section-heading">New group chat</Dialog.Title><Dialog.Description id="group-chat-description" className="group-chat-description">Choose 2–13 other invited players. You’ll be included automatically.</Dialog.Description></div>
+            <Dialog.Close asChild><Button variant="ghost" size="icon" aria-label="Close group chat" disabled={chats.createGroup.isPending}><X /></Button></Dialog.Close>
+          </div>
+          <div className="group-chat-fields">
+            <div className="space-y-2"><label htmlFor="group-chat-name">Group name</label><Input id="group-chat-name" autoFocus maxLength={60} value={groupName} onChange={(event) => setGroupName(event.target.value)} placeholder="Name this conversation" /></div>
+            <div className="space-y-2"><label htmlFor="group-chat-search">Find players</label><div className="group-chat-search"><Search aria-hidden="true" /><Input id="group-chat-search" value={groupSearch} onChange={(event) => setGroupSearch(event.target.value)} placeholder="Search by name or team" /></div></div>
+            <div className="group-chat-selected" aria-live="polite">
+              <span className="group-chat-chip is-creator"><span>{inbox ? groupPlayerLabel(inbox.selfPlayerId, inbox) : 'You'}</span><small>You · included</small></span>
+              {selectedPlayers.map((id) => <button type="button" key={id} className="group-chat-chip" onClick={() => setSelectedPlayers((current) => current.filter((item) => item !== id))} aria-label={`Remove ${inbox ? groupPlayerLabel(id, inbox) : 'player'}`}><span>{inbox ? groupPlayerLabel(id, inbox) : 'Player'}</span><X aria-hidden="true" /></button>)}
+            </div>
+            <p className="group-chat-count">{selectedPlayers.length + 1} of 14 people selected · choose at least 3 total</p>
+            <div className="group-chat-picker" role="group" aria-label="Choose players">
+              {matchingGroupPlayers.map((player) => <label key={player.id} className="group-chat-player">
+                <input type="checkbox" checked={selectedPlayers.includes(player.id)} disabled={(!selectedPlayers.includes(player.id) && selectedPlayers.length >= 13) || chats.createGroup.isPending} onChange={(event) => setSelectedPlayers((current) => event.target.checked ? [...current, player.id] : current.filter((id) => id !== player.id))} />
+                <span><strong>{groupPlayerName(player)}</strong><small>{player.teamId ? inbox?.teams.find((team) => team.id === player.teamId)?.name : 'Invited player'}</small></span>
+              </label>)}
+              {matchingGroupPlayers.length === 0 && <p className="group-chat-no-results">No players match that search.</p>}
+            </div>
+            {groupName.trim().length > 60 && <p className="group-chat-validation">Use 60 characters or fewer.</p>}
+            {selectedPlayers.length < 2 && <p className="group-chat-guidance">Choose at least two other players.</p>}
+            {chats.createGroup.isError && <p role="alert" className="group-chat-error">Could not create the group: {chats.createGroup.error.message} Your choices are still here; try again.</p>}
+          </div>
+          <div className="group-chat-actions"><Button variant="outline" disabled={chats.createGroup.isPending} onClick={closeGroupDialog}>Cancel</Button><Button className="group-chat-create" disabled={!groupName.trim() || groupName.trim().length > 60 || selectedPlayers.length < 2 || selectedPlayers.length > 13 || chats.createGroup.isPending || !inbox} onClick={() => void createGroup()}>{chats.createGroup.isPending ? 'Creating group…' : 'Create group'}</Button></div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
     {!pageMode && <Button className="fixed right-4 bottom-4 z-50 h-11 rounded-full px-4 shadow-lg" onClick={() => setOpen((value) => !value)} aria-expanded={open}>
       <MessageCircle /> Chats{hasUnread && <span className="unread-dot floating-unread-dot" role="img" aria-label="Unread messages" />}
     </Button>}

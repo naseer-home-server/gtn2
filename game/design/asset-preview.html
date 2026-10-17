@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Theory Night · Assets and type</title>
+  <style>
+    @font-face{font-family:'Bodoni Moda';src:url('assets/fonts/bodoni-moda/BodoniModa.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+    *{box-sizing:border-box}body{margin:0;background:#F5F0E7;color:#000;font:16px/1.6 Arial,sans-serif}main{max-width:1040px;margin:auto;padding:40px 24px}
+    h1,h2,h3,.display{font-family:'Bodoni Moda',Georgia,serif;font-optical-sizing:auto;font-weight:500;line-height:1.12}
+    h1{font-size:52px;margin:8px 0 18px}h2{font-size:34px;margin:0 0 16px}h3{font-size:30px}.intro{max-width:650px;color:#6C6258}section{margin-top:36px}a{color:#BD0000}
+    .gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.art{margin:0}.art img{width:100%;height:235px;object-fit:contain}.art figcaption{font-size:14px;padding:10px 0;border-top:1px solid #000}
+    .specimens{display:grid;grid-template-columns:1fr 375px;gap:40px;border-top:2px solid #BD0000;padding-top:26px}.phone{max-width:375px;padding:24px 20px;background:#FFFCF7;border:2px solid #BD0000;border-radius:14px}.phone h3{margin:22px 0 10px;font-size:34px}.phone p{margin:4px 0 14px}.small-heading{font:500 27px/1.2 'Bodoni Moda',Georgia,serif;font-optical-sizing:auto}.amount{font:500 40px/1.2 Arial,sans-serif;font-variant-numeric:tabular-nums;margin:12px 0}.label{font:14px/1.5 Arial,sans-serif;color:#6C6258}
+    .button-samples{display:grid;grid-template-columns:1fr 1fr;gap:8px}.button-samples span{padding:12px 8px;text-align:center;background:#BD0000;color:#FFFCF7;border-radius:8px;font-size:16px}.button-samples span+span{background:#000}.note{font-size:14px;color:#6C6258}.line{height:1px;background:#000;margin:24px 0}
+    @media(max-width:720px){main{padding:24px 20px}h1{font-size:40px}.gallery{grid-template-columns:1fr}.art img{height:210px}.specimens{grid-template-columns:1fr;gap:24px}.phone{width:100%}}
+  </style>
+</head>
+<body><main>
+  <p class="label">Design study · game UI refactor</p><h1>Game Theory Night 2</h1>
+  <p class="intro">Sharp red ink, warm paper, black lettering, and textured game pieces. Bodoni Moda gives titles their theatrical voice; Geist remains the app face for controls, body text, and numbers.</p>
+  <section class="gallery" aria-label="Illustration set">
+    <figure class="art"><img src="reference/brand-die.svg" alt="Supplied textured red twenty-sided die"><figcaption>Supplied die · primary brand mark</figcaption></figure>
+    <figure class="art"><img src="assets/spinner.svg" alt="New red and pink spinner illustration"><figcaption>New spinner · decorative SVG</figcaption></figure>
+    <figure class="art"><img src="reference/poker-chips.svg" alt="Supplied red, mauve, and purple poker chips"><figcaption>Supplied chips · supporting illustration</figcaption></figure>
+  </section>
+  <section class="specimens"><div>
+    <h2>Type for a phone</h2><p class="small-heading">What goes around comes around</p><p class="small-heading">Will we get bonus this year</p><p class="small-heading">Gamble bomb</p>
+    <div class="line"></div><p>Large titles use Bodoni Moda at optical size. Geist and plain sans-serif forms keep controls, instructions, balances, and countdowns easy to scan.</p>
+    <p class="note">Palette: Paper #F5F0E7 · Clean paper #FFFCF7 · Game red #BD0000 · Ink #000000 · Quiet ink #6C6258. Amounts and states are illustrative, not gameplay fixtures.</p>
+    <a href="ui-refactor-plan.md">Read the implementation plan</a>
+  </div><div class="phone" aria-label="Phone-size type specimen">
+    <p class="label">Your team · Round 2</p><h3>Cave mining</h3><p class="label">Unbanked</p><div class="amount">90.00</div><p>Next check in 8 seconds</p>
+    <div class="button-samples" aria-label="Button appearance samples"><span>Stay</span><span>Leave and bank</span></div><p class="note">No response means stay.</p><div class="line"></div><p class="small-heading">Rules and settings</p><p>Choose together. Your team leader makes the decision.</p>
+  </div></section>
+</main></body></html>

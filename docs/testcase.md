@@ -146,3 +146,39 @@ The simulation implementation used three GPT-6 Luna workstreams for backend APIs
 - [ ] Real OpenAI provider run with an operator-supplied API key.
 - [ ] Docker container image build/run (local daemon unavailable).
 - [ ] Native file-picker import and narrow-viewport visual checks (browser-control limitations; further results may follow).
+
+
+## UI refactor review: 2026-10-16
+
+Run in the isolated `codex/game-ui-refactor` worktree using its own seeded database and app on port 5966. These are targeted UI checks; the historical full-night results above were not rerun.
+
+Browser work was divided between the primary agent, a GPT-6 Luna player/chat agent, and a GPT-6 Luna admin agent. A separate Luna regression agent added focused frontend tests.
+
+- Primary agent: reviewed actual player screens at 320, 375, and 430px, plus the desktop/phone admin. No horizontal document overflow remained after correcting the narrow viewport body width. Checked the five game forms, ready states, long Circle title, nonleader restrictions, negative/over-limit money, excessive stars, and finale empty/fractional/over-limit piles. Valid finale direction and recipient totals can differ; draft survives Wallet navigation.
+- Primary agent: High or Low amount draft survived navigation and reveal actions. A private reveal showed only the team's rank on Teams; a public reveal appeared on Chats with all ranks. Acknowledgment hid ranks while the pending public acknowledgment kept play paused. A local test transfer succeeded with its receipt and balance change.
+- Primary agent: started Cave, accepted Stay, and verified the deadline countdown remained visible on Chats. Checked host activation, arrivals/reordering, team setup drafts across sections, invalid configuration feedback, prepared round start, reset, and Setup/Live play/Review navigation.
+- Player/chat agent: checked the E2E team player view, disabled transfer with zero balance, team privacy, admin denial, direct/group conversation creation, chat draft retention across routes, visible keyboard focus, Bonus limits, amount draft retention, and a submitted Bonus choice. No chat messages were sent. Its Chrome surface did not support viewport overrides; the primary agent performed the exact-width checks separately.
+- Admin agent: attempted host cases in Chrome but inherited a player login and correctly saw admin access denied. Host behavior was verified by the primary agent in the authenticated in-app browser instead.
+- Automated frontend regression: 7 tests passed, covering transfer drafts and exact uncertain retries across navigation/query failure, round draft lifetime and identity isolation, chat draft/retry lifetime, and rejection of a delayed poll that could otherwise restore an acknowledged rank reveal. Game production build and TypeScript checks passed. Frontend lint has two existing Fast Refresh export warnings in the button and badge primitives. Vite still reports a JavaScript chunk over 500kB.
+
+Limits: this pass did not repeat all 15 rounds, external Google OAuth, statistical draw checks, real device keyboard/safe-area behavior, screen-reader testing, 200% zoom, or a browser-level dropped-response retry. The latter retry paths have focused component coverage. Visual review remains subject to user feedback.
+
+The local E2E fixture contains the submitted Team 5 Bonus choice and the created empty chat conversations. The extra `UI Refactor Admin Check` session is a setup test fixture. Preview sessions were restored to their prepared round checkpoints after destructive gameplay checks where recorded; the final active review fixture is UX Preview High or Low, round 1 started with no player choices submitted. Cave is restored to round 1 ready. Phone evidence is saved in `game/design/review/`.
+
+
+### Additional visual refinement: 2026-10-16
+
+Following user feedback, the game frontend received a second visual-system revision: compact branding, game-specific vector marks and a five-game progress track, consistent contained forms, quieter metadata, an account-style wallet, a grouped team roster, aligned chat layouts, and refined host working surfaces. The current design notes are in `game/design/visual-refinement.md`.
+
+The primary agent reviewed Play/Wallet at 320px (305px document content with desktop scrollbar), player Play/Wallet/reveal forms/Teams/Chats/thread at 390px, Play at 430px, and the host desk at 1280px. Narrow Play/Wallet and wide Play had no horizontal document overflow. Small helper text and chat alignment were corrected during review. Separate Luna agents implemented scoped admin and chat presentation; browser review was performed by the primary agent. This was a visual review, not a new full gameplay end-to-end run. No game decisions, transfers, reveal contributions, session activation, or chat messages were submitted during this additional pass.
+
+All 7 frontend regression tests, frontend TypeScript/production build, and lint completed after the final changes. The two Fast Refresh export warnings and Vite's large-chunk warning remain. The combined game build also passed during this revision. Final screenshots: `game/design/review/refined-play-390.jpg` and `game/design/review/refined-wallet-390.jpg`. The High or Low review fixture remains active with its existing state.
+
+
+## Play balance and unread chat follow-up: 2026-10-17
+
+- Play shows the signed-in team's private balance in a compact account row, links it to Wallet, updates it from game state, and retains it after the finale. Browser review used the currently active Gamble Bomb checkpoint at 390px and 320px; the narrow document had no horizontal overflow. No game actions or chat messages were submitted.
+- Unread dots appear on Chats navigation, the inbox heading, and affected conversation rows. The existing two-second inbox poll supplies the latest incoming sequence in each membership-filtered conversation. Browser-local read positions are scoped to session/player and contain no message text or account information. Only incoming messages displayed at the bottom of an open, visible conversation advance the marker; opening the inbox, a background tab, or a newer own reply does not clear unseen incoming messages. Read positions persist across refresh and synchronize between tabs on the same origin; they do not synchronize across devices/teammates. No database migration or new dependencies.
+- Frontend: all 16 tests passed, including read persistence/isolation, storage fallback and cross-tab updates, unread lifecycle through navigation and background visibility, concurrent own replies, and Play balance updates/final state. A Luna regression agent contributed the six unread-hook tests; the primary agent added integration coverage.
+- Backend: `pnpm test:db` passed all 70 tests, with no skips, against this worktree's local database. This includes notification metadata for recipients, exclusion of own messages, and preservation of the incoming sequence when a newer own message exists. Combined game build and final frontend build passed. Lint retains the same two Fast Refresh warnings; Vite retains the large-chunk warning.
+- Browser-level unread arrival/clear was covered by component integration rather than sending messages into the user's active fixture. Evidence: `game/design/review/play-balance-390.jpg`. The shared SuperTokens forward stopped during inspection and was restored with the documented `scripts/pf-anton`; the preview recovered.

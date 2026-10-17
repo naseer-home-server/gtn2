@@ -33,10 +33,10 @@ export function LoginPage() {
     event.preventDefault()
     emailLogin.mutate(testEmail, { onSuccess: () => navigate('/', { replace: true }) })
   }
-  return <Card className="mx-auto mt-6 w-full max-w-md sm:mt-12">
+  return <Card className="w-full">
     <CardHeader className="gap-2">
-      <CardTitle><h1 className="text-2xl font-semibold tracking-tight">Log in</h1></CardTitle>
-      <CardDescription>Join Game Theory Night 2.</CardDescription>
+      <CardTitle><h2>Take your seat</h2></CardTitle>
+      <CardDescription>Use the email your host invited.</CardDescription>
     </CardHeader>
     <CardContent className="space-y-4">
       {!isLocalAuth && <>
@@ -46,14 +46,14 @@ export function LoginPage() {
         {google.error && <ErrorMessage message={google.error.message} />}
       </>}
       {settings.error && <ErrorMessage message={settings.error.message} />}
-      {isLocalAuth && <form onSubmit={submit} className="space-y-4">
-        <div className="space-y-1"><h2 className="font-medium">Local email login</h2><p className="text-sm text-muted-foreground">Use the local test account or an invited player's account.</p></div>
+      {isLocalAuth && <details className="password-login" open={!settings.data?.emailLoginEnabled}><summary>Host sign-in</summary><form onSubmit={submit} className="space-y-4">
+        <div className="space-y-1"><h2 className="font-medium">Email and password</h2><p className="text-sm text-muted-foreground">Use the local test account or an invited player's account.</p></div>
         <div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" name="email" type="email" autoComplete="username" required value={email} onChange={(event) => setEmail(event.target.value)} /></div>
         <div className="space-y-2"><Label htmlFor="password">Password</Label><Input id="password" name="password" type="password" autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} /></div>
         {localLogin.data && localLogin.data.status !== 'OK' && <ErrorMessage message={localLogin.data.status === 'SIGN_IN_NOT_ALLOWED' ? localLogin.data.reason : 'Incorrect email or password.'} />}
         {localLogin.error && <ErrorMessage message={localLogin.error.message} />}
         <Button type="submit" size="lg" className="w-full" disabled={localLogin.isPending}>{localLogin.isPending ? 'Logging in…' : 'Log in'}</Button>
-      </form>}
+      </form></details>}
       {!isLocalAuth && settings.data?.emailLoginEnabled && <>
         <Separator />
         <form onSubmit={submitTestLogin} className="space-y-4">
@@ -74,7 +74,7 @@ export function LoginPage() {
       {isLocalAuth && settings.data?.emailLoginEnabled && <>
         <Separator />
         <form onSubmit={submitTestLogin} className="space-y-4">
-          <div className="space-y-1"><h2 className="font-medium">Player test login</h2><p className="text-sm text-muted-foreground">Use an invited player's email without a password.</p></div>
+          <div className="space-y-1"><h2 className="font-medium">Player sign-in</h2><p className="text-sm text-muted-foreground">Enter your invited email to join the table.</p></div>
           <div className="space-y-2"><Label htmlFor="player-test-email">Player email</Label><Input id="player-test-email" name="player-test-email" type="email" autoComplete="email" placeholder="player@example.com" required value={testEmail} onChange={(event) => setTestEmail(event.target.value)} /></div>
           <Button type="submit" variant="outline" size="lg" className="w-full" disabled={emailLogin.isPending}>{emailLogin.isPending ? 'Logging in…' : 'Log in as player'}</Button>
           {emailLogin.error && <ErrorMessage message={emailLogin.error.message} />}

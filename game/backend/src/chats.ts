@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, lt } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, lt, ne } from 'drizzle-orm'
 import { TRPCError } from '@trpc/server'
 import type { AppDb } from './db/index.js'
 import { appSettings, chatConversationMembers, chatConversations, chatMessages, gameSessions, sessionPlayers } from './db/schema.js'
@@ -95,6 +95,15 @@ export class DbChatsRepository implements ChatsRepository {
           .where(inArray(chatMessages.conversationId, conversationIds))
           .orderBy(asc(chatMessages.conversationId), desc(chatMessages.sequence))
         : []
+      // Only membership-filtered conversation IDs may contribute notification metadata.
+      const latestIncoming = conversationIds.length
+        ? await tx.selectDistinctOn([chatMessages.conversationId], {
+          conversationId: chatMessages.conversationId, sequence: chatMessages.sequence,
+        }).from(chatMessages)
+          .where(and(inArray(chatMessages.conversationId, conversationIds), ne(chatMessages.senderPlayerId, player.id)))
+          .orderBy(asc(chatMessages.conversationId), desc(chatMessages.sequence))
+        : []
+      const incomingByConversation = new Map(latestIncoming.map(message => [message.conversationId, message.sequence]))
       const membersByConversation = new Map<string, string[]>()
       for (const member of members) {
         const conversationMembers = membersByConversation.get(member.conversationId) ?? []
@@ -102,10 +111,11 @@ export class DbChatsRepository implements ChatsRepository {
         membersByConversation.set(member.conversationId, conversationMembers)
       }
       const messageByConversation = new Map(latestMessages.map((message) => [message.conversationId, toMessage(message)]))
-      const conversations: ChatConversation[] = conversationRows.map((conversation) => ({
+      const conversations: ChatInbox['conversations'] = conversationRows.map((conversation) => ({
         id: conversation.id, kind: conversation.kind, name: conversation.name,
         playerIds: membersByConversation.get(conversation.id) ?? [], createdAt: conversation.createdAt.toISOString(),
         lastMessage: messageByConversation.get(conversation.id) ?? null,
+        lastIncomingSequence: incomingByConversation.get(conversation.id) ?? null,
       }))
       return { sessionId: row.id, selfPlayerId: player.id, players: chatPlayers, teams: chatTeams, conversations }
     })

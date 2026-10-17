@@ -15,5 +15,5 @@ Game sessions store invitations, arrival order, admin-assigned teams, configurat
 Keep the pure engine in `backend/src/engine` independent of UI, auth, and storage; inject time/randomness. Engine money is integer-cent strings; player API money is decimal strings. Enforce `docs/games.md` visibility on the server. See `docs/game-api.md` for state/action APIs and retry semantics. Admins see the full audit; players get filtered views only.
 
 Development phases apply to the whole project, not individual features:
-1. Functionality (current): verify behavior with a simple, neat UI using shadcn/ui. Keep logic, state, and API interactions separate from presentation. Do not use the frontend-design skill or establish a final theme yet.
-2. UI: use the frontend-design skill and the user's supplied theme to redesign presentation without changing functional code or behavior.
+1. Functionality: retain verified behavior and keep logic, state, and API interactions separate from presentation.
+2. UI (current): use the frontend-design skill and the user's supplied invitation theme and logo to redesign the game frontend. Prioritize phone use for players. Preserve game rules, API behavior, authentication, permissions, money handling, and retries while refactoring presentation and frontend organization. The UI refactor plan is in `design/ui-refactor-plan.md`; `ai-simulation` is outside its scope.

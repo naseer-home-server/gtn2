@@ -85,7 +85,7 @@ export function useMoneyTransfer(view: PlayerGameView, action: PlayerActionMutat
   const isPending = action.isPending
   const canTransfer = Boolean(team && view.isTeamLeader && view.allowedActions.includes('money.transfer'))
   const isClosed = view.status === 'finished'
-  const isPausedForReveal = Boolean(view.reveal) || Boolean(
+  const isPausedForReveal = view.reveal?.scope === 'public' || Boolean(
     view.isTeamLeader && view.status === 'playing' && balanceCents > 0n && !view.allowedActions.includes('money.transfer'),
   )
 

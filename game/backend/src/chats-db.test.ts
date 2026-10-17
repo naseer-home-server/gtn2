@@ -90,6 +90,9 @@ test('PostgreSQL chats enforce active-session membership, team DMs, group member
         const first = await chats.send(emails[0]!, directFromLeader.id, 'hello team', retriedId)
         const retry = await chats.send(emails[0]!, directFromLeader.id, 'hello team', retriedId)
         assert.equal(retry.id, first.id)
+        assert.equal((await chats.inbox(emails[0]!)).conversations.find(item => item.id === directFromLeader.id)?.lastIncomingSequence, null, 'own messages do not create notifications')
+        assert.equal((await chats.inbox(emails[2]!)).conversations.find(item => item.id === directFromLeader.id)?.lastIncomingSequence, first.sequence, 'recipients receive an incoming position')
+
         await assert.rejects(chats.send(emails[0]!, directFromLeader.id, 'changed text', retriedId), { code: 'CONFLICT' })
 
         // PostgreSQL sequence numbers define stable page boundaries even if several rows share a timestamp.
@@ -109,6 +112,11 @@ test('PostgreSQL chats enforce active-session membership, team DMs, group member
         const combinedSequences = [...olderPage.messages, ...newestPage.messages].map(({ sequence }) => sequence)
         assert.deepEqual(combinedSequences, [...combinedSequences].sort((a, b) => a - b), 'pages compose into chronological order')
 
+        const ownReply = await chats.send(emails[0]!, directFromLeader.id, 'own reply after an incoming message', randomUUID())
+        const notificationInbox = (await chats.inbox(emails[0]!)).conversations.find(item => item.id === directFromLeader.id)!
+        assert.equal(notificationInbox.lastMessage?.id, ownReply.id)
+        assert.equal(notificationInbox.lastIncomingSequence, newestPage.messages.at(-1)?.sequence, 'a newer own message must not mask incoming messages')
+
         const other = await sessions.create('Other chat session', [emails[0]!, 'other@example.test'], 'chat-test-admin')
         await sessions.setActive(other.id, 'chat-test-admin')
         const otherInbox = await chats.inbox(emails[0]!)
@@ -126,7 +134,7 @@ test('PostgreSQL chats enforce active-session membership, team DMs, group member
         const afterReset = await chats.messages(emails[0]!, directFromLeader.id)
         assert.equal(afterReset.messages.length, 50)
         assert.equal((await chats.inbox(emails[0]!)).conversations.find(({ id }) => id === directFromLeader.id)?.lastMessage?.id,
-          newestPage.messages.at(-1)?.id)
+          ownReply.id)
         throw rollback
       })
     } catch (error) {

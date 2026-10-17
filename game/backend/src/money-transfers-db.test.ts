@@ -11,7 +11,7 @@ import { DbGameplayRepository } from './gameplay.js'
 import { DEFAULT_CONFIG } from './engine/config.js'
 import type { EngineEnv, PlayerCommand } from './engine/types.js'
 
-test('PostgreSQL money transfers enforce leader auth and atomically persist an exact-once ledger and audit', { skip: process.env.RUN_DB_TESTS !== '1' }, async (t) => {
+test('PostgreSQL transfers enforce leader auth and atomically persist exact-once money and star transfers', { skip: process.env.RUN_DB_TESTS !== '1' }, async (t) => {
   const db = await initDb()
   t.after(closeDb)
   const rollback = new Error('Rollback isolated money transfer test data')
@@ -36,14 +36,47 @@ test('PostgreSQL money transfers enforce leader auth and atomically persist an e
       ]
       const config = structuredClone(DEFAULT_CONFIG)
       config.initialBalance = 100
-      await gameplay.start(session.id, teams, config, 'money-transfer-test')
-      await gameplay.startRound(session.id, 'money-transfer-test')
-      const state = (await gameplay.adminView(session.id)).state!
+      await gameplay.start(session.id, teams, config, 'money-transfer-test', 'bomb')
+      let state = (await gameplay.adminView(session.id)).state!
       const teamA = state.teams.find((team) => team.name === 'Team A')!
       const teamB = state.teams.find((team) => team.name === 'Team B')!
       const teamC = state.teams.find((team) => team.name === 'Team C')!
+
+      await gameplay.adjustAccount(session.id, 'money-transfer-test', { requestId: randomUUID(), expectedRevision: state.revision, teamId: teamA.id, balance: '100.00', stars: 4 })
+      state = (await gameplay.adminView(session.id)).state!
+      await gameplay.adjustAccount(session.id, 'money-transfer-test', { requestId: randomUUID(), expectedRevision: state.revision, teamId: teamB.id, balance: '100.00', stars: 1 })
+      state = (await gameplay.adminView(session.id)).state!
+      const starCommand: PlayerCommand = { requestId: randomUUID(), token: state.current.token, action: { type: 'stars.transfer', recipientTeamId: teamB.id, stars: 1 } }
+      await assert.rejects(gameplay.action(emails[1]!, starCommand, 'member-a'), { code: 'BAD_REQUEST' })
+      await gameplay.action(emails[0]!, starCommand, 'leader-a')
+      const starRevision = (await gameplay.adminView(session.id)).state!.revision
+      await gameplay.action(emails[0]!, starCommand, 'leader-a-retry')
+      assert.equal((await gameplay.adminView(session.id)).state!.revision, starRevision)
+
+      // Concurrent commands serialize under the session lock and cannot overspend the shared star total.
+      const concurrentStars: PlayerCommand[] = [
+        { requestId: randomUUID(), token: starCommand.token, action: { type: 'stars.transfer', recipientTeamId: teamB.id, stars: 1 } },
+        { requestId: randomUUID(), token: starCommand.token, action: { type: 'stars.transfer', recipientTeamId: teamC.id, stars: 1 } },
+      ]
+      const starsBeforeConcurrent = (await gameplay.adminView(session.id)).state!.teams.reduce((sum, team) => sum + team.stars, 0)
+      await Promise.all(concurrentStars.map((command) => gameplay.action(emails[0]!, command, 'leader-a-concurrent')))
+      state = (await gameplay.adminView(session.id)).state!
+      assert.equal(state.teams.reduce((sum, team) => sum + team.stars, 0), starsBeforeConcurrent)
+      const concurrentAudit = await connection.select().from(sessionEvents).where(and(
+        eq(sessionEvents.sessionId, session.id), eq(sessionEvents.type, 'stars.transferred'),
+      ))
+      assert.equal(concurrentAudit.length, 3) // original transfer plus both serialized commands
+
+      const staleStarCommand: PlayerCommand = { requestId: randomUUID(), token: state.current.token, action: { type: 'stars.transfer', recipientTeamId: teamB.id, stars: 1 } }
+      await gameplay.startRound(session.id, 'money-transfer-test')
+      await assert.rejects(gameplay.action(emails[0]!, staleStarCommand, 'leader-a-stale-window'), { code: 'BAD_REQUEST' })
+      const activeState = (await gameplay.adminView(session.id)).state!
+      assert.notEqual(activeState.advantagedTeamId, null)
+      await assert.rejects(gameplay.action(emails[0]!, { ...staleStarCommand, requestId: randomUUID(), token: activeState.current.token }, 'leader-a-closed-window'), { code: 'BAD_REQUEST' })
+
+      const stateAfterFinaleStarts = (await gameplay.adminView(session.id)).state!
       const command: PlayerCommand = {
-        requestId: randomUUID(), token: state.current.token,
+        requestId: randomUUID(), token: stateAfterFinaleStarts.current.token,
         action: { type: 'money.transfer', recipientTeamIds: [teamC.id, teamB.id], amount: '25.37' },
       }
 
@@ -73,15 +106,20 @@ test('PostgreSQL money transfers enforce leader auth and atomically persist an e
       assert.equal(persisted.teams.find((team) => team.id === teamB.id)?.balance, '11269')
       assert.equal(persisted.teams.find((team) => team.id === teamC.id)?.balance, '11268')
       assert.equal(persisted.moneyTransfers?.length, 2)
-      const [audit] = await connection.select().from(sessionEvents).where(and(
+      const commandAudits = await connection.select().from(sessionEvents).where(and(
         eq(sessionEvents.sessionId, session.id), eq(sessionEvents.type, 'player.command'),
       ))
+      const audit = commandAudits.find((event) => event.data.requestId === command.requestId)
       assert.equal(audit?.data.requestId, command.requestId)
       assert.deepEqual(audit?.data.action, command.action)
       const transferAudit = await connection.select().from(sessionEvents).where(and(
         eq(sessionEvents.sessionId, session.id), eq(sessionEvents.type, 'money.transferred'),
       ))
       assert.equal(transferAudit.length, 2)
+      const starTransferAudit = await connection.select().from(sessionEvents).where(and(
+        eq(sessionEvents.sessionId, session.id), eq(sessionEvents.type, 'stars.transferred'),
+      ))
+      assert.equal(starTransferAudit.length, 3)
 
       throw rollback
     })

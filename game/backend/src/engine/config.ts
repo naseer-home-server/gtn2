@@ -37,6 +37,7 @@ export const gameActionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('cave.decide'), decision: z.enum(['stay', 'leave']) }),
   z.object({ type: z.literal('circle.send'), money: moneyInput, stars: z.number().int().nonnegative() }),
   z.object({ type: z.literal('circle.return'), money: moneyInput, stars: z.number().int().nonnegative() }),
+  z.object({ type: z.literal('stars.transfer'), recipientTeamId: z.uuid(), stars: z.number().int().positive().max(Number.MAX_SAFE_INTEGER) }),
   z.object({ type: z.literal('bomb.allocate'), up: z.number().int().nonnegative(), down: z.number().int().nonnegative(), recipients: z.record(z.string().max(100), z.number().int().nonnegative()) }),
   z.object({ type: z.literal('pot.contribute'), amount: moneyInput, scope: z.enum(['self', 'public']).optional() }),
   z.object({

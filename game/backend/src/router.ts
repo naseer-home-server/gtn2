@@ -1,3 +1,4 @@
+import { presentationState } from './presentation.js'
 import { getPlayerRoster, resolveRosterPlayers } from './player-roster.js'
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
@@ -71,6 +72,12 @@ export const appRouter = router({
       }),
   }),
   admin: router({
+    presentation: router({
+      state: adminProcedure.input(z.object({ game: z.enum(GAME_ORDER).optional(), includeTeamEmails: z.boolean().optional(), includeFinalStandings: z.boolean().optional() })).query(({ ctx, input }) => {
+        if (!ctx.gameplay) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
+        return presentationState(ctx.sessions, ctx.gameplay, input.game, input.includeTeamEmails, input.includeFinalStandings)
+      }),
+    }),
     game: router({
       defaults: adminProcedure.query(() => DEFAULT_CONFIG),
       state: adminProcedure.input(z.object({ sessionId: z.uuid() })).query(({ ctx, input }) => {

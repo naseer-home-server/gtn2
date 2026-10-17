@@ -4,11 +4,13 @@ import { gameConfigSchema } from './config.js'
 import { MIN_TEAMS, MAX_TEAMS } from './limits.js'
 import { cents, ensure, moneyAdd, moneyCompare, moneyMin, moneyScale, moneySub, safeMoney, teamById } from './helpers.js'
 import { GAME_ORDER, type CurrentRound, type EngineEnv, type EngineEvent, type EngineState, type GameAction, type GameConfig, type GameId, type Ranking, type Team } from './types.js'
+import { isStarTransferOpen } from './star-window.js'
 export { DEFAULT_CONFIG, gameActionSchema, gameConfigSchema } from './config.js'
 export { adjustTeamAccount, applyUpcomingConfig } from './admin.js'
 export type { TeamAccountUpdate } from './admin.js'
 export * from './limits.js'
 export { playerView } from './views.js'
+export { isStarTransferOpen } from './star-window.js'
 export { cents } from './money.js'
 export type * from './types.js'
 
@@ -226,6 +228,17 @@ export function applyAction(state: EngineState, teamId: string, token: string, a
     })
     team.balance = senderBalance
     return events
+  }
+  if (action.type === 'stars.transfer') {
+    ensure(isStarTransferOpen(state), 'Star transfers are only open before the finale starts.')
+    const recipient = teamById(state, action.recipientTeamId)
+    ensure(recipient.id !== teamId, 'Choose a different team to receive the stars.')
+    ensure(Number.isSafeInteger(action.stars) && action.stars > 0, 'Transfer at least one star.')
+    ensure(action.stars <= team.stars, 'Transfer exceeds your current stars.')
+    ensure(Number.isSafeInteger(recipient.stars + action.stars), 'Recipient star total exceeds the supported range.')
+    team.stars -= action.stars
+    recipient.stars += action.stars
+    return [{ type: 'stars.transferred', data: { fromTeamId: teamId, toTeamId: recipient.id, stars: action.stars } }]
   }
   ensure(state.current.phase !== 'ready', 'The host has not started this round.')
   if (action.type === 'cave.decide' && state.current.game === 'cave') {

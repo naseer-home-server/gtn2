@@ -12,7 +12,7 @@ const baseView: PlayerGameView = {
   team: { id: 'team-a', name: 'Amber & Blue', balance: '50.00', stars: 2 },
   teams: [{ id: 'team-a', name: 'Amber & Blue', stars: 2 }, { id: 'team-b', name: 'Coral & Jade', stars: 1 }],
   game: 'bonus', round: 1, token: 'token-1', pot: { amount: '0.00', target: '20.00' },
-  privatePot: { amount: '0.00', target: '10.00' }, reveal: null, moneyTransfers: [], earnings: [],
+  privatePot: { amount: '0.00', target: '10.00' }, reveal: null, moneyTransfers: [], starsTransferOpen: false, earnings: [],
   roundState: { phase: 'ready', submitted: false }, allowedActions: [],
 }
 

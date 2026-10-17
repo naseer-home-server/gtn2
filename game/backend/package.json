@@ -47,6 +47,7 @@
     "./router": {
       "types": "./src/router.ts"
     },
+    "./presentation": { "types": "./src/presentation.ts" },
     "./chats": {
       "types": "./src/chat-types.ts"
     }

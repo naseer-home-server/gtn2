@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, Maximize, Minimize } from 'lucide-react'
+import { PresentationStageProvider } from '@/features/presentation/stage-context'
 import { presentationSlides } from '@/features/presentation/slides'
 import { usePresentationSlide } from '@/features/presentation/use-presentation-slide'
 import '@/features/presentation/presentation.css'
 
 /** This route deliberately lives outside AdminLayout: no host navigation, audit, or chats. */
 export function PresentationPage() {
-  const { index, slide, step, selectSlide, advance, retreat, canAdvance, canRetreat } = usePresentationSlide()
+  const [followHost, setFollowHost] = useState(true)
+  const { index, slide, step, selectSlide, advance, retreat, canAdvance, canRetreat } = usePresentationSlide({ follow: followHost })
   const Slide = slide.Component
   const navigation = useRef({ selectSlide, advance, retreat })
   navigation.current = { selectSlide, advance, retreat }
@@ -64,7 +66,7 @@ export function PresentationPage() {
     }
   }, [toggleFullscreen, wakeControls])
 
-  return <main id="main-content" className={`presentation-screen${controlsVisible ? '' : ' is-idle'}`} ref={screen} onPointerMove={wakeControls} onPointerDown={wakeControls} onFocusCapture={wakeControls}>
+  return <PresentationStageProvider mode="screen" game={slide.game} includeTeamEmails={slide.id === 'make-teams'} includeFinalStandings={slide.id === 'final-standings'}><main id="main-content" className={`presentation-screen${controlsVisible ? '' : ' is-idle'}`} ref={screen} onPointerMove={wakeControls} onPointerDown={wakeControls} onFocusCapture={wakeControls}>
     <div className="presentation-stage"><Slide key={slide.id} step={step} /></div>
     <nav className="presentation-controls" aria-label="Presentation controls">
       <button type="button" aria-label="Previous step" aria-keyshortcuts="ArrowLeft PageUp" disabled={!canRetreat} onClick={() => { retreat(); wakeControls() }}><ChevronLeft aria-hidden="true" /></button>
@@ -74,7 +76,8 @@ export function PresentationPage() {
         {fullscreen ? <Minimize aria-hidden="true" /> : <Maximize aria-hidden="true" />}
         {fullscreen ? 'Exit fullscreen' : 'Fullscreen'}
       </button>
+      <button type="button" aria-pressed={followHost} onClick={() => setFollowHost(!followHost)}>{followHost ? 'Following host' : 'Follow host'}</button>
       {fullscreenError && <p role="status">Use your browser’s fullscreen option to fill the screen.</p>}
     </nav>
-  </main>
+  </main></PresentationStageProvider>
 }

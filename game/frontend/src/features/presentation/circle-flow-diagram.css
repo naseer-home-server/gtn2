@@ -1,0 +1,30 @@
+.game-instruction-circle .theory-heading h1 { max-width:none; font-size:4.1cqw; }
+.circle-instruction-layout { inset:23% 7% 6%; grid-template-columns:1.5fr .9fr; gap:3%; }
+.circle-flow-diagram { align-self:stretch; min-height:0; min-width:0; margin:0; display:flex; flex-direction:column; }
+.circle-flow-diagram>svg { display:block; width:100%; height:calc(100% - 2cqw); overflow:visible; }
+.circle-flow-diagram figcaption { margin-top:.4cqw; color:#8b8377; text-align:center; font-size:1.05cqw; line-height:1.5; }
+.circle-flow-arc { fill:none; stroke:#b80712; stroke-width:4.5; stroke-linecap:round; }
+.circle-flow-arrow { fill:#b80712; }
+.circle-flow-link>rect { fill:#f4f0e8; stroke:#d9d2c7; stroke-width:1; }
+.circle-flow-link>text { fill:#b80712; font:500 24px var(--font-sans); }
+.circle-flow-team>circle { fill:#fffcf7; stroke:#393733; stroke-width:2; }
+.circle-flow-team>text { fill:#292621; font:500 19px var(--font-sans); }
+.circle-team-pair>circle { fill:#f4f0e8; stroke:#393733; stroke-width:1.5; }
+.circle-team-pair>path { fill:#b80712; stroke:#393733; stroke-width:1.5; }
+.circle-flow-center { fill:#292621; font:500 25px var(--font-sans); }
+.circle-flow-direction { fill:#70695f; font:400 18px var(--font-sans); }
+.circle-return-arc { fill:none; stroke:#8b671d; stroke-width:3; stroke-dasharray:7 5; }
+.circle-return-arrow { fill:#8b671d; }
+.circle-return-link>rect { fill:#f4f0e8; }
+.circle-return-link>text { fill:#8b671d; font:500 20px var(--font-sans); }
+.circle-instruction-layout .game-rule-copy h2 { font-size:3.35cqw; }
+.circle-instruction-layout .game-rule-text { font-size:1.65cqw; }
+
+.circle-flow-team.is-anonymous>circle { fill:#ede7dc; stroke:#c9bfb1; stroke-dasharray:5 5; }
+.circle-flow-team.is-anonymous>text { fill:#b7ab99; font-size:32px; font-weight:400; }
+.circle-flow-team.is-you>circle { stroke:#b80712; stroke-width:3; }
+.circle-flow-team.is-you>text { fill:#b80712; }
+.circle-private-receipt>rect { fill:#fffcf7; stroke:#d9d2c7; }
+.circle-receipt-label { fill:#70695f; font:400 18px var(--font-sans); }
+.circle-receipt-money { fill:#292621; font:500 38px var(--font-heading); }
+.circle-receipt-stars { fill:#b80712; font:500 21px var(--font-sans); }

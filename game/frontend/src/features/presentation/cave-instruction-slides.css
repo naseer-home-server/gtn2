@@ -1,0 +1,51 @@
+.cave-tick-intro { position:absolute; inset:24% 8% auto; display:flex; align-items:center; justify-content:space-between; gap:3cqw; }
+.cave-tick-intro p { margin:0; font-size:2.1cqw; letter-spacing:-.025em; }
+.cave-tick-intro>strong { color:#b80712; font:500 3.3cqw/1 var(--font-heading); white-space:nowrap; }
+.cave-tick-intro>strong>span { color:#70695f; font:400 1.4cqw var(--font-sans); }
+.cave-growth-grid { position:absolute; inset:35% 8% 15%; display:flex; flex-direction:column; }
+.cave-growth-columns,.cave-growth-row { display:grid; grid-template-columns:11cqw 1fr 13cqw; align-items:center; gap:1.5cqw; }
+.cave-growth-columns { margin-bottom:.4cqw; color:#8b8377; font-size:1.05cqw; }
+.cave-growth-columns>span:last-child { text-align:right; }
+.cave-growth-row { flex:1; visibility:hidden; border-bottom:1px solid #d9d2c7; }
+.cave-growth-row.is-visible { visibility:visible; }
+.cave-tick-label h2 { margin:0; font:500 2.25cqw/1.2 var(--font-heading); }
+.cave-tick-label>span { display:block; margin-top:.4cqw; color:#70695f; font-size:1.1cqw; }
+.cave-tunnel-strip { display:block; width:100%; overflow:visible; }
+.cave-tick-money { text-align:right; position:relative; }
+.cave-tick-money strong { display:block; font:500 3.7cqw/1 var(--font-heading); }
+.cave-tick-money>span { display:block; margin-top:.4cqw; color:#70695f; font-size:1.05cqw; }
+.cave-tick-money small { position:absolute; right:0; top:-1.5cqw; color:#b80712; font-size:1.2cqw; }
+.cave-instruction-note { position:absolute; bottom:8.5%; left:8%; right:8%; margin:0; color:#70695f; font-size:1.15cqw; line-height:1.5; }
+.cave-growth-row.is-visible .cave-expedition { animation:cave-team-advance 1s ease-out both; }
+@keyframes cave-team-advance { from { transform:translateX(-70px); } to { transform:translateX(0); } }
+.cave-decision-example { position:absolute; inset:25% 8% auto; margin:0; color:#70695f; font-size:1.6cqw; }
+.cave-decisions-grid { position:absolute; inset:36% 8% 19%; display:grid; grid-template-columns:1fr 1fr; gap:6%; }
+.cave-decisions-grid>section+section { border-left:1px solid #d9d2c7; padding-left:2.7cqw; }
+.cave-decisions-grid h2 { margin:0; font:500 3.5cqw/1.1 var(--font-heading); }
+.cave-decisions-grid section>p { margin:1cqw 0 1.6cqw; font-size:1.6cqw; }
+.cave-decisions-grid .cave-tunnel-strip { margin-block:2cqw 1.5cqw; }
+.cave-option-money { display:flex; align-items:center; gap:1.5cqw; }
+.cave-option-money>span { color:#70695f; font:500 3cqw/1 var(--font-heading); }
+.cave-option-money i { color:#b7ab99; font-size:2.3cqw; font-style:normal; }
+.cave-option-money strong { color:#b80712; font:500 4cqw/1 var(--font-heading); }
+.cave-option-money .cave-banked-label { color:#70695f; font:400 1.4cqw var(--font-sans); }
+.cave-decisions-grid section>small { display:block; margin-top:1.1cqw; color:#70695f; font-size:1.15cqw; line-height:1.5; }
+.cave-collapse-layout { position:absolute; inset:25% 8% 16%; display:grid; grid-template-columns:1.15fr 1fr; gap:7%; align-items:center; }
+.cave-collapse-scene { display:block; width:100%; overflow:visible; }
+.cave-collapse-outcome h2 { margin:1.2cqw 0 0; font:500 2.6cqw/1.2 var(--font-heading); text-align:center; }
+.cave-collapse-outcome h2>span { color:#b7ab99; margin-inline:.4cqw; font-family:var(--font-sans); }
+.cave-collapse-outcome h2>strong { color:#b80712; font-size:4.3cqw; font-weight:500; }
+.cave-collapse-outcome p { margin:1cqw 0 0; color:#70695f; text-align:center; font-size:1.4cqw; line-height:1.5; }
+.cave-risk-table-section h2 { margin:0 0 1.4cqw; font:500 2.3cqw/1.15 var(--font-heading); }
+.cave-risk-table { width:100%; border-collapse:collapse; font-size:1.35cqw; }
+.cave-risk-table th,.cave-risk-table td { padding:.55cqw .6cqw; border-bottom:1px solid #d9d2c7; }
+.cave-risk-table thead th { color:#70695f; font-size:1.1cqw; font-weight:400; text-align:left; padding-bottom:.9cqw; }
+.cave-risk-table th:last-child,.cave-risk-table td { text-align:right; }
+.cave-risk-table tbody th { text-align:left; font-weight:400; }
+.cave-risk-table td { color:#b80712; font-weight:500; }
+.cave-risk-table-section>p { margin:1.1cqw 0 0; color:#70695f; font-size:1.05cqw; line-height:1.4; }
+.cave-falling-rocks { animation:cave-tunnel-collapse 1.2s cubic-bezier(.45,0,.85,.6) both; }
+.cave-collapse-dust { animation:cave-collapse-dust 1.2s ease-out both; }
+@keyframes cave-tunnel-collapse { from { transform:translateY(-40px); } to { transform:translateY(155px); } }
+@keyframes cave-collapse-dust { 0%,65% { opacity:0; } 100% { opacity:1; } }
+@media (prefers-reduced-motion:reduce) { .cave-growth-row.is-visible .cave-expedition,.cave-falling-rocks,.cave-collapse-dust { animation:none; } .cave-falling-rocks { transform:translateY(155px); } }

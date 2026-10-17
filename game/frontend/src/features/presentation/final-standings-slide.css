@@ -1,0 +1,24 @@
+.final-standings-slide { --standings-rank:3cqw; --standings-team:23cqw; --standings-amount:13cqw; --standings-gap:1.5cqw; }
+.standings-head,.standings-rows>li { display:grid; grid-template-columns:var(--standings-rank) var(--standings-team) minmax(0,1fr) var(--standings-amount); column-gap:var(--standings-gap); align-items:center; }
+.standings-head { position:absolute; left:8%; right:8%; top:23.5%; color:#70695f; font-size:1.1cqw; }
+.standings-head>span:last-child { text-align:right; }
+.standings-chart { position:absolute; inset:29% 8% 18%; }
+.standings-rows { display:flex; flex-direction:column; height:100%; list-style:none; padding:0; margin:0; }
+.standings-rows>li { flex:1; min-height:0; visibility:hidden; border-bottom:1px solid #ded7cb; }
+.standings-rows>li.is-revealed { visibility:visible; animation:standings-reveal .4s ease-out both; }
+.standings-rank { color:#b80712; font-size:1.8cqw; font-variant-numeric:tabular-nums; }
+.standings-name { font:500 1.9cqw/1.2 var(--font-heading); overflow-wrap:anywhere; }
+.standings-earnings { text-align:right; font:450 1.65cqw/1.25 var(--font-sans); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.standings-bar { background:#e8e1d5; height:1.25cqw; }
+.standings-bar>span { display:block; height:100%; background:#b80712; }
+.standings-average-area { pointer-events:none; position:absolute; top:0; bottom:0; left:calc(var(--standings-rank) + var(--standings-team) + 2 * var(--standings-gap)); right:calc(var(--standings-amount) + var(--standings-gap)); }
+.standings-average-line { position:absolute; top:-.7cqw; bottom:-.8cqw; border-left:.16cqw dashed #292621; transform-origin:bottom; animation:standings-average-in .7s ease-out both; }
+.standings-average-label { position:absolute; bottom:calc(100% + 1.3cqw); width:16cqw; text-align:center; transform:translateX(-50%); }
+.standings-average-label span { display:block; color:#70695f; font-size:1.15cqw; }
+.standings-average-label strong { display:block; margin-top:.3cqw; font-size:1.65cqw; font-weight:500; font-variant-numeric:tabular-nums; }
+.standings-waiting { position:absolute; inset:35% 8% 20%; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; }
+.standings-waiting h2 { font:500 4.4cqw/1.15 var(--font-heading); margin:0; }
+.standings-waiting p { color:#70695f; font-size:1.8cqw; margin-top:2cqw; }
+@keyframes standings-reveal { from { opacity:0; transform:translateX(-.7cqw); } to { opacity:1; transform:translateX(0); } }
+@keyframes standings-average-in { from { transform:scaleY(0); } to { transform:scaleY(1); } }
+@media (prefers-reduced-motion:reduce) { .standings-rows>li.is-revealed,.standings-average-line { animation:none; } }

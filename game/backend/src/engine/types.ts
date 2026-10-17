@@ -74,6 +74,7 @@ export type GameAction =
   | { type: 'cave.decide'; decision: 'stay' | 'leave' }
   | { type: 'circle.send'; money: MoneyInput; stars: number }
   | { type: 'circle.return'; money: MoneyInput; stars: number }
+  | { type: 'stars.transfer'; recipientTeamId: string; stars: number }
   | { type: 'bomb.allocate'; up: number; down: number; recipients: Record<string, number> }
   | { type: 'pot.contribute'; amount: MoneyInput; scope?: 'self' | 'public' }
   | { type: 'money.transfer'; recipientTeamIds: string[]; amount: MoneyInput; allocations?: { teamId: string; amount: MoneyInput }[] }
@@ -88,6 +89,7 @@ export type PlayerGameView = {
   pot: { amount: string; target: string }; privatePot: { amount: string; target: string } | null
   reveal: { id: string; rankings: Ranking[]; scope: 'self' | 'public' } | null
   moneyTransfers: { id: string; fromTeamId: string; toTeamId: string; amount: string }[]
+  starsTransferOpen: boolean
   earnings: { game: GameId; round: number; amount: string }[]
   roundState: {
     phase: string; submitted: boolean; choiceLimit?: string

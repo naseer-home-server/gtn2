@@ -32,7 +32,7 @@ export function usePlayerGame(scope?: { sessionId: string; playerId: string }) {
   })
   const blockedByUncertainTransfer = Boolean(
     action.isError
-    && retryCommand.current?.action.type === 'money.transfer'
+    && ['money.transfer', 'stars.transfer'].includes(retryCommand.current?.action.type ?? '')
     && !isDefiniteActionError(action.error),
   )
   return {

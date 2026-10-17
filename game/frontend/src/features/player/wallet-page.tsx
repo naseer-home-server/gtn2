@@ -3,6 +3,7 @@ import { LockKeyhole, ArrowUpRight, ArrowDownLeft, X } from 'lucide-react'
 import { Dialog } from 'radix-ui'
 import { Button } from '@/components/ui/button'
 import { MoneyTransferCard } from '@/components/money-transfer-card'
+import { StarTransferCard } from '@/components/star-transfer-card'
 import { WaitingForTeam } from '@/components/player-game'
 import { formatMoney, gameNames, moneyUnits, parseMoney, withinMoney } from '@/lib/game-display'
 import { MoneyField } from './game-panels'
@@ -10,13 +11,14 @@ import { usePlayerSession } from './player-context'
 
 export function WalletPage() {
   const { view, transfer } = usePlayerSession()
-  const [tab, setTab] = useState<'send'|'reveals'|'activity'>('send')
+  const [tab, setTab] = useState<'send'|'stars'|'reveals'|'activity'>('send')
   if (!view.team) return <WaitingForTeam />
   return <>
     <header className="page-intro wallet-intro"><h1 className="display-title">Your wallet</h1><p>Manage your money at the table.</p></header>
     <section className="wallet-balance" aria-label="Your balance"><div className="wallet-account"><span>{view.team.name}</span><LockKeyhole className="size-4" aria-hidden="true" /></div><div className="flex items-center gap-2 text-sm text-muted-foreground">Private team balance</div><p className="money-value">{formatMoney(view.team.balance)}</p><p className="text-sm text-muted-foreground">Only your team can see this amount.</p></section>
-    <nav className="section-tabs" aria-label="Wallet sections">{(['send','reveals','activity'] as const).map(value => <button key={value} aria-current={tab === value ? 'page' : undefined} onClick={() => setTab(value)}>{value === 'send' ? 'Send money' : value === 'reveals' ? 'Rank reveals' : 'Activity'}</button>)}</nav>
+    <nav className="section-tabs" aria-label="Wallet sections">{(view.starsTransferOpen ? ['send','stars','reveals','activity'] as const : ['send','reveals','activity'] as const).map(value => <button key={value} aria-current={tab === value ? 'page' : undefined} onClick={() => setTab(value)}>{value === 'send' ? 'Send money' : value === 'stars' ? 'Send stars' : value === 'reveals' ? 'Rank reveals' : 'Activity'}</button>)}</nav>
     {tab === 'send' && <MoneyTransferCard view={view} transfer={transfer} />}
+    {tab === 'stars' && <StarTransferCard />}
     {tab === 'reveals' && <RankPots />}
     {tab === 'activity' && <WalletActivity />}
   </>

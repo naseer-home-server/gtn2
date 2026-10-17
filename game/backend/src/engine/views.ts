@@ -1,5 +1,6 @@
 import { cents, moneyMultiply, units } from './helpers.js'
 import type { EngineState, PlayerGameView, PublicTeam, Team } from './types.js'
+import { isStarTransferOpen } from './star-window.js'
 
 const publicTeam = (team: Team): PublicTeam => ({ id: team.id, name: team.name, stars: team.stars })
 export function playerView(sessionId: string, sessionName: string, state: EngineState | null, playerId: string): PlayerGameView {
@@ -8,7 +9,7 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
     sessionId, sessionName, status: state?.status ?? 'waiting', isTeamLeader: false, team: null,
     teams: state ? [...state.teams].sort((a, b) => a.tieOrder - b.tieOrder || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)).map(publicTeam) : [], game: state?.current.game ?? null, round: state?.round ?? null,
     token: null, pot: { amount: state ? units(state.pot.amount) : '0.00', target: state ? units(state.pot.target) : '0.00' }, privatePot: null,
-    reveal: null, moneyTransfers: [], earnings: [], roundState: null, allowedActions: [],
+    reveal: null, moneyTransfers: [], starsTransferOpen: false, earnings: [], roundState: null, allowedActions: [],
   }
   if (!state || !team) return base
   base.isTeamLeader = (team.leaderPlayerId ?? team.playerIds[0]) === playerId
@@ -23,6 +24,7 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
   base.token = state.current.token
   base.earnings = state.history.map((result) => ({ game: result.game, round: result.round, amount: units(result.payouts[team.id] ?? '0') }))
   const current = state.current
+  base.starsTransferOpen = isStarTransferOpen(state)
   const i = state.round - 1
   const awaitingFirstRoundStart = current.phase === 'ready' && state.round === 1
   if (!awaitingFirstRoundStart) {
@@ -75,6 +77,7 @@ export function playerView(sessionId: string, sessionName: string, state: Engine
     }
   }
   if (state.status === 'playing' && !state.reveal && team.balance !== '0') base.allowedActions.push('money.transfer')
+  if (state.status === 'playing' && !state.reveal && base.starsTransferOpen && team.stars > 0) base.allowedActions.push('stars.transfer')
   if ((state.pot.target !== '0' || (base.privatePot && base.privatePot.target !== '0.00')) && team.balance !== '0') base.allowedActions.push('pot.contribute')
   if (state.status === 'finished') base.allowedActions = base.allowedActions.filter((type) => type === 'pot.contribute')
   if (state.reveal) {

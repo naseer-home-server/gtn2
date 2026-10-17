@@ -8,6 +8,7 @@
 - Start with each team's balance at 0. Rank teams by balance. Ranks are hidden unless revealed through one of the paid reveal pots; balances stay private.
 - Game information is limited to the visibility rules below. Each team can see only transfer receipts where it was the sender or recipient; other teams' transfers remain private.
 - There are two reveal pots. The public reveal pot shows every team's rank to everyone. When filled, it reveals a ranking snapshot, resets to 0, and pauses play until every team acknowledges; each team's snapshot hides after its acknowledgment. The private self-rank pot shows only the contributing team's rank. It resets after the rank is revealed, and that team can acknowledge to hide its snapshot. A private reveal does not pause other teams. Both pots can be filled again.
+- After the third round of What goes around comes around completes, teams may transfer stars to one other team. The window closes when the host starts Gamble bomb round one, when the most-starred advantage is fixed. Only team leaders can transfer a positive whole number of stars up to their team's total. Star transfers conserve the public total and do not transfer money; agree any trade verbally and use the separate money transfer action for payment. The circle game's existing multiplied star send/return rules remain separate and unchanged.
 - Stars and star totals are public. Stars are awarded during the first four games. The team with the most stars gets a significant advantage in the final game; keep the nature of that advantage secret until then. Do not award stars in the finale.
 - Break all ties using a fixed team order based on each team's first member to arrive, frozen when play starts. The host advances completed rounds.
 - Tune game defaults and round overrides through playtesting; share configuration with simulations. Values below are drafts; “TBD” means unset.
@@ -58,7 +59,7 @@ Each team begins with the starting money unbanked and immediately gets a decisio
 
 Previously banked money is safe. Each round has at most 10 decision windows by default (`cave.maxTicks`), counting the safe opening window as tick 1. Tick 10 is the final decision window. When it expires, everyone still inside automatically banks their current unbanked money and the round ends, without another collapse check or growth into tick 11. Play may end earlier on a random collapse or when all teams leave.
 
-**Visible:** the current tick, maximum ticks, and the team's current unbanked money. Other teams' decisions, balances, and the number still in the cave are hidden.
+**Visible:** the current tick, maximum ticks, and the team's current unbanked money. While the round is active, the presentation also shows the shared unbanked amount available per team still inside and the server's tick countdown; public rank reveals pause this countdown. Other teams' decisions, balances, banked amounts, and the number still in the cave are hidden.
 
 ## What goes around comes around (second-last game)
 
@@ -85,3 +86,7 @@ The team with the most stars may allocate 1–60 chits per pile; every other tea
 **Visible:** everyone knows the recipient; only that team knows up/down. Chit allocations and pile totals are hidden.
 
 Any team can receive the bomb. Resolve a tie for most stars using the shared arrival order.
+
+## Final presentation reveal
+
+After the host finishes game night, the final standings slide may reveal every team’s final balance and rank publicly, one team per advance from last place to first. It uses the same balance ranking and arrival-order tie break as the game. A final advance draws the model-average benchmark at 1822.00. Earlier slides and unfinished games never receive the final standings or benchmark from the presentation API.

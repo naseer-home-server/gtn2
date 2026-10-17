@@ -25,7 +25,7 @@ const firstView: PlayerGameView = {
   team: { id: 'team-a', name: 'Team A', balance: '50.00', stars: 1 },
   teams: [{ id: 'team-a', name: 'Team A', stars: 1 }, { id: 'team-b', name: 'Team B', stars: 0 }],
   game: 'bonus', round: 1, token: 'round-token-1', pot: { amount: '0.00', target: '20.00' },
-  privatePot: { amount: '0.00', target: '10.00' }, reveal: null, moneyTransfers: [], earnings: [],
+  privatePot: { amount: '0.00', target: '10.00' }, reveal: null, moneyTransfers: [], starsTransferOpen: false, earnings: [],
   roundState: { phase: 'choice', submitted: false, choiceLimit: '10.00' },
   allowedActions: ['money.transfer', 'pot.contribute'],
 }

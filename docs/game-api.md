@@ -32,12 +32,13 @@ Retry uncertain requests with the **same ID, token, and action**. A committed du
 | `cave.decide` | `decision`: `stay` or `leave` | Survived tick, before deadline |
 | `circle.send` | `money`, `stars` | Outgoing transfer |
 | `circle.return` | `money`, `stars` | Return to your sender |
+| `stars.transfer` | `recipientTeamId`, `stars` | After circle round 3 completes, until the host starts bomb round 1 |
 | `bomb.allocate` | `up`, `down`, `recipients`: team-ID → chit count | Finale choice |
 | `pot.contribute` | `amount`, optional `scope`: `public` or `self` (defaults to `public`) | Positive funds and an open selected pot |
 | `money.transfer` | `recipientTeamIds`, `amount` (total), optional `allocations`: `{teamId, amount}[]` | Playing, positive balance, and no public reveal |
 | `reveal.acknowledge` | None | Your ranking snapshot is present |
 
-Money fields accept nonnegative decimal strings or numbers in currency units; prefer strings. Player-view amounts are strings with two decimal places. Stars and chits are whole numbers. Both bomb piles independently require their minimum/maximum **total**; individual options may be zero. Omitted recipient counts mean zero.
+Money fields accept nonnegative decimal strings or numbers in currency units; prefer strings. Player-view amounts are strings with two decimal places. Stars and chits are whole numbers. Both bomb piles independently require their minimum/maximum **total**; individual options may be zero. Omitted recipient counts mean zero. `stars.transfer` sends a positive whole number of stars to one other team, cannot exceed the sender's stars, and is leader-only. `starsTransferOpen` in the player view exposes the public window. The action is accepted only after circle round 3 completes or during the prepared bomb round 1 before the host starts it. Starting bomb round 1 fixes the finale advantage and closes the action. This separate action transfers stars only; separately agreed money trades use `money.transfer`. The circle game's `circle.send` and `circle.return` star mechanics are unchanged.
 
 A transfer's `amount` is the total to send among one or more distinct recipient teams. The recipient list cannot include the sender, and each recipient must be a team in the session. The total may not exceed the sending team's current balance. When `allocations` is provided, it must contain exactly one positive amount for each recipient, and the shares must add up to `amount`. Without `allocations`, the total is divided equally in integer cents, with leftover cents assigned one at a time in frozen team tie order (team UUID breaks any tie); for example, `1.00` split among three teams gives `0.34`, `0.33`, and `0.33`. The split is all-or-nothing. Transfers apply immediately, preserve the combined balance, and do not change the current token or game choice. They are accepted in the ready phase, during any active game phase (including after that team's choice), and after a round completes while the session remains playing. A public ranking reveal pauses transfers until every team acknowledges; a private self-rank reveal does not pause other teams. `allowedActions` includes `money.transfer` for a team leader with a positive balance when no public reveal is active, including while a round is ready. Every recipient ID must be a team UUID at the API boundary.
 
@@ -103,3 +104,10 @@ Prepared first-round player views omit `rules` and `finaleAdvantage`; the latter
 appears only after the engine awards it when the finale starts. This gate applies
 to all player routes and clients, independently of the holding screen. Circle
 maps/graph data remain exclusively in the admin view/audit.
+
+
+## Admin presentation
+
+`admin.presentation.state` returns a filtered public-stage projection. Only the team-formation slide requests `includeTeamEmails: true` to list member emails with the formed teams; other slides omit emails. During an active cave round, `cave` contains `tick`, `maxTicks`, `unbanked` (a decimal string shared by teams still inside), and `nextTickAt` (an absolute server deadline). The deadline is null during public rank reveals; `cave` is null before play and after completion. The projection excludes individual decisions, teams inside/departed, banked amounts, private balances, circle links and audit data. The presentation keeps polling when the host works in another tab, refreshes on focus, and counts down against the deadline; it never advances the game locally.
+
+The final standings slide alone requests `includeFinalStandings: true`. Only after `state.status` becomes `finished` does the response include `finalStandings.entries` (team ID, name, canonical rank and final balance as decimal `earnings`) and the model average of `1822.00`. Normal presentation responses omit these fields, including after completion. The slide reveals from last to first and adds the benchmark line on its final step.

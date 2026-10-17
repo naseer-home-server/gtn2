@@ -1,0 +1,10 @@
+.cave-live-meta { position:absolute; inset:24% 8% auto; margin:0; color:#70695f; font-size:1.8cqw; }
+.cave-live-readings { position:absolute; inset:37% 8% 23%; display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:4cqw; }
+.cave-live-readings section { min-width:0; text-align:center; }
+.cave-live-clock strong { display:block; color:#b80712; font:450 12cqw/1 var(--font-sans); letter-spacing:-.07em; font-variant-numeric:tabular-nums; }
+.cave-live-clock strong>span { margin-left:.5cqw; font-size:4cqw; letter-spacing:-.04em; }
+.cave-live-clock strong.is-paused { font-size:5.5cqw; letter-spacing:-.04em; }
+.cave-live-readings p { margin:1.5cqw 0 0; color:#70695f; font-size:1.5cqw; line-height:1.4; }
+.cave-live-money { border-left:1px solid #d9d2c7; padding-left:4cqw; }
+.cave-live-money strong { display:block; font-family:var(--font-heading); font-weight:500; line-height:1.1; letter-spacing:-.04em; overflow-wrap:anywhere; }
+.cave-live-prompt { position:absolute; bottom:12%; left:8%; right:8%; margin:0; text-align:center; color:#70695f; font-size:1.65cqw; line-height:1.5; }

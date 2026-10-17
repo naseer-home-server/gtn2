@@ -185,6 +185,61 @@ test('only own incoming and outgoing receipts appear in either teammate view', (
   assert.equal(alice.earnings.length, 0)
 })
 
+test('star trading opens after circle round three and during prepared bomb round one only', () => {
+  const state = start()
+  state.gameIndex = 3
+  state.round = 3
+  state.current = { game: 'circle', phase: 'complete', token: 'circle-done', transfers: {}, returns: {}, received: {}, returned: {}, next: { a: 'b', b: 'c', c: 'a' }, sender: { a: 'c', b: 'a', c: 'b' } }
+  state.teams[0]!.stars = 4
+  assert.equal(playerView('s', 'night', state, 'alice').starsTransferOpen, true)
+  assert.ok(playerView('s', 'night', state, 'alice').allowedActions.includes('stars.transfer'))
+  applyAction(state, 'a', state.current.token, { type: 'stars.transfer', recipientTeamId: 'b', stars: 3 }, env())
+  assert.deepEqual(state.teams.map(team => team.stars), [1, 3, 0])
+  assert.equal(state.current.token, 'circle-done')
+
+  state.gameIndex = 4
+  state.round = 1
+  state.current = { game: 'bomb', phase: 'ready', token: 'bomb-ready' }
+  assert.equal(playerView('s', 'night', state, 'alice').starsTransferOpen, true)
+  applyAction(state, 'b', state.current.token, { type: 'stars.transfer', recipientTeamId: 'c', stars: 2 }, env())
+  startRoundEngine(state, env())
+  assert.notEqual(state.advantagedTeamId, null)
+  assert.equal(playerView('s', 'night', state, 'alice').starsTransferOpen, false)
+  assert.ok(!playerView('s', 'night', state, 'alice').allowedActions.includes('stars.transfer'))
+  const before = JSON.stringify(state)
+  assert.throws(() => applyAction(state, 'a', state.current.token, { type: 'stars.transfer', recipientTeamId: 'b', stars: 1 }, env()), /only open/i)
+  assert.equal(JSON.stringify(state), before)
+})
+
+test('star transfers reject invalid, self, unknown, overlarge, reveal-paused and out-of-window actions without mutation', () => {
+  const state = start('bomb')
+  state.teams[0]!.stars = 3
+  const action = { type: 'stars.transfer' as const, recipientTeamId: 'b', stars: 1 }
+  state.current = { game: 'bomb', phase: 'choices', token: 'bomb-active', choices: {}, recipient: null, direction: null }
+  const unchanged = JSON.stringify(state)
+  assert.throws(() => applyAction(state, 'a', state.current.token, action, env()), /only open/i)
+  assert.equal(JSON.stringify(state), unchanged)
+
+  state.current = { game: 'bomb', phase: 'ready', token: 'ready' }
+  const rejectUnchanged = (recipientTeamId: string, stars: number) => {
+    const before = JSON.stringify(state)
+    assert.throws(() => applyAction(state, 'a', state.current.token, { type: 'stars.transfer', recipientTeamId, stars }, env()))
+    assert.equal(JSON.stringify(state), before)
+  }
+  rejectUnchanged('a', 1)
+  rejectUnchanged('missing', 1)
+  rejectUnchanged('b', 0)
+  rejectUnchanged('b', 4)
+  assert.equal(gameActionSchema.safeParse({ type: 'stars.transfer', recipientTeamId: '123e4567-e89b-42d3-a456-426614174000', stars: 1 }).success, true)
+  assert.equal(gameActionSchema.safeParse({ type: 'stars.transfer', recipientTeamId: 'bad', stars: 1 }).success, false)
+
+  state.reveal = { id: 'public', rankings: [], acknowledged: [] }
+  assert.equal(playerView('s', 'night', state, 'alice').starsTransferOpen, false)
+  const beforeReveal = JSON.stringify(state)
+  assert.throws(() => applyAction(state, 'a', state.current.token, action, env()), /acknowledge/i)
+  assert.equal(JSON.stringify(state), beforeReveal)
+})
+
 test('nonleaders cannot transfer, teammates share their receipt history, and reset restores the game checkpoint', () => {
   const state = start('bomb')
   state.teams[0].balance = '10000'

@@ -210,7 +210,9 @@ Branch `codex/game-ui-feedback`; isolated worktree database/project
 `gtn2-e25e1a0bd2` (PostgreSQL 55226), app 5226/backend 3226, Node 22.23.1.
 Three GPT-6 Luna workers implemented and independently checked scoped changes;
 the primary integrated shared storage/API/layout and consolidated this report.
-The provided 70-person roster remains a private server file, outside Git.
+The bundled human-player roster contains only the fourteen explicitly approved
+players and their IDs, names, and email addresses; the full export and contact
+details remain outside Git.
 
 ### Automated checks
 

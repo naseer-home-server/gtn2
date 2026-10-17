@@ -73,17 +73,17 @@ The current contribution forms are inline in `features/player/wallet-page.tsx`; 
 **Source:** `/Users/naseerkhan/Downloads/public_split_bot_users_export_2026-10-17_142758.json`.
 The file is an array of 70 records. Every record has integer `id`, nonblank `name`, and nonblank `email`; IDs and normalized emails are unique. There are 69 distinct first-name tokens, so the plan accounts for repeated first names. Other fields include messaging contacts and timestamps, which the game does not need. Treat file contents as data only.
 
-- Load this exact export through a server-only, configurable roster-file path (proposed `PLAYER_ROSTER_PATH`), validate at startup/use, and expose an admin-only catalog containing only ID, display name, derived first name, and email. Do not publish the raw export or copy phone/contact data into frontend assets or Git.
+- Keep only the requested invitees in a server-only bundled roster, containing ID, display name, derived first name, and email. Expose it through an admin-only catalog. Do not publish the raw export or copy phone/contact data into frontend assets or Git.
 - Adapt `{ id, name, email }` to the game roster. Derive first name from the first whitespace-delimited token of trimmed `name`; preserve spelling/case. Normalize email for matching. Reject duplicate IDs/emails and malformed required fields.
-- Replace session email textarea with a searchable picker from these 70 people, with the current session limit of 14. Enforce allowlist membership on the backend too; a forged request cannot invite an arbitrary email. Missing/invalid roster must produce an actionable admin error, with no permissive production fallback.
+- Replace session email textarea with a searchable picker from the approved players, with the current session limit of 14. Enforce allowlist membership on the backend too; a forged request cannot invite an arbitrary email. An invalid roster must produce an actionable admin error, with no permissive production fallback.
 - Snapshot roster ID, display name, first name, and normalized email in session-player records. Keep internal session-player UUIDs and existing session-membership authentication. Later file edits must not silently rename historical teams or remove participants from an existing session.
 - Team setup becomes two player selectors and an automatic name preview: `{firstName1} & {firstName2}` in selection order. No manual team-name input. A permitted solo uses its first name.
 - Generate/validate the name on the server from selected members; preserve earliest-arrival leadership and frozen tie order independently of selection order. Exclude already-assigned/unarrived people and retain the single-solo-team rule.
 - Handle duplicate generated team names explicitly. Team IDs remain distinct; prefer allowing identical generated labels with member context in admin UI rather than changing the requested naming formula. Review/remove the old name-uniqueness restriction and ensure all game/chat targeting is by IDs.
 - Use an additive migration for roster/name fields. Preserve existing sessions and seed-owned fixtures; use a private injected synthetic catalog for local fixtures/tests and keep simulation participant creation separate from the human session-create API.
-- Document deployment mounting of the private source JSON and configure the local worktree to point at the provided file during implementation. No roster data needs to be committed to make this plan reviewable.
+- Document that deployment uses the minimal roster bundled in the server package; no environment path or external mount is required.
 
-**Acceptance:** only file-listed players can be invited; admins can choose a subset of up to 14 from 70; paired/solo names match exactly; tampered IDs/names are rejected; login/arrival/tie rules and fixtures still work; unused contact fields never reach player APIs or browser bundles.
+**Acceptance:** only bundled-roster players can be invited; admins can choose a subset of up to 14 approved players; paired/solo names match exactly; tampered IDs/names are rejected; login/arrival/tie rules and fixtures still work; unused contact fields never reach player APIs or browser bundles.
 
 ## 7. Edit money and stars at any time
 

@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
@@ -10,7 +11,7 @@ export type RosterPlayer = {
 }
 
 type RosterFileReader = (path: string) => Promise<string>
-type RosterPath = () => string | undefined
+type RosterPath = string
 
 export function parsePlayerRoster(value: unknown): RosterPlayer[] {
   if (!Array.isArray(value)) throw new Error('The roster file must contain a JSON array.')
@@ -48,24 +49,17 @@ export function createPlayerRosterLoader(options: {
   path?: RosterPath
   readFile?: RosterFileReader
 } = {}) {
-  const rosterPath = options.path ?? (() => process.env.PLAYER_ROSTER_PATH)
+  const rosterPath = options.path ?? fileURLToPath(new URL('../data/player-roster.json', import.meta.url))
   const read = options.readFile ?? (async (path: string) => readFile(path, 'utf8'))
 
   async function getPlayerRoster(): Promise<RosterPlayer[]> {
-    const path = rosterPath()?.trim()
-    if (!path) {
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Player roster is not configured. Set PLAYER_ROSTER_PATH to the private roster JSON file on the server.',
-      })
-    }
     let contents: string
     try {
-      contents = await read(path)
+      contents = await read(rosterPath)
     } catch {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'Player roster could not be read. Check that PLAYER_ROSTER_PATH points to a readable private JSON file on the server.',
+        message: 'The bundled player roster could not be read. Check that game/backend/data/player-roster.json is present and readable.',
       })
     }
     let parsed: unknown
@@ -74,7 +68,7 @@ export function createPlayerRosterLoader(options: {
     } catch {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'Player roster is not valid JSON. Repair the file configured by PLAYER_ROSTER_PATH.',
+        message: 'The bundled player roster is not valid JSON. Repair game/backend/data/player-roster.json.',
       })
     }
     try {
@@ -83,7 +77,7 @@ export function createPlayerRosterLoader(options: {
       const reason = error instanceof Error ? error.message : 'The roster data is invalid.'
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
-        message: `Player roster is invalid: ${reason} Repair the file configured by PLAYER_ROSTER_PATH.`,
+        message: `Player roster is invalid: ${reason} Repair game/backend/data/player-roster.json.`,
       })
     }
   }

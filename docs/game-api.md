@@ -67,7 +67,7 @@ See [the simulation README](../ai-simulation/README.md) for local console setup,
 
 ## Roster-backed setup and host corrections
 
-`admin.sessions.roster` returns the private configured catalog to authenticated
+`admin.sessions.roster` returns the bundled approved-player catalog to authenticated
 admins only: `{id, name, firstName, email}[]`. `admin.sessions.create` takes
 `{name, rosterIds: string[]}` (one to fourteen unique IDs), resolves every ID on
 the server, and snapshots minimal identity metadata in `session_players`. It no
